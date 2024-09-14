@@ -32,9 +32,9 @@ public class DriveTrain {
             break;
         }
         if(gamepad1.dpad_up) y = 0.5;
-        if (gamepad1.dpad_down) y = -0.5;
-        if (gamepad1.dpad_left) x = 0.5;
-        if (gamepad1.dpad_right)x = -0.5;
+        else if (gamepad1.dpad_down) y = -0.5;
+        else if (gamepad1.dpad_left) x = 0.5;
+        else if (gamepad1.dpad_right)x = -0.5;
         else {
             x = gamepad1.right_stick_x;
             y = gamepad1.right_stick_y;

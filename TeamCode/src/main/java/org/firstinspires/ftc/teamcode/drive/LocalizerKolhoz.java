@@ -286,8 +286,8 @@ public class LocalizerKolhoz extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v);
-        leftRear.setPower(v1);
+        leftFront.setPower(-v);
+        leftRear.setPower(-v1);
         rightRear.setPower(v2);
         rightFront.setPower(v3);
     }
