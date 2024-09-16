@@ -39,8 +39,7 @@ public class CameraTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
-
-
+            cam.resumeViewport();
         }
         cam.stopStreaming();
     }
