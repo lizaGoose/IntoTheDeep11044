@@ -9,9 +9,13 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 @Autonomous
 public class CameraTest extends LinearOpMode {
     OpenCvCamera cam;
+    String angleStatus;
     @Override
     public void runOpMode() throws InterruptedException {
         int cameraMonitorViewId = hardwareMap.appContext
@@ -21,7 +25,7 @@ public class CameraTest extends LinearOpMode {
                 .createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         cam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
-        SampleDetectionPipeline pip = new SampleDetectionPipeline();
+        SampleDetectionPipelinePNP pip = new SampleDetectionPipelinePNP();
         cam.setPipeline(pip);
 
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -40,6 +44,15 @@ public class CameraTest extends LinearOpMode {
 
         while (opModeIsActive()){
             cam.resumeViewport();
+            telemetry.addData("Angle", pip.RotateStone);
+            telemetry.addData("AngleStatus", "not oriented");
+            telemetry.update();
+            if(Collections.min(pip.RotateStone) != 0){
+              angleStatus = "not oriented";
+            }
+            else {
+               angleStatus = "oriented";
+            }
         }
         cam.stopStreaming();
     }

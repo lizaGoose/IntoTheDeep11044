@@ -63,6 +63,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline
 
     ArrayList<AnalyzedStone> internalStoneList = new ArrayList<>();
     volatile ArrayList<AnalyzedStone> clientStoneList = new ArrayList<>();
+    volatile ArrayList<Double> RotateStone = new ArrayList<Double>();
 
     /*
      * Viewport stages
@@ -234,13 +235,15 @@ public class SampleDetectionPipeline extends OpenCvPipeline
 
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg", input, color);
 
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg", input, color);
+       // drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(x)) + " from center", input, color);
         // Store the detected stone information
         AnalyzedStone analyzedStone = new AnalyzedStone();
         analyzedStone.angle = rotRectAngle;
         analyzedStone.color = color;
         internalStoneList.add(analyzedStone);
+        RotateStone.add(rotRectAngle);
     }
 
     static void drawTagText(RotatedRect rect, String text, Mat mat, String color)
@@ -274,6 +277,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline
             Imgproc.line(drawOn, points[i], points[(i + 1) % 4], colorScalar, 2);
         }
     }
+
 
     static Scalar getColorScalar(String color)
     {
