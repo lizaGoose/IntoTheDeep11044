@@ -14,7 +14,10 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 
-public class SampleDetectionPipeline extends OpenCvPipeline
+public class
+
+
+SampleDetectionPipeline extends OpenCvPipeline
 {
     /*
      * Working image buffers
@@ -36,9 +39,9 @@ public class SampleDetectionPipeline extends OpenCvPipeline
     /*
      * Threshold values
      */
-    static final int YELLOW_MASK_THRESHOLD = 57;
-    static final int BLUE_MASK_THRESHOLD = 150;
-    static final int RED_MASK_THRESHOLD = 198;
+    static final int YELLOW_MASK_THRESHOLD = 150;
+    static final int BLUE_MASK_THRESHOLD = 198;
+    static final int RED_MASK_THRESHOLD = 57;
 
     /*
      * Elements for noise reduction

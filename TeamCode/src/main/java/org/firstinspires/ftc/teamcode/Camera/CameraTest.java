@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Camera;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.sun.tools.javac.util.ArrayUtils;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -11,12 +13,19 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.IntSummaryStatistics;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
-@Autonomous
+@TeleOp
 public class CameraTest extends LinearOpMode {
     OpenCvCamera cam;
-    double centerCoord = 0;
+    double centerCoord;
+    double Angle;
     String sampleCoordinatesStatus;
+
     @Override
     public void runOpMode() throws InterruptedException {
         int cameraMonitorViewId = hardwareMap.appContext
@@ -41,21 +50,50 @@ public class CameraTest extends LinearOpMode {
             }
         });
 
+
         waitForStart();
 
         while (opModeIsActive()){
-            cam.resumeViewport();
-            telemetry.addData("Angle", pip.RotateStone);
-            telemetry.addData("Center Coordinates", pip.CenterStone);
-            telemetry.addData("Sample Coordinates Status", sampleCoordinatesStatus);
-            if(Collections.min(pip.CenterStone) != centerCoord){
+
+            //cam.resumeViewport();
+
+           // telemetry.addData("Angle", pip.RotateStone);
+           // telemetry.addData("Center Coordinates", pip.CenterStone);
+            telemetry.addData("Center Coordinates", centerCoord);
+            telemetry.addData("Angle", Angle);
+
+            if (pip.CenterStone.isEmpty() == true) {
+                centerCoord = 0;
+                Angle = 0;
+            }
+            else {
+                centerCoord = Collections.min(pip.CenterStone.stream().collect(Collectors.toList()));
+                if (centerCoord != 0){
+
+                    if (Angle != 180) {
+
+                    }
+                }
+
+                if (pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center) == centerCoord){
+                    Angle = pip.rotatedRectFitToContour.angle;
+                }
+                if(gamepad1.a){
+                    pip.CenterStone.clear();
+                }
+
+            }
+            telemetry.update();
+
+            //telemetry.addData("Sample Coordinates Status", sampleCoordinatesStatus);
+           /* if(Collections.min(pip.CenterStone) != centerCoord){
                 sampleCoordinatesStatus = "is not ready to be taken";
             }
             else {
                 sampleCoordinatesStatus = "is ready to be taken";
 
-            }
-            telemetry.update();
+            }*/
+
 
 
         }

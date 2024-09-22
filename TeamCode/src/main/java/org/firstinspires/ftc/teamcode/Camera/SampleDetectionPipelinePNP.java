@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Camera;
 
-import org.opencv.utils.Converters;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import org.opencv.calib3d.Calib3d;
@@ -19,7 +18,9 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SampleDetectionPipelinePNP extends OpenCvPipeline
 {
@@ -30,6 +31,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     Mat ycrcbMat = new Mat();
     Mat crMat = new Mat();
     Mat cbMat = new Mat();
+    public  RotatedRect rotatedRectFitToContour;
 
     Mat blueThresholdMat = new Mat();
     Mat redThresholdMat = new Mat();
@@ -47,7 +49,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
      */
     static final int YELLOW_MASK_THRESHOLD = 100;
     static final int BLUE_MASK_THRESHOLD = 57;
-    static final int RED_MASK_THRESHOLD = 198;
+    static final int RED_MASK_THRESHOLD = 50;
 
     /*
      * The elements we use for noise reduction
@@ -74,8 +76,12 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
     ArrayList<AnalyzedStone> internalStoneList = new ArrayList<>();
     volatile ArrayList<AnalyzedStone> clientStoneList = new ArrayList<>();
-    volatile ArrayList<Double> RotateStone = new ArrayList<Double>();
-    volatile ArrayList<Double> CenterStone = new ArrayList<Double>();
+   // Set<String> set = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    volatile Set<Double> RotateStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+    volatile Set<Double> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
+   // volatile ArrayList<Double> CenterStone = new ArrayList<Double>();
+
 
     /*
      * Camera Calibration Parameters
@@ -140,8 +146,8 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     {
         // We'll be updating this with new data below
         internalStoneList.clear();
-        RotateStone.clear();
-        CenterStone.clear();
+        //RotateStone.clear();
+       // CenterStone.clear();
         /*
          * Run the image processing
          */
@@ -266,7 +272,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         MatOfPoint2f contour2f = new MatOfPoint2f(points);
 
         // Do a rect fit to the contour, and draw it on the screen
-        RotatedRect rotatedRectFitToContour = Imgproc.minAreaRect(contour2f);
+        rotatedRectFitToContour = Imgproc.minAreaRect(contour2f);
         drawRotatedRect(rotatedRectFitToContour, input, color);
 
         // The angle OpenCV gives us can be ambiguous, so look at the shape of
@@ -446,8 +452,8 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
                 mat, // The buffer we're drawing on
                 text2, // The text we're drawing
                 new Point( // The anchor point for the text
-                        rect.center.x + 50,  // x anchor point
-                        rect.center.y - 25), // y anchor point
+                        rect.center.x - 50,  // x anchor point
+                        rect.center.y - 125), // y anchor point
                 Imgproc.FONT_HERSHEY_PLAIN, // Font
                 3, // Font size
                 colorScalar2, // Font color
