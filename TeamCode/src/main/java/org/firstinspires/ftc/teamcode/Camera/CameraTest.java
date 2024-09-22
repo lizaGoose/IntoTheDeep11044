@@ -15,7 +15,8 @@ import java.util.Collections;
 @Autonomous
 public class CameraTest extends LinearOpMode {
     OpenCvCamera cam;
-    String angleStatus;
+    double centerCoord = 0;
+    String sampleCoordinatesStatus;
     @Override
     public void runOpMode() throws InterruptedException {
         int cameraMonitorViewId = hardwareMap.appContext
@@ -45,14 +46,18 @@ public class CameraTest extends LinearOpMode {
         while (opModeIsActive()){
             cam.resumeViewport();
             telemetry.addData("Angle", pip.RotateStone);
-            telemetry.addData("AngleStatus", "not oriented");
-            telemetry.update();
-            if(Collections.min(pip.RotateStone) != 0){
-              angleStatus = "not oriented";
+            telemetry.addData("Center Coordinates", pip.CenterStone);
+            telemetry.addData("Sample Coordinates Status", sampleCoordinatesStatus);
+            if(Collections.min(pip.CenterStone) != centerCoord){
+                sampleCoordinatesStatus = "is not ready to be taken";
             }
             else {
-               angleStatus = "oriented";
+                sampleCoordinatesStatus = "is ready to be taken";
+
             }
+            telemetry.update();
+
+
         }
         cam.stopStreaming();
     }

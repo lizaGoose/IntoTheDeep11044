@@ -26,6 +26,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     /*
      * Our working image buffers
      */
+
     Mat ycrcbMat = new Mat();
     Mat crMat = new Mat();
     Mat cbMat = new Mat();
@@ -39,12 +40,13 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     Mat morphedYellowThreshold = new Mat();
 
     Mat contoursOnPlainImageMat = new Mat();
+    public Point x;
 
     /*
      * Threshold values
      */
-    static final int YELLOW_MASK_THRESHOLD = 57;
-    static final int BLUE_MASK_THRESHOLD = 150;
+    static final int YELLOW_MASK_THRESHOLD = 100;
+    static final int BLUE_MASK_THRESHOLD = 57;
     static final int RED_MASK_THRESHOLD = 198;
 
     /*
@@ -73,6 +75,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     ArrayList<AnalyzedStone> internalStoneList = new ArrayList<>();
     volatile ArrayList<AnalyzedStone> clientStoneList = new ArrayList<>();
     volatile ArrayList<Double> RotateStone = new ArrayList<Double>();
+    volatile ArrayList<Double> CenterStone = new ArrayList<Double>();
 
     /*
      * Camera Calibration Parameters
@@ -137,7 +140,8 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     {
         // We'll be updating this with new data below
         internalStoneList.clear();
-
+        RotateStone.clear();
+        CenterStone.clear();
         /*
          * Run the image processing
          */
@@ -272,13 +276,12 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         {
             rotRectAngle += 90;
         }
-        Point x = rotatedRectFitToContour.center;
+        x = rotatedRectFitToContour.center;
 
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg", input, color);
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg",Integer.toString((int) Math.round(x.dot(x))), "Green", input, color);
 
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(x.dot(x))) + " deg", input, color);
 
         // Prepare object points and image points for solvePnP
         // Assuming the object is a rectangle with known dimensions
@@ -328,6 +331,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
             analyzedStone.tvec = tvec;
             internalStoneList.add(analyzedStone);
             RotateStone.add(rotRectAngle);
+            CenterStone.add(x.dot(x));
         }
     }
 
@@ -422,9 +426,10 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         return index;
     }
 
-    static void drawTagText(RotatedRect rect, String text, Mat mat, String color)
+    static void drawTagText(RotatedRect rect, String text, String text2, String color2, Mat mat, String color)
     {
         Scalar colorScalar = getColorScalar(color);
+        Scalar colorScalar2 = getColorScalar(color2);
 
         Imgproc.putText(
                 mat, // The buffer we're drawing on
@@ -433,8 +438,19 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
                         rect.center.x - 50,  // x anchor point
                         rect.center.y + 25), // y anchor point
                 Imgproc.FONT_HERSHEY_PLAIN, // Font
-                1, // Font size
+                3, // Font size
                 colorScalar, // Font color
+                1, // Font thickness
+                Imgproc.CV_CONTOURS_MATCH_I1);
+        Imgproc.putText(
+                mat, // The buffer we're drawing on
+                text2, // The text we're drawing
+                new Point( // The anchor point for the text
+                        rect.center.x + 50,  // x anchor point
+                        rect.center.y - 25), // y anchor point
+                Imgproc.FONT_HERSHEY_PLAIN, // Font
+                3, // Font size
+                colorScalar2, // Font color
                 1, // Font thickness
                 Imgproc.CV_CONTOURS_MATCH_I1);
     }
