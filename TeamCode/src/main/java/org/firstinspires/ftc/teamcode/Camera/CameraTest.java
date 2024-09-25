@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class CameraTest extends LinearOpMode {
     OpenCvCamera cam;
     double centerCoord;
-    double Angle;
+    double Angle, x, y;
     String sampleCoordinatesStatus;
 
     @Override
@@ -61,10 +61,14 @@ public class CameraTest extends LinearOpMode {
            // telemetry.addData("Center Coordinates", pip.CenterStone);
             telemetry.addData("Center Coordinates", centerCoord);
             telemetry.addData("Angle", Angle);
+            telemetry.addData("x", x);
+            telemetry.addData("y", y);
 
             if (pip.CenterStone.isEmpty() == true) {
                 centerCoord = 0;
                 Angle = 0;
+                x = 0;
+                y = 0;
             }
             else {
                 centerCoord = Collections.min(pip.CenterStone.stream().collect(Collectors.toList()));
@@ -73,10 +77,19 @@ public class CameraTest extends LinearOpMode {
                     if (Angle != 180) {
 
                     }
+                    if(x !=0){
+
+                    }
+                    if(y!=0){
+
+                    }
                 }
 
                 if (pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center) == centerCoord){
                     Angle = pip.rotatedRectFitToContour.angle;
+                    x = pip.rotatedRectFitToContour.center.x;
+                    y = pip.rotatedRectFitToContour.center.y;
+
                 }
                 if(gamepad1.a){
                     pip.CenterStone.clear();

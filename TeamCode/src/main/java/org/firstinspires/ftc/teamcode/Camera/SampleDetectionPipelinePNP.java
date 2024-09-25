@@ -42,7 +42,8 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     Mat morphedYellowThreshold = new Mat();
 
     Mat contoursOnPlainImageMat = new Mat();
-    public Point x;
+    public Point nearestPoint;
+    public double x,y;
 
     /*
      * Threshold values
@@ -80,6 +81,8 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     volatile Set<Double> RotateStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     volatile Set<Double> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    volatile Set<Double> xCoordinate = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    volatile Set<Double> yCoordinate = Collections.newSetFromMap(new ConcurrentHashMap<>());
    // volatile ArrayList<Double> CenterStone = new ArrayList<Double>();
 
 
@@ -282,11 +285,13 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         {
             rotRectAngle += 90;
         }
-        x = rotatedRectFitToContour.center;
+        nearestPoint = rotatedRectFitToContour.center;
+        x = rotatedRectFitToContour.center.x;
+        y = rotatedRectFitToContour.center.y;
 
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg",Integer.toString((int) Math.round(x.dot(x))), "Green", input, color);
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg",Integer.toString((int) Math.round(nearestPoint.dot(nearestPoint))), "Green", input, color);
 
 
         // Prepare object points and image points for solvePnP
@@ -337,7 +342,9 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
             analyzedStone.tvec = tvec;
             internalStoneList.add(analyzedStone);
             RotateStone.add(rotRectAngle);
-            CenterStone.add(x.dot(x));
+            CenterStone.add(nearestPoint.dot(nearestPoint));
+            xCoordinate.add(x);
+            yCoordinate.add(y);
         }
     }
 
