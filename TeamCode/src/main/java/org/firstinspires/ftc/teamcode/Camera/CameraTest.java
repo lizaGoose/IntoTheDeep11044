@@ -11,10 +11,12 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.IntSummaryStatistics;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ public class CameraTest extends LinearOpMode {
     OpenCvCamera cam;
     double centerCoord;
     double Angle, x, y;
+    double index;
     String sampleCoordinatesStatus;
 
     @Override
@@ -54,7 +57,7 @@ public class CameraTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
-
+            List<Double> Center = new ArrayList<Double>(pip.CenterStone);
             //cam.resumeViewport();
 
            // telemetry.addData("Angle", pip.RotateStone);
@@ -63,6 +66,8 @@ public class CameraTest extends LinearOpMode {
             telemetry.addData("Angle", Angle);
             telemetry.addData("x", x);
             telemetry.addData("y", y);
+            telemetry.addData("index", index);
+
 
             if (pip.CenterStone.isEmpty() == true) {
                 centerCoord = 0;
@@ -85,14 +90,16 @@ public class CameraTest extends LinearOpMode {
                     }
                 }
 
-                if (pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center) == centerCoord){
+                if ((pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center)) == centerCoord){
                     Angle = pip.rotatedRectFitToContour.angle;
                     x = pip.rotatedRectFitToContour.center.x;
                     y = pip.rotatedRectFitToContour.center.y;
-
+                    index = Center.indexOf(pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center));
                 }
+
                 if(gamepad1.a){
                     pip.CenterStone.clear();
+                    pip.RotateStone.clear();
                 }
 
             }

@@ -19,6 +19,7 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -81,8 +82,8 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     volatile Set<Double> RotateStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     volatile Set<Double> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    volatile Set<Double> xCoordinate = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    volatile Set<Double> yCoordinate = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+
    // volatile ArrayList<Double> CenterStone = new ArrayList<Double>();
 
 
@@ -147,6 +148,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     @Override
     public Mat processFrame(Mat input)
     {
+
         // We'll be updating this with new data below
         internalStoneList.clear();
         //RotateStone.clear();
@@ -343,8 +345,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
             internalStoneList.add(analyzedStone);
             RotateStone.add(rotRectAngle);
             CenterStone.add(nearestPoint.dot(nearestPoint));
-            xCoordinate.add(x);
-            yCoordinate.add(y);
+
         }
     }
 
