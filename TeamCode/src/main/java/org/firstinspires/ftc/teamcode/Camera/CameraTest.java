@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.sun.tools.javac.util.ArrayUtils;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.opencv.core.RotatedRect;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -26,8 +27,9 @@ public class CameraTest extends LinearOpMode {
     OpenCvCamera cam;
     double centerCoord;
     double Angle, x, y;
-    double index;
+    int index;
     String sampleCoordinatesStatus;
+    RotatedRect theRect;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -57,16 +59,19 @@ public class CameraTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
+            List<Double> Ang = new ArrayList<Double>(pip.RotateStone);
             List<Double> Center = new ArrayList<Double>(pip.CenterStone);
-            //cam.resumeViewport();
 
-           // telemetry.addData("Angle", pip.RotateStone);
-           // telemetry.addData("Center Coordinates", pip.CenterStone);
-            telemetry.addData("Center Coordinates", centerCoord);
-            telemetry.addData("Angle", Angle);
+
+           // telemetry.addData("Center Coordinates", centerCoord);
+            //telemetry.addData("Angle", Angle);
             telemetry.addData("x", x);
             telemetry.addData("y", y);
             telemetry.addData("index", index);
+            telemetry.addData("CenterX", centerCoord);
+            telemetry.addData("Angle", Angle);
+
+
 
 
             if (pip.CenterStone.isEmpty() == true) {
@@ -74,9 +79,17 @@ public class CameraTest extends LinearOpMode {
                 Angle = 0;
                 x = 0;
                 y = 0;
+                theRect = pip.rotatedRectFitToContour;
             }
             else {
+
                 centerCoord = Collections.min(pip.CenterStone.stream().collect(Collectors.toList()));
+                index = Center.indexOf(Collections.min(pip.CenterStone.stream().collect(Collectors.toList())));
+
+               /* if((Ang.size() > Center.size()) && (Center.size() != 0) && (index != -1)){
+                    Angle = Ang.get(index);
+                }*/
+
                 if (centerCoord != 0){
 
                     if (Angle != 180) {
@@ -89,14 +102,16 @@ public class CameraTest extends LinearOpMode {
 
                     }
                 }
-
+              //  Angle = Ang.get((int) index);
                 if ((pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center)) == centerCoord){
-                    Angle = pip.rotatedRectFitToContour.angle;
-                    x = pip.rotatedRectFitToContour.center.x;
-                    y = pip.rotatedRectFitToContour.center.y;
-                    index = Center.indexOf(pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center));
-                }
+                    theRect = pip.rotatedRectFitToContour;
+                    //Angle = theRect.angle;
+                  //  x = pip.rotatedRectFitToContour.center.x;
+                    //y = pip.rotatedRectFitToContour.center.y;
 
+                }
+                Angle = theRect.angle;
+                //
                 if(gamepad1.a){
                     pip.CenterStone.clear();
                     pip.RotateStone.clear();

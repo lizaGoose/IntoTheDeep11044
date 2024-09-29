@@ -49,9 +49,9 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     /*
      * Threshold values
      */
-    static final int YELLOW_MASK_THRESHOLD = 100;
-    static final int BLUE_MASK_THRESHOLD = 57;
-    static final int RED_MASK_THRESHOLD = 50;
+    static final int YELLOW_MASK_THRESHOLD = 57;
+    static final int BLUE_MASK_THRESHOLD = 150;
+    static final int RED_MASK_THRESHOLD = 198;
 
     /*
      * The elements we use for noise reduction
@@ -74,6 +74,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         String color;
         Mat rvec;
         Mat tvec;
+        double x;
     }
 
     ArrayList<AnalyzedStone> internalStoneList = new ArrayList<>();
@@ -152,7 +153,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // We'll be updating this with new data below
         internalStoneList.clear();
         //RotateStone.clear();
-       // CenterStone.clear();
+        //CenterStone.clear();
         /*
          * Run the image processing
          */
@@ -283,9 +284,16 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // The angle OpenCV gives us can be ambiguous, so look at the shape of
         // the rectangle to fix that.
         double rotRectAngle = rotatedRectFitToContour.angle;
+
+        double rotRectX = Math.round(rotatedRectFitToContour.center.x/96*2.54);
+
+
+
+
         if (rotatedRectFitToContour.size.width < rotatedRectFitToContour.size.height)
         {
             rotRectAngle += 90;
+
         }
         nearestPoint = rotatedRectFitToContour.center;
         x = rotatedRectFitToContour.center.x;
@@ -293,7 +301,8 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg",Integer.toString((int) Math.round(nearestPoint.dot(nearestPoint))), "Green", input, color);
+
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg",Integer.toString((int) Math.round(rotRectX)), "Green", input, color);
 
 
         // Prepare object points and image points for solvePnP
@@ -342,9 +351,14 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
             analyzedStone.color = color;
             analyzedStone.rvec = rvec;
             analyzedStone.tvec = tvec;
+            analyzedStone.x = rotRectX;
+
+
+            RotateStone.add((double) Math.round(rotRectAngle));
+            CenterStone.add(rotRectX);
             internalStoneList.add(analyzedStone);
-            RotateStone.add(rotRectAngle);
-            CenterStone.add(nearestPoint.dot(nearestPoint));
+
+
 
         }
     }
