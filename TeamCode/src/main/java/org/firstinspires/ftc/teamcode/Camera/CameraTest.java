@@ -30,6 +30,7 @@ public class CameraTest extends LinearOpMode {
     int index;
     String sampleCoordinatesStatus;
     RotatedRect theRect;
+    boolean tf;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -70,6 +71,8 @@ public class CameraTest extends LinearOpMode {
             telemetry.addData("index", index);
             telemetry.addData("CenterX", centerCoord);
             telemetry.addData("Angle", Angle);
+            //telemetry.addData("ang", theRect.angle);
+
 
 
 
@@ -79,14 +82,13 @@ public class CameraTest extends LinearOpMode {
                 Angle = 0;
                 x = 0;
                 y = 0;
-                theRect = pip.rotatedRectFitToContour;
             }
             else {
 
                 centerCoord = Collections.min(pip.CenterStone.stream().collect(Collectors.toList()));
                 index = Center.indexOf(Collections.min(pip.CenterStone.stream().collect(Collectors.toList())));
 
-               /* if((Ang.size() > Center.size()) && (Center.size() != 0) && (index != -1)){
+                /*if((Ang.size() > Center.size()) && (Center.size() != 0) && (index != -1)){
                     Angle = Ang.get(index);
                 }*/
 
@@ -103,20 +105,35 @@ public class CameraTest extends LinearOpMode {
                     }
                 }
               //  Angle = Ang.get((int) index);
-                if ((pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center)) == centerCoord){
+                if (Math.round(pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center)/96*2.54) == centerCoord){
                     theRect = pip.rotatedRectFitToContour;
+
                     //Angle = theRect.angle;
-                  //  x = pip.rotatedRectFitToContour.center.x;
-                    //y = pip.rotatedRectFitToContour.center.y;
+                }
+
+                    x = theRect.center.x / 96 * 2.54;
+                    y = theRect.center.y / 96 * 2.54;
+
+
+                /*if (theRect.center.dot(theRect.center) == centerCoord) {
+                    theRect = pip.rotatedRectFitToContour;
 
                 }
-                Angle = theRect.angle;
-                //
+                else {
+                    x = 0;
+                    y = 0;
+                    Angle = 0;
+                }*/
+
                 if(gamepad1.a){
                     pip.CenterStone.clear();
                     pip.RotateStone.clear();
                 }
 
+
+           /*    if (Center.isEmpty()){
+                   pip.CenterStone.clear();
+               }*/
             }
             telemetry.update();
 

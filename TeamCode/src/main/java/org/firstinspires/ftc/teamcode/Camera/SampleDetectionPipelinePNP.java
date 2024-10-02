@@ -153,7 +153,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // We'll be updating this with new data below
         internalStoneList.clear();
         //RotateStone.clear();
-        //CenterStone.clear();
+
         /*
          * Run the image processing
          */
@@ -271,7 +271,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         Imgproc.dilate(output, output, dilateElement);
     }
 
-    void analyzeContour(MatOfPoint contour, Mat input, String color)
+   void analyzeContour(MatOfPoint contour, Mat input, String color)
     {
         // Transform the contour to a different format
         Point[] points = contour.toArray();
@@ -285,7 +285,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // the rectangle to fix that.
         double rotRectAngle = rotatedRectFitToContour.angle;
 
-        double rotRectX = Math.round(rotatedRectFitToContour.center.x/96*2.54);
+        double rotRectX = Math.round(rotatedRectFitToContour.center.dot(rotatedRectFitToContour.center)/96*2.54);
 
 
 
@@ -302,7 +302,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
 
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg",Integer.toString((int) Math.round(rotRectX)), "Green", input, color);
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg",Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)), "Green", input, color);
 
 
         // Prepare object points and image points for solvePnP
