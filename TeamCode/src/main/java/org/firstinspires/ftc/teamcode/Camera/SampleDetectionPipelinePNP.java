@@ -49,9 +49,9 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     /*
      * Threshold values
      */
-    static final int YELLOW_MASK_THRESHOLD = 57;
-    static final int BLUE_MASK_THRESHOLD = 150;
-    static final int RED_MASK_THRESHOLD = 198;
+    public int YELLOW_MASK_THRESHOLD;
+    public int BLUE_MASK_THRESHOLD;
+    public int RED_MASK_THRESHOLD;
 
     /*
      * The elements we use for noise reduction
@@ -82,7 +82,9 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
    // Set<String> set = Collections.newSetFromMap(new ConcurrentHashMap<>());
     volatile Set<Double> RotateStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    volatile Set<Double> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    volatile Set<Integer> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    ArrayList<Integer> Center = new ArrayList<>();
+
 
 
    // volatile ArrayList<Double> CenterStone = new ArrayList<Double>();
@@ -150,8 +152,10 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     public Mat processFrame(Mat input)
     {
 
+
         // We'll be updating this with new data below
         internalStoneList.clear();
+        CenterStone.clear();
         //RotateStone.clear();
 
         /*
@@ -160,6 +164,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         findContours(input);
 
         clientStoneList = new ArrayList<>(internalStoneList);
+        Center = new ArrayList<>(CenterStone);
 
         /*
          * Decide which buffer to send to the viewport
@@ -355,7 +360,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
 
             RotateStone.add((double) Math.round(rotRectAngle));
-            CenterStone.add(rotRectX);
+            CenterStone.add((int) rotRectX);
             internalStoneList.add(analyzedStone);
 
 

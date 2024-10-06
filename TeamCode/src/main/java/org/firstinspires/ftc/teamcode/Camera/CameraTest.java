@@ -31,6 +31,8 @@ public class CameraTest extends LinearOpMode {
     String sampleCoordinatesStatus;
     RotatedRect theRect;
     boolean tf;
+    public double extendingError, handError, clawError;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,7 +49,7 @@ public class CameraTest extends LinearOpMode {
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                cam.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
+                cam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -57,11 +59,12 @@ public class CameraTest extends LinearOpMode {
         });
 
 
+
         waitForStart();
 
-        while (opModeIsActive()){
+        while (!isStopRequested()){
             List<Double> Ang = new ArrayList<Double>(pip.RotateStone);
-            List<Double> Center = new ArrayList<Double>(pip.CenterStone);
+           // List<Double> Center = new ArrayList<Double>(pip.CenterStone);
 
 
            // telemetry.addData("Center Coordinates", centerCoord);
@@ -71,81 +74,55 @@ public class CameraTest extends LinearOpMode {
             telemetry.addData("index", index);
             telemetry.addData("CenterX", centerCoord);
             telemetry.addData("Angle", Angle);
-            //telemetry.addData("ang", theRect.angle);
+           telemetry.addData("ang", pip.Center);
 
 
 
-
-
-            if (pip.CenterStone.isEmpty() == true) {
-                centerCoord = 0;
-                Angle = 0;
+            if (gamepad1.a) {
+                tf = true;
                 x = 0;
                 y = 0;
+                Angle = 0;
             }
-            else {
+            if (gamepad1.b) {
+                tf = false;
+                x = 0;
+                y = 0;
+                Angle = 0;
+            }
+            if (tf == true) {
+                pip.YELLOW_MASK_THRESHOLD = 57;
+                pip.BLUE_MASK_THRESHOLD = 150;
+                pip.RED_MASK_THRESHOLD = 198;
 
-                centerCoord = Collections.min(pip.CenterStone.stream().collect(Collectors.toList()));
-                index = Center.indexOf(Collections.min(pip.CenterStone.stream().collect(Collectors.toList())));
+            } else {
 
-                /*if((Ang.size() > Center.size()) && (Center.size() != 0) && (index != -1)){
-                    Angle = Ang.get(index);
-                }*/
+                pip.YELLOW_MASK_THRESHOLD = 100;
+                pip.BLUE_MASK_THRESHOLD = 57;
+                pip.RED_MASK_THRESHOLD = 198;
 
-                if (centerCoord != 0){
+            }
 
-                    if (Angle != 180) {
+            if (pip.Center.size() != 0) {
 
-                    }
-                    if(x !=0){
 
-                    }
-                    if(y!=0){
+                centerCoord = Collections.min(pip.Center);
 
-                    }
-                }
-              //  Angle = Ang.get((int) index);
                 if (Math.round(pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center)/96*2.54) == centerCoord){
                     theRect = pip.rotatedRectFitToContour;
-
-                    //Angle = theRect.angle;
-                }
-
                     x = theRect.center.x / 96 * 2.54;
-                    y = theRect.center.y / 96 * 2.54;
-
-
-                /*if (theRect.center.dot(theRect.center) == centerCoord) {
-                    theRect = pip.rotatedRectFitToContour;
-
+                     y = theRect.center.y / 96 * 2.54;
+                    Angle = theRect.angle;
                 }
-                else {
-                    x = 0;
-                    y = 0;
-                    Angle = 0;
-                }*/
+                extendingError = Math.round(x);
+                handError = Math.round(y);
+                clawError = Math.round(90-Angle);
 
-                if(gamepad1.a){
-                    pip.CenterStone.clear();
-                    pip.RotateStone.clear();
+                if (gamepad1.dpad_up){
+                    //motors.setPower(Errors)
                 }
-
-
-           /*    if (Center.isEmpty()){
-                   pip.CenterStone.clear();
-               }*/
             }
             telemetry.update();
-
-            //telemetry.addData("Sample Coordinates Status", sampleCoordinatesStatus);
-           /* if(Collections.min(pip.CenterStone) != centerCoord){
-                sampleCoordinatesStatus = "is not ready to be taken";
-            }
-            else {
-                sampleCoordinatesStatus = "is ready to be taken";
-
-            }*/
-
 
 
         }
