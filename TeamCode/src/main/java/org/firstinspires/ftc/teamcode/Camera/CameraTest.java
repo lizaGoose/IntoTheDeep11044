@@ -32,6 +32,7 @@ public class CameraTest extends LinearOpMode {
     RotatedRect theRect;
     boolean tf;
     public double extendingError, handError, clawError;
+    public boolean sample_status;
 
 
     @Override
@@ -114,13 +115,16 @@ public class CameraTest extends LinearOpMode {
                      y = theRect.center.y / 96 * 2.54;
                     Angle = theRect.angle;
                 }
-                extendingError = Math.round(x);
-                handError = Math.round(y);
+                extendingError = Math.round(y);
+                handError = Math.round(x);
                 clawError = Math.round(90-Angle);
-
-                if (gamepad1.dpad_up){
-                    //motors.setPower(Errors)
+                if(extendingError == 0 && handError == 0 && clawError == 0){
+                    sample_status = true;
                 }
+                else {
+                    sample_status = false;
+                }
+
             }
             telemetry.update();
 
