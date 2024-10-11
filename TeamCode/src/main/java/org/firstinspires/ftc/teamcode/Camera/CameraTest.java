@@ -65,11 +65,7 @@ public class CameraTest extends LinearOpMode {
 
         while (!isStopRequested()){
             List<Double> Ang = new ArrayList<Double>(pip.RotateStone);
-           // List<Double> Center = new ArrayList<Double>(pip.CenterStone);
 
-
-           // telemetry.addData("Center Coordinates", centerCoord);
-            //telemetry.addData("Angle", Angle);
             telemetry.addData("x", x);
             telemetry.addData("y", y);
             telemetry.addData("index", index);

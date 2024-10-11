@@ -1,17 +1,19 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 import org.firstinspires.ftc.teamcode.drive.LocalizerKolhoz;
 
 public class Claw {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
     Servo claw;
+
 
     enum Mode {
         PICK,
@@ -23,6 +25,7 @@ public class Claw {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
         claw = linearOpMode.hardwareMap.get(Servo.class, "Claw");
+
     }
     public void teleop(){
         switch (currentMode) {
@@ -33,11 +36,6 @@ public class Claw {
                 claw.setPosition(0);
                 break;
     }
-    if (gamepad1.a){
-        currentMode = Mode.PICK;
-    }
-    if(gamepad1.b){
-        currentMode = Mode.DROP;
-    }
+
     }
 }
