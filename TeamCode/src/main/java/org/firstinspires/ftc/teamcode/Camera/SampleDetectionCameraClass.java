@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.Camera;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.opencv.core.RotatedRect;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -19,7 +24,7 @@ public class SampleDetectionCameraClass {
     LinearOpMode linearOpMode;
     HardwareMap hardwareMap;
     double centerCoord;
-    double Angle, x, y;
+    public double Angle, x, y;
     int index;
     String sampleCoordinatesStatus;
     RotatedRect theRect;
@@ -27,11 +32,15 @@ public class SampleDetectionCameraClass {
     public double extendingError, handError, clawError;
     public boolean sample_status;
     SampleDetectionPipelinePNP pip;
+    ColorSensor clawColorSensor;
+    public DistanceSensor distanceSensor;
 
     public  SampleDetectionCameraClass(LinearOpMode linearOpMode){
         this.linearOpMode = linearOpMode;
         hardwareMap = linearOpMode.hardwareMap;
 
+        clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources().getIdentifier("cameraMonitorViewId",
                         "id", hardwareMap.appContext.getPackageName());
@@ -65,7 +74,7 @@ public class SampleDetectionCameraClass {
 
             centerCoord = Collections.min(pip.Center);
 
-            if (Math.round(pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center)/96*2.54) == centerCoord){
+            if (Math.round(pip.rotatedRectFitToContour.center.x/96*2.54) == centerCoord){
                 theRect = pip.rotatedRectFitToContour;
                 x = theRect.center.x / 96 * 2.54;
                 y = theRect.center.y / 96 * 2.54;
@@ -74,7 +83,7 @@ public class SampleDetectionCameraClass {
             extendingError = Math.round(y);
             handError = Math.round(x);
             clawError = Math.round(90-Angle);
-            if(extendingError == 0 && handError == 0 && clawError == 0){
+            if(extendingError == 0 && handError == 0 && (distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*/){
                 sample_status = true;
             }
             else {
@@ -108,6 +117,10 @@ public class SampleDetectionCameraClass {
             pip.RED_MASK_THRESHOLD = 198;
 
         }
+       /* linearOpMode.telemetry.addData("sampleStatus", sample_status);
+        linearOpMode.telemetry.addData("x", x);
+        linearOpMode.telemetry.addData("y", y);
+        linearOpMode.telemetry.update();*/
     }
     public void operatorControl(){
         pip.YELLOW_MASK_THRESHOLD = 0;

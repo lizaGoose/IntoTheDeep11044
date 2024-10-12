@@ -105,7 +105,7 @@ public class CameraTest extends LinearOpMode {
 
                 centerCoord = Collections.min(pip.Center);
 
-                if (Math.round(pip.rotatedRectFitToContour.center.dot(pip.rotatedRectFitToContour.center)/96*2.54) == centerCoord){
+                if (Math.round(pip.rotatedRectFitToContour.center.x/96*2.54) == centerCoord){
                     theRect = pip.rotatedRectFitToContour;
                     x = theRect.center.x / 96 * 2.54;
                      y = theRect.center.y / 96 * 2.54;

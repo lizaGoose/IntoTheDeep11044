@@ -49,9 +49,9 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     /*
      * Threshold values
      */
-    public int YELLOW_MASK_THRESHOLD;
-    public int BLUE_MASK_THRESHOLD;
-    public int RED_MASK_THRESHOLD;
+    public int YELLOW_MASK_THRESHOLD = 100;
+    public int BLUE_MASK_THRESHOLD = 57;
+    public int RED_MASK_THRESHOLD = 198;
 
     /*
      * The elements we use for noise reduction
@@ -290,7 +290,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // the rectangle to fix that.
         double rotRectAngle = rotatedRectFitToContour.angle;
 
-        double rotRectX = Math.round(rotatedRectFitToContour.center.dot(rotatedRectFitToContour.center)/96*2.54);
+        double rotRectX = Math.round(rotatedRectFitToContour.center.x/96*2.54);
 
 
 
@@ -317,9 +317,9 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
         // Define the 3D coordinates of the object corners in the object coordinate space
         MatOfPoint3f objectPoints = new MatOfPoint3f(
-                new Point3(-objectWidth / 2, -objectHeight / 2, 0),
+                new Point3(-objectWidth / 1, -objectHeight / 1, 0),
                 new Point3(objectWidth / 2, -objectHeight / 2, 0),
-                new Point3(objectWidth / 2, objectHeight / 2, 0),
+                new Point3(objectWidth / 1, objectHeight / 1, 0),
                 new Point3(-objectWidth / 2, objectHeight / 2, 0)
         );
 
@@ -356,7 +356,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
             analyzedStone.color = color;
             analyzedStone.rvec = rvec;
             analyzedStone.tvec = tvec;
-            analyzedStone.x = rotRectX;
+            //analyzedStone.x = rotRectX;
 
 
             RotateStone.add((double) Math.round(rotRectAngle));
