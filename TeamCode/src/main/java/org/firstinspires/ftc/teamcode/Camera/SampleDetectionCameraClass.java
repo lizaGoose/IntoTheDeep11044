@@ -32,7 +32,7 @@ public class SampleDetectionCameraClass {
     public double extendingError, handError, clawError;
     public boolean sample_status;
     SampleDetectionPipelinePNP pip;
-    ColorSensor clawColorSensor;
+    public ColorSensor clawColorSensor;
     public DistanceSensor distanceSensor;
 
     public  SampleDetectionCameraClass(LinearOpMode linearOpMode){
@@ -66,7 +66,8 @@ public class SampleDetectionCameraClass {
 
     public void visionInUse(){
 
-
+        clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
         List<Double> Ang = new ArrayList<Double>(pip.RotateStone);
 
         if (pip.Center.size() != 0) {

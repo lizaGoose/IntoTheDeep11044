@@ -12,9 +12,13 @@ public class Modules {
     LinearOpMode linearOpMode;
     SampleDetectionCameraClass cam;
     Claw claw;
+    Diff diff;
+    //Extend extend;
+    Hand hand;
+    Perkid perkid;
     Gamepad gamepad1;
     CRServo serv;
-
+    boolean smartButton;
     enum Mode{
         VISION_CONTROL,
         OPERATOR_CONTROL
@@ -24,20 +28,32 @@ public class Modules {
         this.linearOpMode = linearOpMode;
         cam = new SampleDetectionCameraClass(linearOpMode);
         claw = new Claw(linearOpMode);
+        diff = new Diff(linearOpMode);
+        //extend = new Extend(linearOpMode);
+        hand = new Hand(linearOpMode);
+        perkid = new Perkid(linearOpMode);
+
         gamepad1 = linearOpMode.gamepad1;
     }
     public void teleop(){
         claw.teleop();
+        diff.teleop();
+        //extend.teleop();
+        hand.teleop();
+        perkid.teleop();
+
+
         if(gamepad1.x){
             modules = Mode.VISION_CONTROL;
-            claw.currentMode = Claw.Mode.PICK;
+
+
         }
         if(gamepad1.a){
             modules = Mode.OPERATOR_CONTROL;
-            claw.currentMode = Claw.Mode.DROP;
+
         }
 
-        switch (modules){
+      switch (modules){
 
             case VISION_CONTROL:
                 cam.visionInUse();
@@ -54,15 +70,46 @@ public class Modules {
             case OPERATOR_CONTROL:
                 cam.operatorControl();
                 cam.sample_status =  true;
-                if(gamepad1.y){
+               if (gamepad1.y){
+                   claw.currentMode = Claw.Mode.PICK;
+                   //hand.currentMode = Hand.Mode.GIVE_POSE;
+                   perkid.currentMode = Perkid.Mode.PICK_POSITION;
+                   diff.currentMode = Diff.Mode.SET_ZERO_POWER;
+                  // hand.currentMode = Hand.Mode.GIVE_POSE;
+                  // diff.currentMode = Diff.Mode.OPEN_CLAW;
+                   smartButton = true;
 
-                }
+                   }
+               if (smartButton == true){
+
+                   if (/*hand.axonEnc.getVoltage() >= 100 && */ perkid.left.getPosition() == 0.5 && perkid.right.getPosition() == 0.5){
+                       claw.currentMode = Claw.Mode.DROP;
+                       smartButton = false;
+                   }
+
+               }
+               else {
+                   hand.currentMode = Hand.Mode.DRIVER_CONTROL;
+                   diff.currentMode = Diff.Mode.DRIVER_CONTROL;
+                   if ((perkid.currentMode == Perkid.Mode.PICK_POSITION) || (perkid.currentMode == Perkid.Mode.CLOSE_POSITION)){
+                     //  hand.currentMode = Hand.Mode.GIVE_POSE;
+                   }
+                   if (gamepad1.right_bumper){
+                       claw.currentMode = Claw.Mode.PICK;
+                   }
+                   if (gamepad1.left_bumper){
+                       claw.currentMode = Claw.Mode.DROP;
+                   }
+
+               }
                 break;
         }
        linearOpMode.telemetry.addData("sampleStatus", cam.sample_status);
         linearOpMode.telemetry.addData("x", cam.x);
         linearOpMode.telemetry.addData("y", cam.y);
         linearOpMode.telemetry.addData("Distance", cam.distanceSensor.getDistance(DistanceUnit.MM));
+        linearOpMode.telemetry.addData("Distance", smartButton);
+
         linearOpMode.telemetry.update();
 
     }

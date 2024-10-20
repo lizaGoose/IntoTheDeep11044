@@ -2,9 +2,14 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoController;
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
@@ -14,8 +19,6 @@ public class Claw {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
     Servo claw;
-
-
 
     enum Mode {
         PICK,
@@ -33,11 +36,12 @@ public class Claw {
     public void teleop(){
         switch (currentMode) {
             case PICK:
-             claw.setPosition(0.5);
+                claw.setPosition(1);
+
 
                 break;
             case DROP:
-                claw.setPosition(0.7);
+              claw.setPosition(0);
                 break;
     }
 
