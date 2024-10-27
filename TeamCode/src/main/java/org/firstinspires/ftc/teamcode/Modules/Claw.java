@@ -36,7 +36,7 @@ public class Claw {
     public void teleop(){
         switch (currentMode) {
             case PICK:
-                claw.setPosition(1);
+                claw.setPosition(0.35);
 
 
                 break;

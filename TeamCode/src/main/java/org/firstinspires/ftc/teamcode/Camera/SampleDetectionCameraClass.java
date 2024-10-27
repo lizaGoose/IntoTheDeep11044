@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Modules.Diff;
 import org.opencv.core.RotatedRect;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -34,11 +35,13 @@ public class SampleDetectionCameraClass {
     SampleDetectionPipelinePNP pip;
     public ColorSensor clawColorSensor;
     public DistanceSensor distanceSensor;
+   public Diff diff;
 
     public  SampleDetectionCameraClass(LinearOpMode linearOpMode){
         this.linearOpMode = linearOpMode;
         hardwareMap = linearOpMode.hardwareMap;
 
+        diff = new Diff(linearOpMode);
         clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
         int cameraMonitorViewId = hardwareMap.appContext
@@ -62,6 +65,7 @@ public class SampleDetectionCameraClass {
 
             }
         });
+
     }
 
     public void visionInUse(){
@@ -79,17 +83,20 @@ public class SampleDetectionCameraClass {
                 theRect = pip.rotatedRectFitToContour;
                 x = theRect.center.x / 96 * 2.54;
                 y = theRect.center.y / 96 * 2.54;
-                Angle = theRect.angle;
+                Angle = pip.rotatedRectFitToContour.angle;
             }
             extendingError = Math.round(y);
             handError = Math.round(x);
             clawError = Math.round(90-Angle);
+
             if(extendingError == 0 && handError == 0 && (distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*/){
                 sample_status = true;
             }
             else {
                 sample_status = false;
             }
+
+
 
         }
 

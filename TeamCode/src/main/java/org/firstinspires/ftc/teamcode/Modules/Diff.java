@@ -11,21 +11,23 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.Camera.CameraTest;
+import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
 import org.firstinspires.ftc.teamcode.drive.LocalizerKolhoz;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public class Diff {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
-    CameraTest cam;
+   // SampleDetectionCameraClass cam;
     CRServo right, left;
     AnalogInput leftEncoder, rightEncoder;
 
     enum Mode {
         DRIVER_CONTROL,
-        VISION_CONTROL,
+        SET_MAX_POWER,
         SET_ZERO_POWER,
       SET_ZERO_POS,
+        SET_MAX_POWER_REVERSE
 
     }
     Mode currentMode = Mode.SET_ZERO_POWER;
@@ -37,9 +39,10 @@ public class Diff {
         right = linearOpMode.hardwareMap.get(CRServo.class, "rightDif");
         leftEncoder = linearOpMode.hardwareMap.get(AnalogInput.class, "leftDifEnc");
         rightEncoder = linearOpMode.hardwareMap.get(AnalogInput.class, "rightDifEnc");
-        cam = new CameraTest();
+        //cam = new SampleDetectionCameraClass(linearOpMode);
     }
     public void teleop(){
+
         switch (currentMode) {
             case DRIVER_CONTROL:
                 if (gamepad1.dpad_up) {
@@ -55,9 +58,16 @@ public class Diff {
                     left.setPower(0);
                 }
                 break;
-            case VISION_CONTROL:
-                right.setPower(-cam.clawError);
-                left.setPower(cam.clawError);
+            case SET_MAX_POWER:
+
+                right.setPower(-1);
+                left.setPower(1);
+
+                break;
+            case SET_MAX_POWER_REVERSE:
+
+                right.setPower(1);
+                left.setPower(-1);
 
                 break;
             case SET_ZERO_POWER:

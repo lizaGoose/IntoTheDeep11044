@@ -58,12 +58,22 @@ public class Modules {
             case VISION_CONTROL:
                 cam.visionInUse();
 
+
                 if(cam.sample_status == true){
                     claw.currentMode = Claw.Mode.PICK;
                     modules = Mode.OPERATOR_CONTROL;
                 }
                 else {
                     claw.currentMode = Claw.Mode.DROP;
+                    if (cam.Angle > 40){
+                        diff.currentMode = Diff.Mode.SET_MAX_POWER;
+                    }
+                    else if (cam.clawError < 20){
+                        diff.currentMode = Diff.Mode.SET_MAX_POWER_REVERSE;
+                    }
+                    else {
+                        diff.currentMode = Diff.Mode.SET_ZERO_POWER;
+                    }
                 }
                 break;
 
@@ -107,6 +117,7 @@ public class Modules {
        linearOpMode.telemetry.addData("sampleStatus", cam.sample_status);
         linearOpMode.telemetry.addData("x", cam.x);
         linearOpMode.telemetry.addData("y", cam.y);
+        linearOpMode.telemetry.addData("y", cam.Angle);
         linearOpMode.telemetry.addData("Distance", cam.distanceSensor.getDistance(DistanceUnit.MM));
         linearOpMode.telemetry.addData("Distance", smartButton);
 
