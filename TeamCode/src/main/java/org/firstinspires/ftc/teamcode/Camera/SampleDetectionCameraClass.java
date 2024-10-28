@@ -36,6 +36,7 @@ public class SampleDetectionCameraClass {
     public ColorSensor clawColorSensor;
     public DistanceSensor distanceSensor;
    public Diff diff;
+   public int indexAngle;
 
     public  SampleDetectionCameraClass(LinearOpMode linearOpMode){
         this.linearOpMode = linearOpMode;
@@ -84,10 +85,18 @@ public class SampleDetectionCameraClass {
                 x = theRect.center.x / 96 * 2.54;
                 y = theRect.center.y / 96 * 2.54;
                 Angle = pip.rotatedRectFitToContour.angle;
+               /* Ang.add(Angle);
+                if(Angle == 90){
+                    indexAngle = Ang.indexOf(Angle);
+                    Angle = Ang.get(indexAngle - 1);
+                }*/
             }
+
+                clawError = Math.round(90-Angle);
+
             extendingError = Math.round(y);
             handError = Math.round(x);
-            clawError = Math.round(90-Angle);
+
 
             if(extendingError == 0 && handError == 0 && (distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*/){
                 sample_status = true;

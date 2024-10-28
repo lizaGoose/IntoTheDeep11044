@@ -155,7 +155,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
         // We'll be updating this with new data below
         internalStoneList.clear();
-        //CenterStone.clear();
+        CenterStone.clear();
         //RotateStone.clear();
 
         /*
