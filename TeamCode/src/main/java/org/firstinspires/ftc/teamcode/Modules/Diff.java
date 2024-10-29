@@ -19,7 +19,7 @@ public class Diff {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
    // SampleDetectionCameraClass cam;
-    CRServo right, left;
+    Servo right, left;
     AnalogInput leftEncoder, rightEncoder;
 
     enum Mode {
@@ -35,8 +35,8 @@ public class Diff {
     public Diff(LinearOpMode linearOpMode){
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
-        left = linearOpMode.hardwareMap.get(CRServo.class, "leftDif");
-        right = linearOpMode.hardwareMap.get(CRServo.class, "rightDif");
+        left = linearOpMode.hardwareMap.get(Servo.class, "leftDif");
+        right = linearOpMode.hardwareMap.get(Servo.class, "rightDif");
         leftEncoder = linearOpMode.hardwareMap.get(AnalogInput.class, "leftDifEnc");
         rightEncoder = linearOpMode.hardwareMap.get(AnalogInput.class, "rightDifEnc");
         //cam = new SampleDetectionCameraClass(linearOpMode);
@@ -45,7 +45,7 @@ public class Diff {
 
         switch (currentMode) {
             case DRIVER_CONTROL:
-                if (gamepad1.dpad_up) {
+              /*  if (gamepad1.dpad_up) {
                     right.setPower(-1);
                     left.setPower(1);
                 }
@@ -56,30 +56,30 @@ public class Diff {
                 else {
                     right.setPower(0);
                     left.setPower(0);
-                }
+                }*/
                 break;
             case SET_MAX_POWER:
 
-                right.setPower(-1);
-                left.setPower(1);
+             //   right.setPower(-1);
+               // left.setPower(1);
 
                 break;
             case SET_MAX_POWER_REVERSE:
 
-                right.setPower(1);
-                left.setPower(-1);
+                //right.setPower(1);
+               // left.setPower(-1);
 
                 break;
             case SET_ZERO_POWER:
-                left.setPower(0);
-                right.setPower(0);
+               // left.setPower(0);
+                //right.setPower(0);
                 break;
             case SET_ZERO_POS:
                 if (leftEncoder.getVoltage() !=0){
-                    left.setPower(1);
+                  //  left.setPower(1);
                 }
                 if (rightEncoder.getVoltage()!=0){
-                    right.setPower(1);
+                    //right.setPower(1);
                 }
                 break;
 
