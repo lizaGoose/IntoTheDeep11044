@@ -73,7 +73,7 @@ public class SampleDetectionCameraClass {
 
         clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
-        List<Double> Ang = new ArrayList<Double>(pip.RotateStone);
+        List<Double> Ang = new ArrayList<Double>();
 
         if (pip.Center.size() != 0) {
 
@@ -81,14 +81,20 @@ public class SampleDetectionCameraClass {
             centerCoord = Collections.min(pip.Center);
 
             if (Math.round(pip.rotatedRectFitToContour.center.x/96*2.54) == centerCoord){
-                theRect = pip.rotatedRectFitToContour;
-                x = theRect.center.x / 96 * 2.54;
-                y = theRect.center.y / 96 * 2.54;
-                Angle = pip.rotatedRectFitToContour.angle;
-               /* Ang.add(Angle);
-                if(Angle == 90){
+                if (pip.CenterStone.isEmpty() == false) {
+                    theRect = pip.rotatedRectFitToContour;
+                    x = theRect.center.x / 96 * 2.54;
+                    y = theRect.center.y / 96 * 2.54;
+                    Angle = pip.rotatedRectFitToContour.angle;
+                }
+                Ang.add(Angle);
+               /* if((Angle == 90) && (Ang.size() != 0)){
+                    Ang.add((double) 0);
                     indexAngle = Ang.indexOf(Angle);
                     Angle = Ang.get(indexAngle - 1);
+                }
+                else {
+                    Angle = pip.rotatedRectFitToContour.angle;
                 }*/
             }
 
