@@ -8,10 +8,12 @@ buildscript {
     repositories {
         mavenCentral()
         google()
+        maven { url "https://chaquo.com/maven" }
     }
     dependencies {
         // Note for FTC Teams: Do not modify this yourself.
         classpath 'com.android.tools.build:gradle:7.2.0'
+        classpath "com.chaquo.python:gradle:10.0.1"
     }
 }
 
