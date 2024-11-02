@@ -1,32 +1,33 @@
 package org.firstinspires.ftc.teamcode.Tests;
 
+import com.chaquo.python.PyException;
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.python.core.PyObject;
-import org.python.jsr223.PyScriptEngine;
-import org.python.util.PythonInterpreter;
 
 @TeleOp
 public class ClawTest extends LinearOpMode {
     Servo claw;
-    PythonInterpreter pyth;
+    Python pyth;
+    PyObject ik;
     PyObject verticalHandAngle, horizontalHandAngle, verticalClawAngle, x, y, z;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        pyth = new PythonInterpreter();
-        pyth.execfile("Untitled.ipynb");
+
+      //  pyth.execfile("Untitled.ipynb");
 
         //right = hardwareMap.get(CRServoImplEx.class, "rightDif");
 
         waitForStart();
 
         while (opModeIsActive()){
-            verticalHandAngle = pyth.get("verticalHandAngle");
+      /*      verticalHandAngle = pyth.get("verticalHandAngle");
             horizontalHandAngle = pyth.get("horizontalHandAngle");
             verticalClawAngle = pyth.get("verticalClawAngle");
 
@@ -36,7 +37,15 @@ public class ClawTest extends LinearOpMode {
 
             x = pyth.get("x");
             y = pyth.get("y");
-            z = pyth.get("z");
+            z = pyth.get("z");*/
+            ik = pyth.getModule("Untitled.ipynb");
+            verticalHandAngle = ik.get("verticalHandAngle");
+            horizontalHandAngle = ik.get("horizontalHandAngle");
+            verticalClawAngle = ik.get("verticalClawAngle");
+            x = ik.get("x");
+            y = ik.get("y");
+            z = ik.get("z");
+
             telemetry.addData("verticalHandAngle", verticalHandAngle);
             telemetry.addData("horizontalHandAngle", horizontalHandAngle);
             telemetry.addData("verticalClawAngle", verticalClawAngle);
