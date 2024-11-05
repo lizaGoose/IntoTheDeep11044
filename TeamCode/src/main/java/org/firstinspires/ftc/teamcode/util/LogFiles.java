@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.WebHandlerManager;
 import org.firstinspires.ftc.ftccommon.external.WebHandlerRegistrar;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.LocalizerKolhoz;
+import org.firstinspires.ftc.teamcode.drive.MecanumDriveRR;
 import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 
 import java.io.File;
@@ -65,13 +65,13 @@ public final class LogFiles {
         public double maxAngVel = DriveConstants.MAX_ANG_VEL;
         public double maxAngAccel = DriveConstants.MAX_ANG_ACCEL;
 
-        public double mecTransP = LocalizerKolhoz.TRANSLATIONAL_PID.kP;
-        public double mecTransI = LocalizerKolhoz.TRANSLATIONAL_PID.kI;
-        public double mecTransD = LocalizerKolhoz.TRANSLATIONAL_PID.kD;
-        public double mecHeadingP = LocalizerKolhoz.HEADING_PID.kP;
-        public double mecHeadingI = LocalizerKolhoz.HEADING_PID.kI;
-        public double mecHeadingD = LocalizerKolhoz.HEADING_PID.kD;
-        public double mecLateralMultiplier = LocalizerKolhoz.LATERAL_MULTIPLIER;
+        public double mecTransP = MecanumDriveRR.TRANSLATIONAL_PID.kP;
+        public double mecTransI = MecanumDriveRR.TRANSLATIONAL_PID.kI;
+        public double mecTransD = MecanumDriveRR.TRANSLATIONAL_PID.kD;
+        public double mecHeadingP = MecanumDriveRR.HEADING_PID.kP;
+        public double mecHeadingI = MecanumDriveRR.HEADING_PID.kI;
+        public double mecHeadingD = MecanumDriveRR.HEADING_PID.kD;
+        public double mecLateralMultiplier = MecanumDriveRR.LATERAL_MULTIPLIER;
 
         public double trackingTicksPerRev = TwoWheelTrackingLocalizer.TICKS_PER_REV;
         public double trackingWheelRadius = TwoWheelTrackingLocalizer.WHEEL_RADIUS;
