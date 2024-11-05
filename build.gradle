@@ -8,16 +8,11 @@ buildscript {
     repositories {
         mavenCentral()
         google()
-        maven { url 'https://maven.brott.dev/'}
     }
     dependencies {
-
         // Note for FTC Teams: Do not modify this yourself.
-
         classpath 'com.android.tools.build:gradle:7.2.0'
         classpath 'com.chaquo.python:gradle:16.0.0'
-
-
     }
 }
 
@@ -27,7 +22,6 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-
     }
 }
 
