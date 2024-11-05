@@ -3,6 +3,8 @@ import java.text.SimpleDateFormat
 //
 // build.gradle in FtcRobotController
 //
+
+
 apply plugin: 'com.android.library'
 apply plugin: 'com.chaquo.python'
 
@@ -13,8 +15,38 @@ android {
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 28
         buildConfigField "String", "APP_BUILD_TIME", '"' + (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT).format(new Date())) + '"'
+
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            abiFilters "arm64-v8a", "x86_64"
+        }
+      /*  python{
+            pip{
+                install "ikpy"
+                install "ipywidgets"
+            }
+        }*/
+
+
+
+    }
+    chaquopy {
+        defaultConfig {
+            version = "3.8"
+            buildPython("C:/Users/robot30/AppData/Local/Programs/Python/Python38/python.exe")
+            pip{
+                install "ikpy"
+                options "--extra-index-url", "https://chaquo.com/pypi-extra/"
+                install "matplotlib"
+                install "numpy==1.21.4"
+                install "ipywidgets"
+                install "urdfpy"
+                install "libpython"
+            }
+        }
+        sourceSets {
+            getByName("main") {
+                srcDir("C:/Users/robot30/Documents/IntoTheDeep11044/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/python")
+            }
         }
     }
 

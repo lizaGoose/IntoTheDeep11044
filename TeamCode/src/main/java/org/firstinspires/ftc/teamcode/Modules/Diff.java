@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
-import org.firstinspires.ftc.teamcode.drive.LocalizerKolhoz;
+import org.firstinspires.ftc.teamcode.drive.MecanumDriveRR;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public class Diff {
