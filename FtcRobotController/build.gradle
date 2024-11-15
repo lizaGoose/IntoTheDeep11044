@@ -38,10 +38,10 @@ android {
                 options "--extra-index-url", "https://chaquo.com/pypi-extra/"
                // install "matplotlib"
                 install "numpy==1.21.4"
-                install "ipywidgets"
                 //install "urdfpy"
                 install "libpython"
                 install "Cython"
+
                 pyc {
                     src = false
                 }

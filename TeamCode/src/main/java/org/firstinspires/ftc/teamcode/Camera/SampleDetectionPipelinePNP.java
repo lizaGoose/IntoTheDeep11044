@@ -304,10 +304,11 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         x = rotatedRectFitToContour.center.x;
         y = rotatedRectFitToContour.center.y;
 
+
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
 
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg",Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)), "Green", input, color);
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg",/*Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)),*/"Green", input, color);
 
 
         // Prepare object points and image points for solvePnP
@@ -459,7 +460,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         return index;
     }
 
-    static void drawTagText(RotatedRect rect, String text, String text2, String color2, Mat mat, String color)
+    static void drawTagText(RotatedRect rect, String text, String color2, Mat mat, String color)
     {
         Scalar colorScalar = getColorScalar(color);
         Scalar colorScalar2 = getColorScalar(color2);
@@ -468,23 +469,12 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
                 mat, // The buffer we're drawing on
                 text, // The text we're drawing
                 new Point( // The anchor point for the text
-                        rect.center.x - 50,  // x anchor point
-                        rect.center.y + 25), // y anchor point
+                        rect.center.x - 150,  // x anchor point
+                        rect.center.y + 60), // y anchor point
                 Imgproc.FONT_HERSHEY_PLAIN, // Font
-                3, // Font size
+                4, // Font size
                 colorScalar, // Font color
-                1, // Font thickness
-                Imgproc.CV_CONTOURS_MATCH_I1);
-        Imgproc.putText(
-                mat, // The buffer we're drawing on
-                text2, // The text we're drawing
-                new Point( // The anchor point for the text
-                        rect.center.x - 50,  // x anchor point
-                        rect.center.y - 125), // y anchor point
-                Imgproc.FONT_HERSHEY_PLAIN, // Font
-                3, // Font size
-                colorScalar2, // Font color
-                1, // Font thickness
+                5, // Font thickness
                 Imgproc.CV_CONTOURS_MATCH_I1);
     }
 

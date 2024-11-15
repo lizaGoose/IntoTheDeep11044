@@ -31,15 +31,7 @@ public class ClawTestPython extends LinearOpMode {
 
         pyth = Python.getInstance();
         final PyObject file = pyth.getModule("inverseKinematics");
-        final PyObject ik = pyth.getModule("ikpy.chain");
-        PyObject mask = file.get("array");
-        //PyObject mask = file.callAttr("arrayCreate");
-       /*PyObject arm = Objects.requireNonNull(ik.get("Chain"))
-                .call(
-                        "from_urdf_file",
-                        FilesystemUtil.loadFile("arm.urdf").getAbsolutePath(),
-                        new Kwarg("active_links_mask", file.get("array"))
-                );*/
+
         PyObject arm = file.callAttr("Arm", FilesystemUtil.loadFile("arm.urdf").getAbsolutePath());
 
         waitForStart();
@@ -48,8 +40,11 @@ public class ClawTestPython extends LinearOpMode {
             double[] target_position = {x, y, z};
             double[] target_orientation = {0, 0, 0};
 
-            if(gamepad1.dpad_up) x+=1;
-            if(gamepad1.dpad_down)x-=1;
+           // if(gamepad1.y) x+=1;
+            //if(gamepad1.a)x-=1;
+            x+=1;
+            y+=2;
+            z+=5;
 
             List<PyObject> res = arm.callAttr("inverse_kinematics",
                     target_position,
