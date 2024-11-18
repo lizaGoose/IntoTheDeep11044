@@ -37,7 +37,7 @@ public class ClawTestPython extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            double[] target_position = {x, y, z};
+            double[] target_position = {y, x, z};
             double[] target_orientation = {0, 0, 0};
 
            // if(gamepad1.y) x+=1;

@@ -45,7 +45,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     Mat contoursOnPlainImageMat = new Mat();
     public Point nearestPoint;
     public double x,y;
-    public double CmPerPixel, matrixKoeff;
+    public double CmPerPixel = 20, matrixKoeff = -0.2;
 
     /*
      * Threshold values
@@ -309,7 +309,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
 
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(angle)) + " deg",/*Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)),*/"Green", input, color);
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) (rotatedRectFitToContour.center.x * CmPerPixel/640 * matrixKoeff)) + " deg",/*Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)),*/"Green", input, color);
 
 
         // Prepare object points and image points for solvePnP
