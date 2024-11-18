@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
-import org.firstinspires.ftc.teamcode.drive.LocalizerKolhoz;
 
 public class Modules {
     LinearOpMode linearOpMode;

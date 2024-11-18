@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.LocalizerKolhoz;
+import org.firstinspires.ftc.teamcode.drive.MecanumDriveRR;
 
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        LocalizerKolhoz drive = new LocalizerKolhoz(hardwareMap);
+        MecanumDriveRR drive = new MecanumDriveRR(hardwareMap);
 
         Mode mode = Mode.TUNING_MODE;
 

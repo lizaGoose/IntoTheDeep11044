@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.drive.LocalizerKolhoz;
+import org.firstinspires.ftc.teamcode.drive.MecanumDriveRR;
 
 public class DriveTrain {
-    LocalizerKolhoz drive;
+    MecanumDriveRR drive;
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
     public double x,y,heading;
@@ -19,7 +19,7 @@ public class DriveTrain {
     Mode currentMode = Mode.DRIVER_CONTROL;
     public DriveTrain(LinearOpMode linearOpMode){
        this.linearOpMode = linearOpMode;
-       drive = new LocalizerKolhoz(linearOpMode.hardwareMap);
+       drive = new MecanumDriveRR(linearOpMode.hardwareMap);
        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
        gamepad1 = linearOpMode.gamepad1;
     }

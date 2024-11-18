@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.test;
+package org.firstinspires.ftc.teamcode.opmodes.util;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -14,13 +14,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.dashboard.FieldDrawer;
 import org.firstinspires.ftc.teamcode.drive.Drive;
-import org.firstinspires.ftc.teamcode.file.TrajectoryFiles;
+import org.firstinspires.ftc.teamcode.file.FilesystemUtil;
 import org.firstinspires.ftc.teamcode.math.BezierCurve;
-import org.firstinspires.ftc.teamcode.math.BezierCurveLinkedList;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 @Autonomous
 @Config
@@ -33,7 +31,7 @@ public class TrajectoryFollower extends LinearOpMode {
     public static double curvatureDerivLimit = 1;
 
     private Drive drive;
-    private BezierCurveLinkedList curves;
+    private Vector2d[] points;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
@@ -43,13 +41,12 @@ public class TrajectoryFollower extends LinearOpMode {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            BezierCurve[] curvesArray = objectMapper.readValue(TrajectoryFiles.loadFile(AUTONOMOUS_NAME), BezierCurve[].class);
-            curves = new BezierCurveLinkedList(curvesArray);
+            points = objectMapper.readValue(FilesystemUtil.loadFile(AUTONOMOUS_NAME), Vector2d[].class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        Pose2d startPose = new Pose2d(curves.getPoint(0), Math.toRadians(0));
+        Pose2d startPose = new Pose2d(points[0], Math.toRadians(0));
         ArrayList<Pose2d> poseHistory = new ArrayList<>();
         ArrayList<Vector2d> turnHistory = new ArrayList<>();
         poseHistory.add(startPose);
@@ -59,9 +56,16 @@ public class TrajectoryFollower extends LinearOpMode {
         double t = 0;
         int curveIndex = 0;
 
+        BezierCurve curve = new BezierCurve(
+                points[0],
+                points[1],
+                points[2],
+                points[3]
+        );
+
         waitForStart();
 
-        double lastCurvature = curves.get(curveIndex).getCurvatureAt(0);
+        double lastCurvature = curve.getCurvatureAt(t);
 
         ElapsedTime cycle = new ElapsedTime();
 
@@ -74,8 +78,6 @@ public class TrajectoryFollower extends LinearOpMode {
             canvas.drawGrid(0, 0, 144, 144, 7, 7);
 
             drawTrajectory(canvas);
-
-            BezierCurve curve = curves.get(curveIndex);
 
             Pose2d robotPosition = drive.getPoseEstimate();
 
@@ -102,20 +104,23 @@ public class TrajectoryFollower extends LinearOpMode {
             Vector2d pathing_power = normDer.plus(error);
 
             Pose2d result = new Pose2d(pathing_power.plus(perpDer).times(accel), 0);
-            drive.setPowersByPose(result);
+            drive.setPowerByPoseField(result);
 
-            t = curves.get(curveIndex).getClosestTtoPoint(robotPosition.vec());
+            t = curve.getClosestTtoPoint(robotPosition.vec());
             if (Math.abs(t - 1) <= 1e-6) {
                 curveIndex += 1;
-                if (curveIndex == curves.size()) {
+                if (curveIndex == (points.length - 1) / 3) {
                     curveIndex -= 1;
+                } else {
+                    curve = new BezierCurve(
+                            points[curveIndex * 3],
+                            points[curveIndex * 3 + 1],
+                            points[curveIndex * 3 + 2],
+                            points[curveIndex * 3 + 3]
+                    );
                 }
             }
 
-            // FieldDrawer.drawVectorFromPoint(canvas, reference, derivative, 1, "red");
-            // FieldDrawer.drawVectorFromPoint(canvas, reference, normDer.times(10), 2, "orange");
-            // FieldDrawer.drawVectorFromPoint(canvas, reference, secondDerivative, 1, "yellow");
-            // FieldDrawer.drawCircle(canvas, reference.plus(perpDer), perpDer.norm(), 1, "red");
             FieldDrawer.drawPoint(canvas, reference, 1, "blue");
 
             FieldDrawer.drawRobot(canvas, robotPosition);
@@ -146,11 +151,10 @@ public class TrajectoryFollower extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-            BezierCurve curve = curves.get(curveIndex);
             Pose2d robotPosition = drive.getPoseEstimate();
             Vector2d reference = curve.getPointAt(t);
             Vector2d error = reference.minus(robotPosition.vec()).times(kP);
-            drive.setPowersByPose(new Pose2d(error.times(kP), 0));
+            drive.setPowerByPoseField(new Pose2d(error.times(kP), 0));
 
             TelemetryPacket packet = new TelemetryPacket();
             Canvas canvas = packet.fieldOverlay();
@@ -165,10 +169,20 @@ public class TrajectoryFollower extends LinearOpMode {
         }
     }
 
+    // [ 0, 0, 0, 0, 0, 0, 0]
     private void drawTrajectory(Canvas canvas) {
-
-        for (BezierCurve bezierCurve : curves) {
-            FieldDrawer.drawBezierCurve(canvas, bezierCurve, 1, "green");
+        for (int i = 0; i < points.length - 1; i += 3) {
+            FieldDrawer.drawBezierCurve(
+                    canvas,
+                    new BezierCurve(
+                            points[i],
+                            points[i + 1],
+                            points[i + 2],
+                            points[i + 3]
+                    ),
+                    1,
+                    "green"
+            );
         }
         drive.updateLocalizer();
     }

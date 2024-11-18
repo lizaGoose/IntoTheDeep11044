@@ -1,28 +1,43 @@
 package org.firstinspires.ftc.teamcode.Tests;
 
+
+
+import android.content.Context;
+import android.content.res.Configuration;
+import android.view.ViewConfiguration;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.chaquo.python.PyException;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.sun.tools.javac.api.DiagnosticFormatter;
+
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 
 @TeleOp
 public class ClawTest extends LinearOpMode {
     Servo claw;
     Python pyth;
-    PyObject ik;
     PyObject verticalHandAngle, horizontalHandAngle, verticalClawAngle, x, y, z;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
+        if (!Python.isStarted()) {
+            Python.start(new AndroidPlatform(AppUtil.getDefContext()));
+        }
       //  pyth.execfile("Untitled.ipynb");
 
         //right = hardwareMap.get(CRServoImplEx.class, "rightDif");
+        pyth = Python.getInstance();
+        final PyObject ik = pyth.getModule("inverseKinematics");
 
         waitForStart();
 
@@ -38,7 +53,7 @@ public class ClawTest extends LinearOpMode {
             x = pyth.get("x");
             y = pyth.get("y");
             z = pyth.get("z");*/
-            ik = pyth.getModule("Untitled.ipynb");
+
             verticalHandAngle = ik.get("verticalHandAngle");
             horizontalHandAngle = ik.get("horizontalHandAngle");
             verticalClawAngle = ik.get("verticalClawAngle");
