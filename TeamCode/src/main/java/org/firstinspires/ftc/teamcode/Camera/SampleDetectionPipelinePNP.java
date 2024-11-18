@@ -45,6 +45,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     Mat contoursOnPlainImageMat = new Mat();
     public Point nearestPoint;
     public double x,y;
+    public double CmPerPixel, matrixKoeff;
 
     /*
      * Threshold values
@@ -290,7 +291,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // the rectangle to fix that.
         double rotRectAngle = rotatedRectFitToContour.angle;
 
-        double rotRectX = Math.round(rotatedRectFitToContour.center.x/96*2.54);
+        double rotRectX = Math.round(rotatedRectFitToContour.center.x*CmPerPixel/640);
 
 
 
@@ -326,6 +327,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // Get the 2D image points from the detected rectangle corners
         Point[] rectPoints = new Point[4];
         rotatedRectFitToContour.points(rectPoints);
+
 
         // Order the image points in the same order as object points
         Point[] orderedRectPoints = orderPoints(rectPoints);

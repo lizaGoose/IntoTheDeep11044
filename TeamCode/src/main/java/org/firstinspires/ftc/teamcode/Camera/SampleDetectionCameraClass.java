@@ -83,8 +83,8 @@ public class SampleDetectionCameraClass {
             if (Math.round(pip.rotatedRectFitToContour.center.x/96*2.54) == centerCoord){
                 if (pip.CenterStone.isEmpty() == false) {
                     theRect = pip.rotatedRectFitToContour;
-                    x = theRect.center.x / 96 * 2.54;
-                    y = theRect.center.y / 96 * 2.54;
+                    x = theRect.center.x * pip.CmPerPixel/640 * pip.matrixKoeff;
+                    y = theRect.center.y * pip.CmPerPixel/640 * pip.matrixKoeff;
                     Angle = pip.rotatedRectFitToContour.angle;
                 }
                 Ang.add(Angle);
