@@ -80,7 +80,6 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
     ArrayList<AnalyzedStone> internalStoneList = new ArrayList<>();
     volatile ArrayList<AnalyzedStone> clientStoneList = new ArrayList<>();
-   // Set<String> set = Collections.newSetFromMap(new ConcurrentHashMap<>());
     volatile Set<Double> RotateStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     volatile Set<Integer> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());

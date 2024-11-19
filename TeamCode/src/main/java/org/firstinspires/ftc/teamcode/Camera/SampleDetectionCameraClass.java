@@ -53,7 +53,7 @@ public class SampleDetectionCameraClass {
         cam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
         pip = new SampleDetectionPipelinePNP();
-        cam.setPipeline(pip);
+         cam.setPipeline(pip);
 
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
