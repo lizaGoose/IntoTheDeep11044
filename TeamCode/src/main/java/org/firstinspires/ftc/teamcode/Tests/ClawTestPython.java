@@ -20,6 +20,7 @@ import java.util.Objects;
 @TeleOp
 public class ClawTestPython extends LinearOpMode {
     Python pyth;
+    public double x,y,z;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,20 +30,21 @@ public class ClawTestPython extends LinearOpMode {
         }
 
         pyth = Python.getInstance();
-        final PyObject ik = pyth.getModule("ikpy.chain");
-        PyObject mask = pyth.getModule("array").get("array");
-        PyObject arm = Objects.requireNonNull(ik.get("Chain"))
-                .call(
-                        "from_urdf_file",
-                        FilesystemUtil.loadFile("arm.urdf").getAbsolutePath(),
-                        new Kwarg("active_links_mask", (Object) mask)
-                );
+        final PyObject file = pyth.getModule("inverseKinematics");
+
+        PyObject arm = file.callAttr("Arm", FilesystemUtil.loadFile("arm.urdf").getAbsolutePath());
 
         waitForStart();
 
         while (opModeIsActive()) {
-            double[] target_position = {0, 0, 0};
+            double[] target_position = {y, x, z};
             double[] target_orientation = {0, 0, 0};
+
+           // if(gamepad1.y) x+=1;
+            //if(gamepad1.a)x-=1;
+            x+=1;
+            y+=2;
+            z+=5;
 
             List<PyObject> res = arm.callAttr("inverse_kinematics",
                     target_position,

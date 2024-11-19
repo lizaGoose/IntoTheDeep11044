@@ -19,12 +19,12 @@ android {
         ndk {
             abiFilters "arm64-v8a", "x86_64"
         }
-      /*  python{
-            pip{
-                install "ikpy"
-                install "ipywidgets"
-            }
-        }*/
+        /*  python{
+              pip{
+                  install "ikpy"
+                  install "ipywidgets"
+              }
+          }*/
 
 
 
@@ -36,11 +36,15 @@ android {
             pip{
                 install "ikpy"
                 options "--extra-index-url", "https://chaquo.com/pypi-extra/"
-                install "matplotlib"
+               // install "matplotlib"
                 install "numpy==1.21.4"
-                install "ipywidgets"
-                install "urdfpy"
+                //install "urdfpy"
                 install "libpython"
+                install "Cython"
+
+                pyc {
+                    src = false
+                }
             }
         }
         sourceSets {

@@ -83,8 +83,10 @@ public class SampleDetectionCameraClass {
             if (Math.round(pip.rotatedRectFitToContour.center.x/96*2.54) == centerCoord){
                 if (pip.CenterStone.isEmpty() == false) {
                     theRect = pip.rotatedRectFitToContour;
-                    x = theRect.center.x / 96 * 2.54;
-                    y = theRect.center.y / 96 * 2.54;
+                    x = theRect.center.x * pip.CmPerPixel/640 * pip.matrixKoeff;
+                    y = theRect.center.y * pip.CmPerPixel/640 * pip.matrixKoeff;
+                   // x = theRect.center.x;
+                    //y = theRect.center.y;
                     Angle = pip.rotatedRectFitToContour.angle;
                 }
                 Ang.add(Angle);
@@ -129,14 +131,13 @@ public class SampleDetectionCameraClass {
             Angle = 0;
         }
         if (tf == true) {
-            pip.YELLOW_MASK_THRESHOLD = 57;
-            pip.BLUE_MASK_THRESHOLD = 150;
+            pip.YELLOW_MASK_THRESHOLD = 100;
+            pip.BLUE_MASK_THRESHOLD = 57;
             pip.RED_MASK_THRESHOLD = 198;
 
         } else {
-
-            pip.YELLOW_MASK_THRESHOLD = 100;
-            pip.BLUE_MASK_THRESHOLD = 57;
+            pip.YELLOW_MASK_THRESHOLD = 57;
+            pip.BLUE_MASK_THRESHOLD = 150;
             pip.RED_MASK_THRESHOLD = 198;
 
         }
