@@ -2,6 +2,10 @@ package org.firstinspires.ftc.teamcode.Camera;
 
 import android.graphics.Color;
 
+import com.chaquo.python.Kwarg;
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -9,7 +13,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Modules.Diff;
+import org.firstinspires.ftc.teamcode.file.FilesystemUtil;
 import org.opencv.core.RotatedRect;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -25,7 +31,7 @@ public class SampleDetectionCameraClass {
     LinearOpMode linearOpMode;
     HardwareMap hardwareMap;
     double centerCoord;
-    public double Angle, x, y;
+    public double Angle;
     int index;
     String sampleCoordinatesStatus;
     RotatedRect theRect;
@@ -37,6 +43,9 @@ public class SampleDetectionCameraClass {
     public DistanceSensor distanceSensor;
    public Diff diff;
    public int indexAngle;
+    Python pyth;
+    public double x,y,z;
+    public PyObject arm;
 
     public  SampleDetectionCameraClass(LinearOpMode linearOpMode){
         this.linearOpMode = linearOpMode;
@@ -67,54 +76,59 @@ public class SampleDetectionCameraClass {
             }
         });
 
+        if (!Python.isStarted()) {
+            Python.start(new AndroidPlatform(AppUtil.getDefContext()));
+        }
+
+        pyth = Python.getInstance();
+        final PyObject file = pyth.getModule("inverseKinematics");
+
+        arm = file.callAttr("Arm", FilesystemUtil.loadFile("arm.urdf").getAbsolutePath());
+
+
     }
 
     public void visionInUse(){
 
         clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
-        List<Double> Ang = new ArrayList<Double>();
+
 
         if (pip.Center.size() != 0) {
 
 
             centerCoord = Collections.min(pip.Center);
 
-            if (Math.round(pip.rotatedRectFitToContour.center.x/96*2.54) == centerCoord){
+            if (Math.round(pip.rotatedRectFitToContour.center.x * pip.CmPerPixel/640 * pip.matrixKoeff) == centerCoord){
                 if (pip.CenterStone.isEmpty() == false) {
                     theRect = pip.rotatedRectFitToContour;
                     x = theRect.center.x * pip.CmPerPixel/640 * pip.matrixKoeff;
                     y = theRect.center.y * pip.CmPerPixel/640 * pip.matrixKoeff;
-                   // x = theRect.center.x;
-                    //y = theRect.center.y;
+                    z = 0;
                     Angle = pip.rotatedRectFitToContour.angle;
                 }
-                Ang.add(Angle);
-               /* if((Angle == 90) && (Ang.size() != 0)){
-                    Ang.add((double) 0);
-                    indexAngle = Ang.indexOf(Angle);
-                    Angle = Ang.get(indexAngle - 1);
-                }
-                else {
-                    Angle = pip.rotatedRectFitToContour.angle;
-                }*/
             }
 
                 clawError = Math.round(90-Angle);
 
-            extendingError = Math.round(y);
+         /*   extendingError = Math.round(y);
             handError = Math.round(x);
 
 
-            if(extendingError == 0 && handError == 0 && (distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*/){
+            if(extendingError == 0 && handError == 0 && (distanceSensor.getDistance(DistanceUnit.MM) <= 30 )){
                 sample_status = true;
             }
             else {
                 sample_status = false;
-            }
+            }*/
+            double[] target_position = {y, x, z};
+            double[] target_orientation = {0, 0, 0};
 
-
-
+            List<PyObject> res = arm.callAttr("inverse_kinematics",
+                    target_position,
+                    target_orientation,
+                    new Kwarg("orientation_mode", "all")
+            ).asList();
         }
 
 
