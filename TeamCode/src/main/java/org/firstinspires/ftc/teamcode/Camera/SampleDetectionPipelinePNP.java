@@ -290,7 +290,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // the rectangle to fix that.
         double rotRectAngle = rotatedRectFitToContour.angle;
 
-        double rotRectX = Math.round(rotatedRectFitToContour.center.x*CmPerPixel/640);
+        double rotRectX = Math.round(rotatedRectFitToContour.center.x * CmPerPixel/640 * matrixKoeff);
 
 
 

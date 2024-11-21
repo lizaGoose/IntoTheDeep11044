@@ -31,7 +31,7 @@ public class SampleDetectionCameraClass {
     LinearOpMode linearOpMode;
     HardwareMap hardwareMap;
     double centerCoord;
-    public double Angle;
+    public double Angle, x, y;
     int index;
     String sampleCoordinatesStatus;
     RotatedRect theRect;
@@ -43,9 +43,6 @@ public class SampleDetectionCameraClass {
     public DistanceSensor distanceSensor;
    public Diff diff;
    public int indexAngle;
-    Python pyth;
-    public double x,y,z;
-    public PyObject arm;
 
     public  SampleDetectionCameraClass(LinearOpMode linearOpMode){
         this.linearOpMode = linearOpMode;
@@ -62,7 +59,7 @@ public class SampleDetectionCameraClass {
         cam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
         pip = new SampleDetectionPipelinePNP();
-         cam.setPipeline(pip);
+        cam.setPipeline(pip);
 
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -76,23 +73,13 @@ public class SampleDetectionCameraClass {
             }
         });
 
-        if (!Python.isStarted()) {
-            Python.start(new AndroidPlatform(AppUtil.getDefContext()));
-        }
-
-        pyth = Python.getInstance();
-        final PyObject file = pyth.getModule("inverseKinematics");
-
-        arm = file.callAttr("Arm", FilesystemUtil.loadFile("arm.urdf").getAbsolutePath());
-
-
     }
 
     public void visionInUse(){
 
         clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
-
+        List<Double> Ang = new ArrayList<Double>();
 
         if (pip.Center.size() != 0) {
 
@@ -102,33 +89,36 @@ public class SampleDetectionCameraClass {
             if (Math.round(pip.rotatedRectFitToContour.center.x * pip.CmPerPixel/640 * pip.matrixKoeff) == centerCoord){
                 if (pip.CenterStone.isEmpty() == false) {
                     theRect = pip.rotatedRectFitToContour;
-                    x = theRect.center.x * pip.CmPerPixel/640 * pip.matrixKoeff;
+                    x = theRect.center.x  * pip.CmPerPixel/640 * pip.matrixKoeff;
                     y = theRect.center.y * pip.CmPerPixel/640 * pip.matrixKoeff;
-                    z = 0;
                     Angle = pip.rotatedRectFitToContour.angle;
                 }
+                Ang.add(Angle);
+               /* if((Angle == 90) && (Ang.size() != 0)){
+                    Ang.add((double) 0);
+                    indexAngle = Ang.indexOf(Angle);
+                    Angle = Ang.get(indexAngle - 1);
+                }
+                else {
+                    Angle = pip.rotatedRectFitToContour.angle;
+                }*/
             }
 
                 clawError = Math.round(90-Angle);
 
-         /*   extendingError = Math.round(y);
+            extendingError = Math.round(y);
             handError = Math.round(x);
 
 
-            if(extendingError == 0 && handError == 0 && (distanceSensor.getDistance(DistanceUnit.MM) <= 30 )){
+            if(extendingError == 0 && handError == 0 && (distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*/){
                 sample_status = true;
             }
             else {
                 sample_status = false;
-            }*/
-            double[] target_position = {y, x, z};
-            double[] target_orientation = {0, 0, 0};
+            }
 
-            List<PyObject> res = arm.callAttr("inverse_kinematics",
-                    target_position,
-                    target_orientation,
-                    new Kwarg("orientation_mode", "all")
-            ).asList();
+
+
         }
 
 
@@ -145,13 +135,14 @@ public class SampleDetectionCameraClass {
             Angle = 0;
         }
         if (tf == true) {
-            pip.YELLOW_MASK_THRESHOLD = 100;
-            pip.BLUE_MASK_THRESHOLD = 57;
+            pip.YELLOW_MASK_THRESHOLD = 57;
+            pip.BLUE_MASK_THRESHOLD = 150;
             pip.RED_MASK_THRESHOLD = 198;
 
         } else {
-            pip.YELLOW_MASK_THRESHOLD = 57;
-            pip.BLUE_MASK_THRESHOLD = 150;
+
+            pip.YELLOW_MASK_THRESHOLD = 100;
+            pip.BLUE_MASK_THRESHOLD = 57;
             pip.RED_MASK_THRESHOLD = 198;
 
         }
