@@ -80,10 +80,10 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
     ArrayList<AnalyzedStone> internalStoneList = new ArrayList<>();
     volatile ArrayList<AnalyzedStone> clientStoneList = new ArrayList<>();
-    volatile Set<Double> RotateStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
+   public volatile Set<Double> RotateStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     volatile Set<Integer> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    ArrayList<Integer> Center = new ArrayList<>();
+    public ArrayList<Integer> Center = new ArrayList<>();
 
 
 
@@ -152,7 +152,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     public Mat processFrame(Mat input)
     {
 
-
+        Center = new ArrayList<>(CenterStone);
         // We'll be updating this with new data below
         internalStoneList.clear();
         CenterStone.clear();
@@ -164,7 +164,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         findContours(input);
 
         clientStoneList = new ArrayList<>(internalStoneList);
-        Center = new ArrayList<>(CenterStone);
+
 
         /*
          * Decide which buffer to send to the viewport
@@ -290,7 +290,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // the rectangle to fix that.
         double rotRectAngle = rotatedRectFitToContour.angle;
 
-        double rotRectX = Math.round(rotatedRectFitToContour.center.x * CmPerPixel/640 * matrixKoeff);
+        double rotRectX = Math.round(rotatedRectFitToContour.center.x /* CmPerPixel/640 * matrixKoeff*/);
 
 
 
@@ -308,7 +308,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
 
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) (rotatedRectFitToContour.center.x * CmPerPixel/640 * matrixKoeff)) + " deg",/*Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)),*/"Green", input, color);
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) angle) + " deg",/*Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)),*/"Green", input, color);
 
 
         // Prepare object points and image points for solvePnP
@@ -351,10 +351,10 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         {
             // Draw the coordinate axes on the image
             drawAxis(input, rvec, tvec, cameraMatrix, distCoeffs);
-
+            angle = -(rotRectAngle - 180);
             // Store the pose information
             AnalyzedStone analyzedStone = new AnalyzedStone();
-            analyzedStone.angle = rotRectAngle;
+            analyzedStone.angle = angle;
             analyzedStone.color = color;
             analyzedStone.rvec = rvec;
             analyzedStone.tvec = tvec;

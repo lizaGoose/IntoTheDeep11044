@@ -39,7 +39,10 @@ public class ClawCalculation {
         return Arrays.asList(normAngle, normRotation);
     }
 
+    /** @param angle
+     *
+     */
     public static double angleToServoPos(double angle, double range) {
-        return Math.max(Math.min(angle / (range / 2), 1.0), -1.0);
+        return (Math.max(Math.min(angle / (range / 2), 1.0), -1.0) + 1) / 2;
     }
 }

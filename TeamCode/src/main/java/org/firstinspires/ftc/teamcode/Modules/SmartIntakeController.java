@@ -12,6 +12,9 @@ public class SmartIntakeController {
     private final Servo verticalServoLeft, verticalServoRight;
     private final Servo horizontalServo, differentialServoLeft, differentialServoRight;
     private final DcMotorEx extendMotor;
+    private final double clawOpen = 0.6;
+    private final double clawClose = 0.05;
+    // 20 : 16 ratio
 
 
     public SmartIntakeController(HardwareMap hardwareMap) {
@@ -42,7 +45,7 @@ public class SmartIntakeController {
         verticalServoRight.setPosition(-ClawCalculation.angleToServoPos(theta2, 90));
         horizontalServo.setPosition(theta2);
 
-        List<Double> diffAngles = ClawCalculation.angleAndRotToDiff(theta3, 0);
+        List<Double> diffAngles = ClawCalculation.angleAndRotToDiff(theta3, theta4);
 
     }
 }

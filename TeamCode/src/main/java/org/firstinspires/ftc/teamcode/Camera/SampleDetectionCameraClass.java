@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Camera;
 
 import android.graphics.Color;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.chaquo.python.Kwarg;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
@@ -31,24 +32,24 @@ public class SampleDetectionCameraClass {
     LinearOpMode linearOpMode;
     HardwareMap hardwareMap;
     double centerCoord;
-    public double Angle, x, y;
+    public volatile double Angle, x, y;
     int index;
     String sampleCoordinatesStatus;
     RotatedRect theRect;
     boolean tf;
     public double extendingError, handError, clawError;
     public boolean sample_status;
-    SampleDetectionPipelinePNP pip;
+    public SampleDetectionPipelinePNP pip;
     public ColorSensor clawColorSensor;
     public DistanceSensor distanceSensor;
-   public Diff diff;
-   public int indexAngle;
+    //  public Diff diff;
+    public int indexAngle;
 
-    public  SampleDetectionCameraClass(LinearOpMode linearOpMode){
+    public SampleDetectionCameraClass(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         hardwareMap = linearOpMode.hardwareMap;
 
-        diff = new Diff(linearOpMode);
+        //diff = new Diff(linearOpMode);
         clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
         int cameraMonitorViewId = hardwareMap.appContext
@@ -57,6 +58,7 @@ public class SampleDetectionCameraClass {
         cam = OpenCvCameraFactory.getInstance()
                 .createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         cam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        FtcDashboard.getInstance().startCameraStream(cam, 60);
 
         pip = new SampleDetectionPipelinePNP();
         cam.setPipeline(pip);
@@ -75,7 +77,7 @@ public class SampleDetectionCameraClass {
 
     }
 
-    public void visionInUse(){
+    public void visionInUse() {
 
         clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
@@ -86,12 +88,12 @@ public class SampleDetectionCameraClass {
 
             centerCoord = Collections.min(pip.Center);
 
-            if (Math.round(pip.rotatedRectFitToContour.center.x * pip.CmPerPixel/640 * pip.matrixKoeff) == centerCoord){
+            if (Math.round(pip.rotatedRectFitToContour.center.x /* pip.CmPerPixel/640 * pip.matrixKoeff*/) == centerCoord) {
                 if (pip.CenterStone.isEmpty() == false) {
                     theRect = pip.rotatedRectFitToContour;
-                    x = theRect.center.x  * pip.CmPerPixel/640 * pip.matrixKoeff;
-                    y = theRect.center.y * pip.CmPerPixel/640 * pip.matrixKoeff;
-                    Angle = pip.rotatedRectFitToContour.angle;
+                    x = theRect.center.x * pip.CmPerPixel / 640 * pip.matrixKoeff;
+                    y = theRect.center.y * pip.CmPerPixel / 640 * pip.matrixKoeff;
+
                 }
                 Ang.add(Angle);
                /* if((Angle == 90) && (Ang.size() != 0)){
@@ -102,21 +104,20 @@ public class SampleDetectionCameraClass {
                 else {
                     Angle = pip.rotatedRectFitToContour.angle;
                 }*/
+                Angle = theRect.angle;
             }
 
-                clawError = Math.round(90-Angle);
+            clawError = Math.round(90 - Angle);
 
             extendingError = Math.round(y);
             handError = Math.round(x);
 
 
-            if(extendingError == 0 && handError == 0 && (distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*/){
+            if (extendingError == 0 && handError == 0 && ( distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*/) {
                 sample_status = true;
-            }
-            else {
+            } else {
                 sample_status = false;
             }
-
 
 
         }
@@ -151,7 +152,8 @@ public class SampleDetectionCameraClass {
         linearOpMode.telemetry.addData("y", y);
         linearOpMode.telemetry.update();*/
     }
-    public void operatorControl(){
+
+    public void operatorControl() {
         pip.YELLOW_MASK_THRESHOLD = 0;
         pip.BLUE_MASK_THRESHOLD = 0;
         pip.RED_MASK_THRESHOLD = 0;

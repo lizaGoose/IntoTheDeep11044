@@ -20,6 +20,7 @@ public class ServoControllerTest extends LinearOpMode {
         while (opModeIsActive()) {
             servo.setPosition((gamepad1.left_stick_x + 1) / 2);
             telemetry.addData("servo_pos", servo.getPosition());
+            telemetry.update();
         }
     }
 }

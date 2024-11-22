@@ -18,31 +18,32 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 public class Diff {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
-   // SampleDetectionCameraClass cam;
+    //SampleDetectionCameraClass cam;
     Servo right, left;
     AnalogInput leftEncoder, rightEncoder;
+    public double angleDiff, angleDiff1, angleDiff2;
 
-    enum Mode {
+    public enum Mode {
         DRIVER_CONTROL,
-        SET_MAX_POWER,
-        SET_ZERO_POWER,
-      SET_ZERO_POS,
-        SET_MAX_POWER_REVERSE
-
+        GET_UP,
+        GET_DOWN,
+        VISION_IN_USE,
+        VISION_HUYNYA
     }
-    Mode currentMode = Mode.SET_ZERO_POWER;
 
-    public Diff(LinearOpMode linearOpMode){
+    public Mode currentMode = Mode.DRIVER_CONTROL;
+
+    public Diff(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
         left = linearOpMode.hardwareMap.get(Servo.class, "leftDif");
         right = linearOpMode.hardwareMap.get(Servo.class, "rightDif");
-        leftEncoder = linearOpMode.hardwareMap.get(AnalogInput.class, "leftDifEnc");
-        rightEncoder = linearOpMode.hardwareMap.get(AnalogInput.class, "rightDifEnc");
+        left.setDirection(Servo.Direction.REVERSE);
         //cam = new SampleDetectionCameraClass(linearOpMode);
-    }
-    public void teleop(){
 
+    }
+
+    public void teleop(double angle) {
         switch (currentMode) {
             case DRIVER_CONTROL:
               /*  if (gamepad1.dpad_up) {
@@ -57,32 +58,36 @@ public class Diff {
                     right.setPower(0);
                     left.setPower(0);
                 }*/
+                right.setPosition(( gamepad1.left_stick_y + 1 ) / 2 + ( gamepad1.left_stick_x ) / 8);
+                left.setPosition(( gamepad1.left_stick_y + 1 ) / 2 - ( gamepad1.left_stick_x ) / 8);
                 break;
-            case SET_MAX_POWER:
 
-             //   right.setPower(-1);
-               // left.setPower(1);
-
+            case GET_UP:
+                left.setPosition(0.5);
+                right.setPosition(0.5);
                 break;
-            case SET_MAX_POWER_REVERSE:
-
-                //right.setPower(1);
-               // left.setPower(-1);
-
+            case GET_DOWN:
+                left.setPosition(0.4);
+                right.setPosition(0.4);
                 break;
-            case SET_ZERO_POWER:
-               // left.setPower(0);
-                //right.setPower(0);
-                break;
-            case SET_ZERO_POS:
-                if (leftEncoder.getVoltage() !=0){
-                  //  left.setPower(1);
+            case VISION_IN_USE:
+                if (angleDiff1<=90) {
+                    angleDiff = 180 * ( left.getPosition() - 0.5 );
                 }
-                if (rightEncoder.getVoltage()!=0){
-                    //right.setPower(1);
+                else if(angleDiff1 > 90){
+                    angleDiff = 0;
                 }
-                break;
+                angleDiff1 = angleDiff + angle;
 
+                left.setPosition(angleDiff1 / 180 + 0.5);
+                right.setPosition(-angleDiff1 / 180 + 0.5);
+                break;
+            case VISION_HUYNYA:
+                double angleHor = 0.0;
+                double rotation = 45.0;
+                left.setPosition(((angleHor + rotation / 2) / 90 + 1) / 2);
+                right.setPosition(((angleHor - rotation / 2) / 90 + 1) / 2);
+                break;
         }
 
     }
