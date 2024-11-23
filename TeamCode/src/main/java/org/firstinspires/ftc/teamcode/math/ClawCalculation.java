@@ -33,16 +33,19 @@ public class ClawCalculation {
     }
 
     public static List<Double> angleAndRotToDiff(double angle, double rotation) {
-        double normAngle = Math.max(Math.min(angle / 90, 1.0), -1.0);
-        double normRotation = Math.min(rotation / 90, 1.0);
+        double leftDiff = (angle / 90 + 1) / 2 + (rotation / 180 + 1) / 2;
+        double rightDiff = (angle / 90 + 1) / 2 - (rotation / 180 + 1) / 2;
 
-        return Arrays.asList(normAngle, normRotation);
+        return Arrays.asList(leftDiff, rightDiff);
     }
 
-    /** @param angle
-     *
-     */
+    // NOTE: PASS ONLY left.getPosition() as servoPos
+    public static double rotationFromAngle(double angle, double servoPos) {
+        double servoAngle = angleToServoPos(angle, 180);
+        return ((servoPos - servoAngle) * 2 - 1) * 180;
+    }
+
     public static double angleToServoPos(double angle, double range) {
-        return (Math.max(Math.min(angle / (range / 2), 1.0), -1.0) + 1) / 2;
+        return (angle / range / 2 + 1) / 2;
     }
 }
