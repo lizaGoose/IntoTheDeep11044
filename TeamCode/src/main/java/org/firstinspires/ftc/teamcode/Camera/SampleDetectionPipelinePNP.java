@@ -33,7 +33,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     Mat crMat = new Mat();
     Mat cbMat = new Mat();
     public  RotatedRect rotatedRectFitToContour;
-
+    public RotatedRect theRect;
     Mat blueThresholdMat = new Mat();
     Mat redThresholdMat = new Mat();
     Mat yellowThresholdMat = new Mat();
@@ -44,7 +44,8 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
     Mat contoursOnPlainImageMat = new Mat();
     public Point nearestPoint;
-    public double x,y, Angle, Area;
+    public volatile double x,y, Angle, Area;
+
     public double CmPerPixel = 20, matrixKoeff = -0.2;
 
     /*
@@ -69,7 +70,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
     static final int CONTOUR_LINE_THICKNESS = 2;
 
-    static class AnalyzedStone extends Mat {
+    static class AnalyzedStone{
         double angle;
         String color;
         Mat rvec;
@@ -291,20 +292,17 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
         double rotRectX = Math.round(rotatedRectFitToContour.center.x /* CmPerPixel/640 * matrixKoeff*/);
 
-        if (rotatedRectFitToContour.size.width < rotatedRectFitToContour.size.height)
+        /*if (rotatedRectFitToContour.size.width < rotatedRectFitToContour.size.height)
         {
             rotRectAngle += 90;
 
-        }
+        }*/
         nearestPoint = rotatedRectFitToContour.center;
-        x = rotatedRectFitToContour.center.x;
-        y = rotatedRectFitToContour.center.y;
-
 
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
 
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) angle) + " deg",/*Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)),*/"Green", input, color);
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) Angle) + " deg",/*Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)),*/"Green", input, color);
 
 
         // Prepare object points and image points for solvePnP
@@ -347,7 +345,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         {
             // Draw the coordinate axes on the image
             drawAxis(input, rvec, tvec, cameraMatrix, distCoeffs);
-            angle = -(rotRectAngle - 180);
+
             // Store the pose information
             AnalyzedStone analyzedStone = new AnalyzedStone();
             analyzedStone.angle = angle;
@@ -355,24 +353,24 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
             analyzedStone.rvec = rvec;
             analyzedStone.tvec = tvec;
             //analyzedStone.x = rotRectX;
-            if (Math.round(rotatedRectFitToContour.center.x) == Collections.min(Center)){
-                x = rotatedRectFitToContour.center.x * CmPerPixel / 640 * matrixKoeff;
-                y = rotatedRectFitToContour.center.y * CmPerPixel / 640 * matrixKoeff;
-                Angle = rotatedRectFitToContour.angle;
-                Area = Imgproc.contourArea(analyzedStone);
-            }
+
 
             RotateStone.add((double) Math.round(rotRectAngle));
             CenterStone.add((int) rotRectX);
             internalStoneList.add(analyzedStone);
-
-
-
+            if (Center.isEmpty() == false) {
+                if (Math.round(rotatedRectFitToContour.center.x) == Collections.min(Center)) {
+                    x = rotatedRectFitToContour.center.x * CmPerPixel / 640 * matrixKoeff;
+                    y = rotatedRectFitToContour.center.y * CmPerPixel / 640 * matrixKoeff;
+                    Angle = rotatedRectFitToContour.angle;
+                }
+            }
         }
     }
 
     void drawAxis(Mat img, Mat rvec, Mat tvec, Mat cameraMatrix, MatOfDouble distCoeffs)
     {
+
         // Length of the axis lines
         double axisLength = 5.0;
 
@@ -394,6 +392,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         Imgproc.line(img, imgPts[0], imgPts[1], new Scalar(0, 0, 255), 2); // X axis in red
         Imgproc.line(img, imgPts[0], imgPts[2], new Scalar(0, 255, 0), 2); // Y axis in green
         Imgproc.line(img, imgPts[0], imgPts[3], new Scalar(255, 0, 0), 2); // Z axis in blue
+
     }
 
     static Point[] orderPoints(Point[] pts)

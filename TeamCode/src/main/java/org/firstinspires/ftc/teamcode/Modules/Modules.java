@@ -7,12 +7,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
+import org.firstinspires.ftc.teamcode.Camera.SampleDetectionPipeline;
 import org.firstinspires.ftc.teamcode.Camera.SampleDetectionPipelinePNP;
+import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
 public class Modules {
     LinearOpMode linearOpMode;
-
-    SampleDetectionPipelinePNP pip;
+    SampleDetectionCameraClass cam;
+    SampleDetectionPipeline pip;
     Claw claw;
     Diff diff;
     //Extend extend;
@@ -28,19 +30,19 @@ public class Modules {
     Mode modules = Mode.OPERATOR_CONTROL;
     public Modules(LinearOpMode linearOpMode){
         this.linearOpMode = linearOpMode;
-
+        cam = new SampleDetectionCameraClass(linearOpMode);
         claw = new Claw(linearOpMode);
         diff = new Diff(linearOpMode);
         //extend = new Extend(linearOpMode);
         hand = new Hand(linearOpMode);
         perkid = new Perkid(linearOpMode);
-        pip = new SampleDetectionPipelinePNP();
+        pip = new SampleDetectionPipeline();
 
         gamepad1 = linearOpMode.gamepad1;
     }
     public void teleop(){
         claw.teleop();
-        diff.teleop(pip.Angle);
+        diff.teleop(Math.round(cam.Angle));
         //extend.teleop();
         hand.teleop();
         perkid.teleop();
@@ -60,12 +62,12 @@ public class Modules {
       switch (modules){
 
             case VISION_CONTROL:
-              //  cam.visionInUse();
+                cam.visionInUse();
 
 
 
                 if (gamepad1.dpad_left){
-                    diff.currentMode = Diff.Mode.VISION_HUYNYA;
+                    diff.currentMode = Diff.Mode.VISION_IN_USE;
                 }
                 /*if(cam.sample_status == true){
                     claw.currentMode = Claw.Mode.PICK;
@@ -86,7 +88,8 @@ public class Modules {
                 break;
 
             case OPERATOR_CONTROL:
-           //     cam.operatorControl();
+                cam.operatorControl();
+                diff.currentMode = Diff.Mode.DRIVER_CONTROL;
               /*  cam.sample_status =  true;
                if (gamepad1.y){
                    claw.currentMode = Claw.Mode.PICK;
@@ -131,12 +134,13 @@ public class Modules {
               // }
                 break;
         }
-      linearOpMode.telemetry.addData("sampleStatus", diff.right.getPosition());
+      linearOpMode.telemetry.addData("sampleStatus", ClawCalculation.angleAndRotToDiff(0,Math.round(cam.Angle)).get(0));
         linearOpMode.telemetry.addData("sampleStatus", diff.left.getPosition());
-        linearOpMode.telemetry.addData("angle", pip.Angle);
-        linearOpMode.telemetry.addData("x", pip.x);
-        linearOpMode.telemetry.addData("y", pip.y);
-        linearOpMode.telemetry.addData("area", pip.Area);
+        linearOpMode.telemetry.addData("angle", cam.Angle);
+        linearOpMode.telemetry.addData("angle", cam.Area);
+        //linearOpMode.telemetry.addData("x", pip.x);
+       // linearOpMode.telemetry.addData("y", pip.y);
+        //linearOpMode.telemetry.addData("area", pip.Area);
 
         /* linearOpMode.telemetry.addData("x", cam.x);
         linearOpMode.telemetry.addData("y", cam.y);

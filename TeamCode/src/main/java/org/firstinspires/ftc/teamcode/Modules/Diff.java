@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
 import org.firstinspires.ftc.teamcode.drive.MecanumDriveRR;
+import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public class Diff {
@@ -21,7 +22,8 @@ public class Diff {
     //SampleDetectionCameraClass cam;
     Servo right, left;
     AnalogInput leftEncoder, rightEncoder;
-    public double angleDiff, angleDiff1, angleDiff2;
+    public double angleDiffLeft = 0.5, angleDiffRight = 0.5;
+    ClawCalculation calc;
 
     public enum Mode {
         DRIVER_CONTROL,
@@ -39,11 +41,13 @@ public class Diff {
         left = linearOpMode.hardwareMap.get(Servo.class, "leftDif");
         right = linearOpMode.hardwareMap.get(Servo.class, "rightDif");
         left.setDirection(Servo.Direction.REVERSE);
-        //cam = new SampleDetectionCameraClass(linearOpMode);
+        calc = new ClawCalculation();
+       // cam = new SampleDetectionCameraClass(linearOpMode);
 
     }
 
-    public void teleop(double angle) {
+    public void teleop(double cameraAngle) {
+
         switch (currentMode) {
             case DRIVER_CONTROL:
               /*  if (gamepad1.dpad_up) {
@@ -71,7 +75,13 @@ public class Diff {
                 right.setPosition(0.4);
                 break;
             case VISION_IN_USE:
-                if (angleDiff1<=90) {
+                if (gamepad1.dpad_right) {
+                    angleDiffLeft = ClawCalculation.angleAndRotToDiff(0, cameraAngle).get(0);
+                    angleDiffRight = ClawCalculation.angleAndRotToDiff(0, cameraAngle).get(1);
+                }
+                left.setPosition(angleDiffLeft);
+                right.setPosition(angleDiffRight);
+              /*  if (angleDiff1<=90) {
                     angleDiff = 180 * ( left.getPosition() - 0.5 );
                 }
                 else if(angleDiff1 > 90){
@@ -80,7 +90,7 @@ public class Diff {
                 angleDiff1 = angleDiff + angle;
 
                 left.setPosition(angleDiff1 / 180 + 0.5);
-                right.setPosition(-angleDiff1 / 180 + 0.5);
+                right.setPosition(-angleDiff1 / 180 + 0.5);*/
                 break;
             case VISION_HUYNYA:
                 double angleHor = 0.0;

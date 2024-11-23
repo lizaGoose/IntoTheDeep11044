@@ -32,14 +32,14 @@ public class SampleDetectionCameraClass {
     LinearOpMode linearOpMode;
     HardwareMap hardwareMap;
     double centerCoord;
-    public volatile double Angle, x, y;
+    public volatile double Angle, x, y, Area;
     int index;
     String sampleCoordinatesStatus;
     RotatedRect theRect;
     boolean tf;
     public double extendingError, handError, clawError;
     public boolean sample_status;
-    public SampleDetectionPipelinePNP pip;
+    public SampleDetectionPipeline pip;
     public ColorSensor clawColorSensor;
     public DistanceSensor distanceSensor;
     //  public Diff diff;
@@ -60,7 +60,7 @@ public class SampleDetectionCameraClass {
         cam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         FtcDashboard.getInstance().startCameraStream(cam, 60);
 
-        pip = new SampleDetectionPipelinePNP();
+        pip = new SampleDetectionPipeline();
         cam.setPipeline(pip);
 
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -83,12 +83,12 @@ public class SampleDetectionCameraClass {
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
         List<Double> Ang = new ArrayList<Double>();
 
-        if (pip.Center.size() != 0) {
+       /* if (pip.Center.size() != 0) {
 
 
             centerCoord = Collections.min(pip.Center);
 
-            if (Math.round(pip.rotatedRectFitToContour.center.x) == centerCoord) {
+           /* if (Math.round(pip.rotatedRectFitToContour.center.x) == centerCoord) {
                 if (pip.CenterStone.isEmpty() == false) {
                     theRect = pip.rotatedRectFitToContour;
                     x = theRect.center.x * pip.CmPerPixel / 640 * pip.matrixKoeff;
@@ -104,8 +104,11 @@ public class SampleDetectionCameraClass {
                 else {
                     Angle = pip.rotatedRectFitToContour.angle;
                 }*/
-                Angle = theRect.angle;
-            }
+              /*  Angle = theRect.angle;
+            }*/ Area = pip.Area;
+
+            Angle = pip.Angle;
+
 
             clawError = Math.round(90 - Angle);
 
@@ -120,7 +123,7 @@ public class SampleDetectionCameraClass {
             }
 
 
-        }
+       // }
 
 
         if (linearOpMode.gamepad1.dpad_up) {

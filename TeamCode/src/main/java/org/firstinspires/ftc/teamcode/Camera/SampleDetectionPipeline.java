@@ -13,6 +13,9 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class
 
@@ -22,6 +25,7 @@ SampleDetectionPipeline extends OpenCvPipeline
     /*
      * Working image buffers
      */
+    public RotatedRect rotatedRectFitToContour;
     Mat ycrcbMat = new Mat();
     Mat crMat = new Mat();
     Mat cbMat = new Mat();
@@ -35,13 +39,16 @@ SampleDetectionPipeline extends OpenCvPipeline
     Mat morphedYellowThreshold = new Mat();
 
     Mat contoursOnPlainImageMat = new Mat();
+    public  double x,y, Angle, Area;
+
+    public double CmPerPixel = 20, matrixKoeff = -0.2;
 
     /*
      * Threshold values
      */
-    static final int YELLOW_MASK_THRESHOLD = 150;
-    static final int BLUE_MASK_THRESHOLD = 198;
-    static final int RED_MASK_THRESHOLD = 57;
+    public int YELLOW_MASK_THRESHOLD = 100;
+    public int BLUE_MASK_THRESHOLD = 57;
+    public int RED_MASK_THRESHOLD = 198;
 
     /*
      * Elements for noise reduction
@@ -63,10 +70,12 @@ SampleDetectionPipeline extends OpenCvPipeline
         double angle;
         String color;
     }
-
     ArrayList<AnalyzedStone> internalStoneList = new ArrayList<>();
     volatile ArrayList<AnalyzedStone> clientStoneList = new ArrayList<>();
-    volatile ArrayList<Double> RotateStone = new ArrayList<Double>();
+    public volatile Set<Double> RotateStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+    volatile Set<Integer> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    public ArrayList<Integer> Center = new ArrayList<>();
 
     /*
      * Viewport stages
@@ -100,7 +109,11 @@ SampleDetectionPipeline extends OpenCvPipeline
     @Override
     public Mat processFrame(Mat input)
     {
+        Center = new ArrayList<>(CenterStone);
+        // We'll be updating this with new data below
         internalStoneList.clear();
+        CenterStone.clear();
+        //RotateStone.clear();
 
         /*
          * Run the image processing
@@ -225,7 +238,9 @@ SampleDetectionPipeline extends OpenCvPipeline
         MatOfPoint2f contour2f = new MatOfPoint2f(points);
 
         // Fit a rotated rectangle to the contour and draw it
-        RotatedRect rotatedRectFitToContour = Imgproc.minAreaRect(contour2f);
+        if (Imgproc.contourArea(contour2f) >= 20000) {
+            rotatedRectFitToContour = Imgproc.minAreaRect(contour2f);
+        }
         drawRotatedRect(rotatedRectFitToContour, input, color);
         drawRotatedRect(rotatedRectFitToContour, contoursOnPlainImageMat, color);
 
@@ -235,7 +250,7 @@ SampleDetectionPipeline extends OpenCvPipeline
         {
             rotRectAngle += 90;
         }
-
+        double rotRectX = Math.round(rotatedRectFitToContour.center.x /* CmPerPixel/640 * matrixKoeff*/);
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
 
@@ -243,10 +258,26 @@ SampleDetectionPipeline extends OpenCvPipeline
        // drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(x)) + " from center", input, color);
         // Store the detected stone information
         AnalyzedStone analyzedStone = new AnalyzedStone();
-        analyzedStone.angle = rotRectAngle;
+        analyzedStone.angle = angle;
         analyzedStone.color = color;
+        RotateStone.add((double) Math.round(rotRectAngle));
+        CenterStone.add((int) rotRectX);
         internalStoneList.add(analyzedStone);
-        RotateStone.add(rotRectAngle);
+        if (Center.isEmpty() == false) {
+            if (Imgproc.contourArea(contour2f) >= 20000) {
+                if (Math.round(rotatedRectFitToContour.center.x) == Collections.min(Center)) {
+                    x = rotatedRectFitToContour.center.x * CmPerPixel / 640 * matrixKoeff;
+                    y = rotatedRectFitToContour.center.y * CmPerPixel / 640 * matrixKoeff;
+                }
+                if (analyzedStone.angle <= 90) {
+                    Angle = analyzedStone.angle;
+                }
+                else{
+                    Angle = analyzedStone.angle - 180;
+                }
+                Area = Imgproc.contourArea(contour2f);
+            }
+        }
     }
 
     static void drawTagText(RotatedRect rect, String text, Mat mat, String color)

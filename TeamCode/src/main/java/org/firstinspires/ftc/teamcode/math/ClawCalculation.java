@@ -33,8 +33,8 @@ public class ClawCalculation {
     }
 
     public static List<Double> angleAndRotToDiff(double angle, double rotation) {
-        double leftDiff = (angle / 90 + 1) / 2 + (rotation / 180 + 1) / 2;
-        double rightDiff = (angle / 90 + 1) / 2 - (rotation / 180 + 1) / 2;
+        double leftDiff = (angle / 90) / 2 + (rotation / 180) / 2 + 0.5;
+        double rightDiff = (angle / 90) / 2 - (rotation / 180) / 2 + 0.5;
 
         return Arrays.asList(leftDiff, rightDiff);
     }
