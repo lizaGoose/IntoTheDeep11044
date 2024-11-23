@@ -44,7 +44,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
     Mat contoursOnPlainImageMat = new Mat();
     public Point nearestPoint;
-    public double x,y;
+    public double x,y, Angle, Area;
     public double CmPerPixel = 20, matrixKoeff = -0.2;
 
     /*
@@ -69,8 +69,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
     static final int CONTOUR_LINE_THICKNESS = 2;
 
-    static class AnalyzedStone
-    {
+    static class AnalyzedStone extends Mat {
         double angle;
         String color;
         Mat rvec;
@@ -292,9 +291,6 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
 
         double rotRectX = Math.round(rotatedRectFitToContour.center.x /* CmPerPixel/640 * matrixKoeff*/);
 
-
-
-
         if (rotatedRectFitToContour.size.width < rotatedRectFitToContour.size.height)
         {
             rotRectAngle += 90;
@@ -359,7 +355,12 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
             analyzedStone.rvec = rvec;
             analyzedStone.tvec = tvec;
             //analyzedStone.x = rotRectX;
-
+            if (Math.round(rotatedRectFitToContour.center.x) == Collections.min(Center)){
+                x = rotatedRectFitToContour.center.x * CmPerPixel / 640 * matrixKoeff;
+                y = rotatedRectFitToContour.center.y * CmPerPixel / 640 * matrixKoeff;
+                Angle = rotatedRectFitToContour.angle;
+                Area = Imgproc.contourArea(analyzedStone);
+            }
 
             RotateStone.add((double) Math.round(rotRectAngle));
             CenterStone.add((int) rotRectX);

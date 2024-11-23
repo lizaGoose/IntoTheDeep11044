@@ -88,7 +88,7 @@ public class SampleDetectionCameraClass {
 
             centerCoord = Collections.min(pip.Center);
 
-            if (Math.round(pip.rotatedRectFitToContour.center.x /* pip.CmPerPixel/640 * pip.matrixKoeff*/) == centerCoord) {
+            if (Math.round(pip.rotatedRectFitToContour.center.x) == centerCoord) {
                 if (pip.CenterStone.isEmpty() == false) {
                     theRect = pip.rotatedRectFitToContour;
                     x = theRect.center.x * pip.CmPerPixel / 640 * pip.matrixKoeff;
