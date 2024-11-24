@@ -24,6 +24,8 @@ public class Diff {
     AnalogInput leftEncoder, rightEncoder;
     public double angleDiffLeft = 0.5, angleDiffRight = 0.5;
     ClawCalculation calc;
+    double rotation;
+    public boolean buttonState;
 
     public enum Mode {
         DRIVER_CONTROL,
@@ -75,12 +77,30 @@ public class Diff {
                 right.setPosition(0.4);
                 break;
             case VISION_IN_USE:
+
                 if (gamepad1.dpad_right) {
-                    angleDiffLeft = ClawCalculation.angleAndRotToDiff(0, cameraAngle).get(0);
-                    angleDiffRight = ClawCalculation.angleAndRotToDiff(0, cameraAngle).get(1);
+                    boolean buttonState2 = gamepad1.dpad_right;
+                    if (buttonState2 != buttonState) {
+                        angleDiffLeft = left.getPosition() + ClawCalculation.angleAndRotToDiff(0, cameraAngle).get(0)/*ClawCalculation.angleToServoPos(left.getPosition(), 180)*/;
+                        angleDiffRight = right.getPosition() + ClawCalculation.angleAndRotToDiff(0, cameraAngle).get(1);
+                        /*- ClawCalculation.angleToServoPos(right.getPosition(), 180)*/
+                        ;
+                   /*  angleDiffLeft = ClawCalculation.angleAndRotToDiff(0, ClawCalculation.rotationFromAngle(cameraAngle, left.getPosition())).get(0);
+                    angleDiffRight = ClawCalculation.angleAndRotToDiff(0, ClawCalculation.rotationFromAngle(cameraAngle, right.getPosition())).get(1);*/
+                    }
                 }
+           /*   if(gamepad1.dpad_left) {
+                    angleDiffLeft =  left.getPosition() + ClawCalculation.angleAndRotToDiff(0, 45).get(0) /*ClawCalculation.angleToServoPos(left.getPosition(), 180)*/;
+                   // angleDiffRight = right.getPosition() + ClawCalculation.angleAndRotToDiff(0, 45).get(1);
+                   /*- ClawCalculation.angleToServoPos(right.getPosition(), 180)*/;
+             //   }
+              buttonState = gamepad1.dpad_right;
                 left.setPosition(angleDiffLeft);
                 right.setPosition(angleDiffRight);
+                if (gamepad1.dpad_left){
+                    angleDiffLeft = 0.5;
+                    angleDiffRight = 0.5;
+                }
               /*  if (angleDiff1<=90) {
                     angleDiff = 180 * ( left.getPosition() - 0.5 );
                 }
@@ -94,7 +114,12 @@ public class Diff {
                 break;
             case VISION_HUYNYA:
                 double angleHor = 0.0;
-                double rotation = 45.0;
+                if (gamepad1.dpad_right) {
+                   rotation = 90.0;
+                }
+                else{
+                    rotation = 45.00;
+                }
                 left.setPosition(((angleHor + rotation / 2) / 90 + 1) / 2);
                 right.setPosition(((angleHor - rotation / 2) / 90 + 1) / 2);
                 break;

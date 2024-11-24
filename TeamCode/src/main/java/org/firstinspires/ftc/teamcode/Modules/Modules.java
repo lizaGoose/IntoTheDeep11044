@@ -134,8 +134,10 @@ public class Modules {
               // }
                 break;
         }
-      linearOpMode.telemetry.addData("sampleStatus", ClawCalculation.angleAndRotToDiff(0,Math.round(cam.Angle)).get(0));
-        linearOpMode.telemetry.addData("sampleStatus", diff.left.getPosition());
+      linearOpMode.telemetry.addData("sampleStatus", ClawCalculation.angleToServoPos(diff.left.getPosition(), 90));
+        linearOpMode.telemetry.addData("sampleStatus", ClawCalculation.angleToServoPos(diff.right.getPosition(), 90));
+        linearOpMode.telemetry.addData("sampleStatus",diff.left.getPosition());
+        linearOpMode.telemetry.addData("sampleStatus", diff.right.getPosition());
         linearOpMode.telemetry.addData("angle", cam.Angle);
         linearOpMode.telemetry.addData("angle", cam.Area);
         //linearOpMode.telemetry.addData("x", pip.x);
