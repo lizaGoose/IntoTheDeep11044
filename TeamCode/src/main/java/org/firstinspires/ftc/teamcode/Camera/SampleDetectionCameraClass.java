@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Modules.Diff;
 import org.firstinspires.ftc.teamcode.file.FilesystemUtil;
+import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 import org.opencv.core.RotatedRect;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -32,15 +33,16 @@ public class SampleDetectionCameraClass {
     LinearOpMode linearOpMode;
     HardwareMap hardwareMap;
     double centerCoord;
-    public volatile double Angle, x, y, Area;
+    public volatile double Angle, x, y, Area, xActual, yActual;
     int index;
     String sampleCoordinatesStatus;
     RotatedRect theRect;
+    public double distance;
     boolean tf;
     public double extendingError, handError, clawError;
     public boolean sample_status;
     public SampleDetectionPipeline pip;
-    public ColorSensor clawColorSensor;
+  //  public ColorSensor clawColorSensor;
     public DistanceSensor distanceSensor;
     //  public Diff diff;
     public int indexAngle;
@@ -50,8 +52,8 @@ public class SampleDetectionCameraClass {
         hardwareMap = linearOpMode.hardwareMap;
 
         //diff = new Diff(linearOpMode);
-        clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
+       /* clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");*/
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources().getIdentifier("cameraMonitorViewId",
                         "id", hardwareMap.appContext.getPackageName());
@@ -79,9 +81,10 @@ public class SampleDetectionCameraClass {
 
     public void visionInUse() {
 
-        clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
+        //clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
         List<Double> Ang = new ArrayList<Double>();
+        distance = distanceSensor.getDistance(DistanceUnit.INCH);
 
        /* if (pip.Center.size() != 0) {
 
@@ -109,9 +112,11 @@ public class SampleDetectionCameraClass {
 
             Angle = pip.Angle;
 
-
+            x = pip.xSample;
+            y = pip.ySample;
             clawError = Math.round(90 - Angle);
-
+            xActual = ClawCalculation.camToRealWorldCoordinates(180, 3.5, 1.7, x, y, pip.InchPerPixel).get(0);
+        yActual = ClawCalculation.camToRealWorldCoordinates(180, 3.5, 1.7, x, y, pip.InchPerPixel).get(1);
             extendingError = Math.round(y);
             handError = Math.round(x);
 
