@@ -62,19 +62,19 @@ public class ClawCalculation {
                 {0, Math.sin(rotAngle), Math.cos(rotAngle)}
         };
 
-        // Define the displacement vector from frame 0 to frame c
+
         double[][] dispVec0C = {
                 {xMov},
-                {yMov}, // This was originally 23.0 but I modified it for accuracy
+                {yMov},
                 {0.0}
         };
 
-        // Row vector for bottom of homogeneous transformation matrix
+
         double[][] extraRowHomgen = {
                 {0, 0, 0, 1}
         };
 
-        // Create the homogeneous transformation matrix from frame 0 to frame c
+
         double[][] homgen0C = new double[3][4];
         for (int i = 0; i < 3; i++) {
             System.arraycopy(rotMat0C[i], 0, homgen0C[i], 0, 3);
@@ -87,14 +87,10 @@ public class ClawCalculation {
         }
         System.arraycopy(extraRowHomgen[0], 0, finalHomgen0C[3], 0, 4);
 
-      //  double x2 = 0; // Replace with actual value
-      //  double y2 = 0; // Replace with actual value
-        //double CM_TO_PIXEL = 1; // Replace with actual conversion factor
 
         double x2Cm = xActual * pixelsPerInch;
         double y2Cm = yActual * pixelsPerInch;
 
-        // Coordinates of the object in the camera reference frame
         double[][] camRefCoord = {
                 {x2Cm},
                 {y2Cm},
@@ -102,7 +98,7 @@ public class ClawCalculation {
                 {1}
         };
 
-        // Coordinates of the object in base reference frame
+
         double[][] coordBaseFrame = new double[4][1];
         for (int i = 0; i < 4; i++) {
             coordBaseFrame[i][0] = finalHomgen0C[i][0] * camRefCoord[0][0] +
