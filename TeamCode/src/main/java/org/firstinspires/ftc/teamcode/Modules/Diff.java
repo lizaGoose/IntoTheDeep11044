@@ -51,7 +51,7 @@ public double rotation;
         VISION_MORE_THAN_HUYNYA
     }
 
-    public Mode currentMode = Mode.DRIVER_CONTROL;
+    public Mode currentMode = Mode.GET_DOWN;
 
     public Diff(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
@@ -89,8 +89,8 @@ public double rotation;
                 right.setPosition(0.5);
                 break;
             case GET_DOWN:
-                left.setPosition(0.4);
-                right.setPosition(0.4);
+                left.setPosition(0);
+                right.setPosition(0);
                 break;
             case VISION_IN_USE:
 

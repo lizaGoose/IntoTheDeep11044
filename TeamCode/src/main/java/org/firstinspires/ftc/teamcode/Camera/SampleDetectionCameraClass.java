@@ -115,8 +115,8 @@ public class SampleDetectionCameraClass {
             x = pip.xSample;
             y = pip.ySample;
             clawError = Math.round(90 - Angle);
-            xActual = ClawCalculation.camToRealWorldCoordinates(180, 3.5, 1.7, x, y, pip.InchPerPixel).get(0);
-        yActual = ClawCalculation.camToRealWorldCoordinates(180, 3.5, 1.7, x, y, pip.InchPerPixel).get(1);
+            xActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(0);
+        yActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(1);
             extendingError = Math.round(y);
             handError = Math.round(x);
 

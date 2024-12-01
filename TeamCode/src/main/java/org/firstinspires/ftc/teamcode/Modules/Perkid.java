@@ -19,20 +19,24 @@ public class Perkid {
         SCORE_POSITION,
         PICK_POSITION
     }
+
     Mode currentMode = Mode.CLOSE_POSITION;
 
-    public Perkid(LinearOpMode linearOpMode){
+    public Perkid(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
         left = linearOpMode.hardwareMap.get(Servo.class, "leftPerkid");
         right = linearOpMode.hardwareMap.get(Servo.class, "rightPerkid");
+        //left.setDirection(Servo.Direction.REVERSE);
+        //  right.setDirection(Servo.Direction.REVERSE);
         cam = new CameraTest();
     }
-    public void teleop(){
+
+    public void teleop() {
         switch (currentMode) {
             case CLOSE_POSITION:
-                left.setPosition(1);
-                right.setPosition(0);
+                left.setPosition(0.45);
+                right.setPosition(0.55);
                 break;
             case SCORE_POSITION:
                 left.setPosition(0);

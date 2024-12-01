@@ -42,7 +42,7 @@ SampleDetectionPipeline extends OpenCvPipeline {
     Mat contoursOnPlainImageMat = new Mat();
     public double xSample, ySample, Angle, Area, lastAngle;
 
-    public double InchPerPixel = 4.2, matrixKoeff = -0.2;
+    public double InchPerPixel = 10.4, matrixKoeff = -0.2;
 
     /*
      * Threshold values
@@ -258,7 +258,7 @@ SampleDetectionPipeline extends OpenCvPipeline {
            }*/
         }
 
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(y)) + " deg", input, color);
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) -Math.round(angle - 90)) + " deg", input, color);
         // drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(x)) + " from center", input, color);
         // Store the detected stone information
         AnalyzedStone analyzedStone = new AnalyzedStone();
@@ -277,8 +277,8 @@ SampleDetectionPipeline extends OpenCvPipeline {
                 }
                 //Я вот это чуть чуть поменял
                 //кросава
-                xSample = analyzedStone.xS/20* InchPerPixel / 640 /* matrixKoeff*/;
-                ySample = analyzedStone.yS/20* InchPerPixel / 640 /* matrixKoeff*/;
+                xSample = analyzedStone.xS/*(InchPerPixel / 640 )/* matrixKoeff*/;
+                ySample = analyzedStone.yS/*(InchPerPixel / 640 )/* matrixKoeff*/;
                 Angle = -(analyzedStone.angle - 90);
                 /*
                 if (analyzedStone.angle <= 90) {

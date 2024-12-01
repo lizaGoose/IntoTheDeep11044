@@ -63,7 +63,8 @@ public class Modules {
 
             case VISION_CONTROL:
                 cam.visionInUse();
-
+             //   perkid.currentMode = Perkid.Mode.SCORE_POSITION;
+               // diff.currentMode = Diff.Mode.GET_DOWN;
                 if (gamepad1.dpad_left){
                     diff.currentMode = Diff.Mode.VISION_HUYNYA;
                 }
@@ -88,7 +89,7 @@ public class Modules {
             case OPERATOR_CONTROL:
                 cam.operatorControl();
 
-                    diff.currentMode = Diff.Mode.VISION_HUYNYA;
+                   // diff.currentMode = Diff.Mode.VISION_HUYNYA;
 
               /*  cam.sample_status =  true;
                if (gamepad1.y){
