@@ -63,11 +63,10 @@ public class Modules {
 
             case VISION_CONTROL:
                 cam.visionInUse();
-
-
-
+             //   perkid.currentMode = Perkid.Mode.SCORE_POSITION;
+               // diff.currentMode = Diff.Mode.GET_DOWN;
                 if (gamepad1.dpad_left){
-                    diff.currentMode = Diff.Mode.VISION_IN_USE;
+                    diff.currentMode = Diff.Mode.VISION_HUYNYA;
                 }
                 /*if(cam.sample_status == true){
                     claw.currentMode = Claw.Mode.PICK;
@@ -89,7 +88,9 @@ public class Modules {
 
             case OPERATOR_CONTROL:
                 cam.operatorControl();
-                diff.currentMode = Diff.Mode.DRIVER_CONTROL;
+
+                   // diff.currentMode = Diff.Mode.VISION_HUYNYA;
+
               /*  cam.sample_status =  true;
                if (gamepad1.y){
                    claw.currentMode = Claw.Mode.PICK;
@@ -134,12 +135,19 @@ public class Modules {
               // }
                 break;
         }
-      linearOpMode.telemetry.addData("sampleStatus", ClawCalculation.angleToServoPos(diff.left.getPosition(), 90));
-        linearOpMode.telemetry.addData("sampleStatus", ClawCalculation.angleToServoPos(diff.right.getPosition(), 90));
+        linearOpMode.telemetry.addData("xActual", cam.xActual);
+        linearOpMode.telemetry.addData("yActual", cam.yActual);
+        linearOpMode.telemetry.addData("x", cam.x);
+        linearOpMode.telemetry.addData("y", cam.y);
+        linearOpMode.telemetry.addData("Distance", cam.distance);
+
+
         linearOpMode.telemetry.addData("sampleStatus",diff.left.getPosition());
         linearOpMode.telemetry.addData("sampleStatus", diff.right.getPosition());
-        linearOpMode.telemetry.addData("angle", cam.Angle);
-        linearOpMode.telemetry.addData("angle", cam.Area);
+        linearOpMode.telemetry.addData("cam_angle", cam.Angle);
+        linearOpMode.telemetry.addData("cam_area", cam.Area);
+        linearOpMode.telemetry.addData("rotation_from_calculation", ClawCalculation.rotationFromAngle(Diff.angle_config, diff.left.getPosition()));
+        linearOpMode.telemetry.addData("targeting_angle", ClawCalculation.rotationFromAngle(Diff.angle_config, diff.left.getPosition()) + cam.Angle);
         //linearOpMode.telemetry.addData("x", pip.x);
        // linearOpMode.telemetry.addData("y", pip.y);
         //linearOpMode.telemetry.addData("area", pip.Area);

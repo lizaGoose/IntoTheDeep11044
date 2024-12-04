@@ -302,7 +302,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
         // Compute the angle and store it
         double angle = -(rotRectAngle - 180);
 
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Angle) + " deg",/*Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)),*/"Green", input, color);
+        drawTagText(rotatedRectFitToContour, Integer.toString((int) -(Angle - 90)) + " deg",/*Integer.toString((int) Math.round(rotatedRectFitToContour.center.x/96*2.54)),*/"Green", input, color);
 
 
         // Prepare object points and image points for solvePnP
