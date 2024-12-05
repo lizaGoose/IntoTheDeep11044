@@ -1,22 +1,12 @@
 package org.firstinspires.ftc.teamcode.Camera;
 
-import android.graphics.Color;
-
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.chaquo.python.Kwarg;
-import com.chaquo.python.PyObject;
-import com.chaquo.python.Python;
-import com.chaquo.python.android.AndroidPlatform;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.Modules.Diff;
-import org.firstinspires.ftc.teamcode.file.FilesystemUtil;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 import org.opencv.core.RotatedRect;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -25,7 +15,6 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class SampleDetectionCameraClass {
