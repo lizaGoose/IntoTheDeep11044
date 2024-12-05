@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import org.firstinspires.ftc.teamcode.Modules.Diff;
 
 @Config
-@TeleOp
+@TeleOp(group = "test")
 public class ServoSetToZero extends LinearOpMode {
     public static String servoConfig = "";
     public static double pos = 0.5;

@@ -4,7 +4,7 @@ import com.ftc9929.corelib.control.NinjaGamePad;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp
+@TeleOp(group = "test")
 public class NinjaOpMode extends LinearOpMode {
     private NinjaGamePad gamePad1;
     private NinjaGamePad gamePad2;

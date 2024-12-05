@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@TeleOp
+@TeleOp(group = "test")
 public class ServoControllerTest extends LinearOpMode {
     public static String servoConfig = "";
     private Servo servo;
