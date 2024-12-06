@@ -5,12 +5,24 @@ import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.MAX_POS;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TAKE_POS;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Camera.CameraTest;
+
+@Config
+class PerkidConstants {
+    public static double MAX_POS = 0.77;
+    public static double VERTICAL_POS = 0.62;
+    public static double STRAIGHT_POS = 0.37;
+
+    public static double TRANSFER_POS = 0.74;
+    public static double AIM_POS = 0.42;
+    public static double TAKE_POS = 0.28;
+}
 
 public class Perkid {
     LinearOpMode linearOpMode;

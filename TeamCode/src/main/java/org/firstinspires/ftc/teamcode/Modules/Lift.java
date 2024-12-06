@@ -4,10 +4,20 @@ import static org.firstinspires.ftc.teamcode.Modules.LiftConstants.COEFFICIENTS;
 import static org.firstinspires.ftc.teamcode.Modules.LiftConstants.MAX_POSITION;
 import static org.firstinspires.ftc.teamcode.Modules.LiftConstants.MIN_POSITION;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+@Config
+class LiftConstants {
+    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.0, 0.0, 0.0, 0.0);
+    public static int MAX_POSITION = 0;
+    public static int MIN_POSITION = 0;
+}
+
 
 public class Lift {
     public final DcMotorEx leftMotor, rightMotor;
