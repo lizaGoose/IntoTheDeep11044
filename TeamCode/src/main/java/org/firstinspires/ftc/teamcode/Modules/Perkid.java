@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.AIM_POS;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.MAX_POS;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TAKE_POS;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -15,37 +20,35 @@ public class Perkid {
     Servo left, right;
 
     enum Mode {
-        CLOSE_POSITION,
         SCORE_POSITION,
-        PICK_POSITION
+        PICK_POSITION,
+        AIM_POSITION
     }
 
-    Mode currentMode = Mode.CLOSE_POSITION;
+    Mode currentMode = Mode.PICK_POSITION;
 
     public Perkid(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
-        left = linearOpMode.hardwareMap.get(Servo.class, "leftPerkid");
-        right = linearOpMode.hardwareMap.get(Servo.class, "rightPerkid");
-        //left.setDirection(Servo.Direction.REVERSE);
-        //  right.setDirection(Servo.Direction.REVERSE);
+        left = linearOpMode.hardwareMap.get(Servo.class, "left_vertical_servo");
+        right = linearOpMode.hardwareMap.get(Servo.class, "right_vertical_servo");
+        right.setDirection(Servo.Direction.REVERSE);
         cam = new CameraTest();
     }
 
     public void teleop() {
         switch (currentMode) {
-            case CLOSE_POSITION:
-                left.setPosition(0.45);
-                right.setPosition(0.55);
-                break;
             case SCORE_POSITION:
-                left.setPosition(0);
-                right.setPosition(1);
+                left.setPosition(TRANSFER_POS);
+                right.setPosition(TRANSFER_POS);
                 break;
             case PICK_POSITION:
-                left.setPosition(0.5);
-                right.setPosition(0.5);
+                left.setPosition(TAKE_POS);
+                right.setPosition(TAKE_POS);
                 break;
+            case AIM_POSITION:
+                left.setPosition(AIM_POS);
+                right.setPosition(AIM_POS);
         }
 
     }

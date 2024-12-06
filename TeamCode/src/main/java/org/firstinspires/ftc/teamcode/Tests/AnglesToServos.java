@@ -14,19 +14,27 @@ import java.io.DataInput;
 
 @TeleOp
 public class AnglesToServos extends LinearOpMode {
-    DcMotorEx tes;
+    DcMotorEx rr, rf, lr,lf;
     double encoder;
     boolean buttonState;
     public int pos;
     private ElapsedTime timer;
-    Servo test;
+    Servo test, test1;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        tes = hardwareMap.get(DcMotorEx.class, "rightRear");
-        tes.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        test = hardwareMap.get(Servo.class, "leftPerkid");
+        rr = hardwareMap.get(DcMotorEx.class, "rightRear");
+        rr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rf = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lr = hardwareMap.get(DcMotorEx.class, "leftRear");
+        lr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lf = hardwareMap.get(DcMotorEx.class, "leftFront");
+        lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //test = hardwareMap.get(Servo.class, "right_diff_servo");
+        test1 = hardwareMap.get(Servo.class, "left_diff_servo");
         //tes.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        test1.setDirection(Servo.Direction.REVERSE);
 
 
         timer = new ElapsedTime();
@@ -37,7 +45,32 @@ public class AnglesToServos extends LinearOpMode {
         while (opModeIsActive()){
 
             if (gamepad1.dpad_left){
+                test.setPosition(1);
+                test1.setPosition(1);
+            }
+            if (gamepad1.dpad_right){
+                test.setPosition(0);
+                test1.setPosition(0);
+            }
+            if (gamepad1.dpad_down){
                 test.setPosition(0.5);
+                test1.setPosition(0.5);
+            }
+           /* if (gamepad1.dpad_up){
+                test.setPosition(0.9);
+                test1.setPosition(0.1);
+            }
+            if (gamepad1.a){
+                rr.setPower(0.5);
+            }
+            if (gamepad1.b){
+                rf.setPower(0.5);
+            }
+            if (gamepad1.y){
+                lf.setPower(0.5);
+            }
+            if (gamepad1.x){
+                lr.setPower(0.5);
             }
 
             reference += (gamepad1.right_stick_y) * timer.seconds() * 2000000;
@@ -50,7 +83,7 @@ public class AnglesToServos extends LinearOpMode {
 
 
 
-            telemetry.addData("enc", tes.getCurrentPosition());
+            telemetry.addData("enc", tes.getCurrentPosition());*/
             telemetry.addData("ref", reference);
             telemetry.addData("enc", gamepad1.right_stick_y);
             telemetry.update();

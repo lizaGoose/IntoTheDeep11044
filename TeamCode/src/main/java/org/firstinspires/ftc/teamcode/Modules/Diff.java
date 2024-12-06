@@ -56,10 +56,9 @@ public double rotation;
     public Diff(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
-        left = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "leftDif");
-        right = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "rightDif");
+        left = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "left_diff_servo");
+        right = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "right_diff_servo");
         left.setDirection(Servo.Direction.REVERSE);
-        calc = new ClawCalculation();
         // cam = new SampleDetectionCameraClass(linearOpMode);
         timer = new ElapsedTime();
 

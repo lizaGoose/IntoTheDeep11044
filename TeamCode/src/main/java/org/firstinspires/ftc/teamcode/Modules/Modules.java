@@ -17,55 +17,59 @@ public class Modules {
     SampleDetectionPipeline pip;
     Claw claw;
     Diff diff;
-    //Extend extend;
+    Extend extend;
     Hand hand;
     Perkid perkid;
-    Gamepad gamepad1;
+    Gamepad gamepad1, gamepad2;
     CRServo serv;
     boolean smartButton;
-    enum Mode{
+
+    enum Mode {
         VISION_CONTROL,
         OPERATOR_CONTROL
     }
+
     Mode modules = Mode.OPERATOR_CONTROL;
-    public Modules(LinearOpMode linearOpMode){
+
+    public Modules(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         cam = new SampleDetectionCameraClass(linearOpMode);
-        claw = new Claw(linearOpMode);
-        diff = new Diff(linearOpMode);
-        //extend = new Extend(linearOpMode);
+        //claw = new Claw(linearOpMode);
+        //diff = new Diff(linearOpMode);
+        extend = new Extend(linearOpMode);
         hand = new Hand(linearOpMode);
         perkid = new Perkid(linearOpMode);
         pip = new SampleDetectionPipeline();
 
         gamepad1 = linearOpMode.gamepad1;
+        gamepad2 = linearOpMode.gamepad2;
     }
-    public void teleop(){
-        claw.teleop();
-        diff.teleop(Math.round(cam.Angle));
-        //extend.teleop();
+
+    public void teleop() {
+        //   claw.teleop();
+        // diff.teleop(Math.round(cam.Angle));
+        extend.teleop();
         hand.teleop();
         perkid.teleop();
 
 
-        if(gamepad1.x){
+        if (gamepad1.x) {
             modules = Mode.VISION_CONTROL;
 
 
         }
-        if(gamepad1.a){
+        if (gamepad1.a) {
             modules = Mode.OPERATOR_CONTROL;
-
         }
 
 
-      switch (modules){
+        switch (modules) {
 
             case VISION_CONTROL:
                 cam.visionInUse();
-             //   perkid.currentMode = Perkid.Mode.SCORE_POSITION;
-               // diff.currentMode = Diff.Mode.GET_DOWN;
-                if (gamepad1.dpad_left){
+                //   perkid.currentMode = Perkid.Mode.SCORE_POSITION;
+                // diff.currentMode = Diff.Mode.GET_DOWN;
+                if (gamepad1.dpad_left) {
                     diff.currentMode = Diff.Mode.VISION_HUYNYA;
                 }
                 /*if(cam.sample_status == true){
@@ -88,8 +92,19 @@ public class Modules {
 
             case OPERATOR_CONTROL:
                 cam.operatorControl();
+                extend.currentMode = Extend.Mode.DRIVER_CONTROL;
+                hand.currentMode = Hand.Mode.DRIVER_CONTROL;
+                // diff.currentMode = Diff.Mode.VISION_HUYNYA;
 
-                   // diff.currentMode = Diff.Mode.VISION_HUYNYA;
+                if (gamepad2.dpad_up) {
+                    perkid.currentMode = Perkid.Mode.SCORE_POSITION;
+                }
+                if (gamepad2.dpad_down) {
+                    perkid.currentMode = Perkid.Mode.PICK_POSITION;
+                }
+                if (gamepad2.dpad_left) {
+                    perkid.currentMode = Perkid.Mode.AIM_POSITION;
+                }
 
               /*  cam.sample_status =  true;
                if (gamepad1.y){
@@ -132,9 +147,11 @@ public class Modules {
                        diff.currentMode = Diff.Mode.DRIVER_CONTROL;
                    }*/
 
-              // }
+                // }
                 break;
         }
+        linearOpMode.telemetry.addData("handPos", hand.hand.getPosition());
+
         linearOpMode.telemetry.addData("xActual", cam.xActual);
         linearOpMode.telemetry.addData("yActual", cam.yActual);
         linearOpMode.telemetry.addData("x", cam.x);
@@ -142,14 +159,14 @@ public class Modules {
         linearOpMode.telemetry.addData("Distance", cam.distance);
 
 
-        linearOpMode.telemetry.addData("sampleStatus",diff.left.getPosition());
+      /*  linearOpMode.telemetry.addData("sampleStatus",diff.left.getPosition());
         linearOpMode.telemetry.addData("sampleStatus", diff.right.getPosition());
         linearOpMode.telemetry.addData("cam_angle", cam.Angle);
         linearOpMode.telemetry.addData("cam_area", cam.Area);
         linearOpMode.telemetry.addData("rotation_from_calculation", ClawCalculation.rotationFromAngle(Diff.angle_config, diff.left.getPosition()));
-        linearOpMode.telemetry.addData("targeting_angle", ClawCalculation.rotationFromAngle(Diff.angle_config, diff.left.getPosition()) + cam.Angle);
+        linearOpMode.telemetry.addData("targeting_angle", ClawCalculation.rotationFromAngle(Diff.angle_config, diff.left.getPosition()) + cam.Angle);*/
         //linearOpMode.telemetry.addData("x", pip.x);
-       // linearOpMode.telemetry.addData("y", pip.y);
+        // linearOpMode.telemetry.addData("y", pip.y);
         //linearOpMode.telemetry.addData("area", pip.Area);
 
         /* linearOpMode.telemetry.addData("x", cam.x);
@@ -159,9 +176,13 @@ public class Modules {
         linearOpMode.telemetry.addData("ycam", cam.coordY);
         linearOpMode.telemetry.addData("zcam", cam.coordZ);
         linearOpMode.telemetry.addData("Distance", cam.distanceSensor.getDistance(DistanceUnit.MM));*/
-      //  linearOpMode.telemetry.addData("Distance", );
+        //  linearOpMode.telemetry.addData("Distance", );
 
         linearOpMode.telemetry.update();
+        resetTimers();
+    }
 
+    public void resetTimers() {
+        hand.resetTimer();
     }
 }

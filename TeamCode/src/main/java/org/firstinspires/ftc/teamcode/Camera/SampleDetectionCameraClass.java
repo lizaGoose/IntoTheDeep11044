@@ -31,7 +31,7 @@ public class SampleDetectionCameraClass {
     public double extendingError, handError, clawError;
     public boolean sample_status;
     public SampleDetectionPipeline pip;
-  //  public ColorSensor clawColorSensor;
+    //  public ColorSensor clawColorSensor;
     public DistanceSensor distanceSensor;
     //  public Diff diff;
     public int indexAngle;
@@ -97,30 +97,31 @@ public class SampleDetectionCameraClass {
                     Angle = pip.rotatedRectFitToContour.angle;
                 }*/
               /*  Angle = theRect.angle;
-            }*/ Area = pip.Area;
+            }*/
+        Area = pip.Area;
 
-            Angle = pip.Angle;
+        Angle = pip.Angle;
 
-            x = pip.xSample;
-            y = pip.ySample;
-            clawError = Math.round(90 - Angle);
-            xActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(0);
+        x = pip.xSample;
+        y = pip.ySample;
+        clawError = Math.round(90 - Angle);
+        xActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(0);
         yActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(1);
-            extendingError = Math.round(y);
-            handError = Math.round(x);
+        extendingError = Math.round(y);
+        handError = Math.round(x);
 
 
-            if (extendingError == 0 && handError == 0 && ( distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*/) {
-                sample_status = true;
-            } else {
-                sample_status = false;
-            }
+        if (extendingError == 0 && handError == 0 && ( distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*/) {
+            sample_status = true;
+        } else {
+            sample_status = false;
+        }
 
 
-       // }
+        // }
 
 
-        if (linearOpMode.gamepad1.dpad_up) {
+       /* if (linearOpMode.gamepad1.dpad_up) {
             tf = true;
             x = 0;
             y = 0;
@@ -143,7 +144,7 @@ public class SampleDetectionCameraClass {
             pip.BLUE_MASK_THRESHOLD = 57;
             pip.RED_MASK_THRESHOLD = 198;
 
-        }
+        }*/
        /* linearOpMode.telemetry.addData("sampleStatus", sample_status);
         linearOpMode.telemetry.addData("x", x);
         linearOpMode.telemetry.addData("y", y);
@@ -151,8 +152,8 @@ public class SampleDetectionCameraClass {
     }
 
     public void operatorControl() {
-        pip.YELLOW_MASK_THRESHOLD = 0;
-        pip.BLUE_MASK_THRESHOLD = 0;
-        pip.RED_MASK_THRESHOLD = 0;
+        pip.YELLOW_MASK_THRESHOLD = 110;
+        pip.BLUE_MASK_THRESHOLD = 57;
+        pip.RED_MASK_THRESHOLD = 198;
     }
 }

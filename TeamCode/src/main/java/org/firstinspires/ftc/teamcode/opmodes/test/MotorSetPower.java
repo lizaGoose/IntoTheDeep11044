@@ -20,7 +20,15 @@ public class MotorSetPower extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            servo.setPower(pos);
+
+            if (servo.getCurrentPosition() >= 200) {
+                servo.setPower(Math.min(0, -gamepad1.left_stick_y));
+            } else if (servo.getCurrentPosition() <= 0) {
+                servo.setPower(Math.max(0, -gamepad1.left_stick_y));
+            } else {
+                servo.setPower(-gamepad1.left_stick_y);
+            }
+            telemetry.addData("encoder_pos", servo.getCurrentPosition());
             telemetry.addData("motor_power", servo.getPower());
             telemetry.update();
         }

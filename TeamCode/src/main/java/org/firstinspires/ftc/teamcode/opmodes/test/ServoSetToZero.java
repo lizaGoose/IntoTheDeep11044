@@ -13,19 +13,14 @@ import org.firstinspires.ftc.teamcode.Modules.Diff;
 public class ServoSetToZero extends LinearOpMode {
     public static String servoConfig = "";
     public static double pos = 0.5;
-    public static boolean power = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        ServoImplEx servo = (ServoImplEx) hardwareMap.get(Servo.class, servoConfig);
-        servo.setDirection(Servo.Direction.REVERSE);
+        Servo servo = hardwareMap.get(Servo.class, servoConfig);
 
         waitForStart();
 
         while (opModeIsActive()) {
-            if (!power) {
-                servo.setPwmDisable();
-            }
             servo.setPosition(pos);
             telemetry.addData("servo_pos", servo.getPosition());
             telemetry.update();

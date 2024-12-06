@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 
 public class Extend {
     LinearOpMode linearOpMode;
-    Gamepad gamepad1;
+    Gamepad gamepad;
     DcMotor extend;
     CameraTest cam;
 
@@ -21,14 +21,14 @@ public class Extend {
 
     public Extend(LinearOpMode linearOpMode){
         this.linearOpMode = linearOpMode;
-        gamepad1 = linearOpMode.gamepad1;
-        extend = linearOpMode.hardwareMap.get(DcMotor.class, "Extend");
+        gamepad = linearOpMode.gamepad2;
+        extend = linearOpMode.hardwareMap.get(DcMotor.class, "extendMotor") ;
         cam = new CameraTest();
     }
     public void teleop(){
         switch (currentMode) {
             case DRIVER_CONTROL:
-                extend.setPower(gamepad1.left_stick_x);
+                extend.setPower(gamepad.right_stick_y);
                 break;
             case VISION_CONTROL:
                 extend.setPower(cam.extendingError);
@@ -37,15 +37,15 @@ public class Extend {
                 extend.setTargetPosition(0);
                 break;
         }
-      if (gamepad1.left_stick_x != 0){
+      if (gamepad.right_stick_y != 0){
           currentMode = Mode.DRIVER_CONTROL;
       }
-      if(gamepad1.a){
+    /*  if(gamepad1.a){
           currentMode = Mode.VISION_CONTROL;
       }
       if((cam.sample_status == true) && currentMode == Mode.VISION_CONTROL){
           currentMode = Mode.CLOSE;
 
-      }
+      }*/
     }
 }

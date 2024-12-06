@@ -4,64 +4,49 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 
 public class Hand {
     LinearOpMode linearOpMode;
-    Gamepad gamepad1;
+    Gamepad gamepad;
     CameraTest cam;
-    CRServoImplEx hand;
+    Servo hand;
     AnalogInput axonEnc;
+    ElapsedTime timer;
+    // 0.83
+    //
 
     enum Mode {
         DRIVER_CONTROL,
-        VISION_CONTROL,
-        NULL_POSE,
-        GIVE_POSE
+        VISION_CONTROL
     }
+
     Mode currentMode = Mode.DRIVER_CONTROL;
 
-    public Hand(LinearOpMode linearOpMode){
+    public Hand(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
-        gamepad1 = linearOpMode.gamepad1;
-       hand = linearOpMode.hardwareMap.get(CRServoImplEx.class, "hand");
-       axonEnc = linearOpMode.hardwareMap.get(AnalogInput.class, "handEnc");
+        gamepad = linearOpMode.gamepad2;
+        hand = linearOpMode.hardwareMap.get(Servo.class, "horizontal_servo");
+        hand.scaleRange(1 - (0.83 + 0.15), 1 - (0.83 - 0.15));
+
         cam = new CameraTest();
+        timer = new ElapsedTime();
+        //   hand.setPosition(0.0);
     }
-    public void teleop(){
+
+    public void teleop() {
         switch (currentMode) {
             case DRIVER_CONTROL:
-                if (gamepad1.dpad_right){
-                    hand.setPower(-1);
-                }
-                if (gamepad1.dpad_left){
-                    hand.setPower(1);
-                }
-                else {
-                    hand.setPower(0);
-                }
+                hand.setPosition((gamepad.left_stick_x + 1) / 2);
+                break;
 
-                break;
-            case VISION_CONTROL:
-                hand.setPower(cam.handError);
-                break;
-            case NULL_POSE:
-                if (axonEnc.getVoltage() != 0){
-                    hand.setPower(-0.2);
-                }
-                else {
-                    hand.setPower(0);
-                }
-                break;
-            case GIVE_POSE:
-                if (axonEnc.getVoltage() != 100){
-                    hand.setPower(0.5);
-                }
-                else {
-                    hand.setPower(0);
-                }
-                break;
         }
+    }
+
+    public void resetTimer() {
+        timer.reset();
     }
 }

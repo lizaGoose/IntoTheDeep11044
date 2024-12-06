@@ -16,7 +16,7 @@ public class Lift {
     public Lift(HardwareMap hardwareMap) {
         leftMotor = hardwareMap.get(DcMotorEx.class, "leftLift");
         rightMotor = hardwareMap.get(DcMotorEx.class, "rightLift");
-        leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         timer = new ElapsedTime();
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Camera;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -19,10 +20,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class
-
-
-SampleDetectionPipeline extends OpenCvPipeline {
+@Config
+public class SampleDetectionPipeline extends OpenCvPipeline {
     /*
      * Working image buffers
      */
@@ -47,9 +46,9 @@ SampleDetectionPipeline extends OpenCvPipeline {
     /*
      * Threshold values
      */
-    public int YELLOW_MASK_THRESHOLD = 100;
-    public int BLUE_MASK_THRESHOLD = 57;
-    public int RED_MASK_THRESHOLD = 198;
+    public static int YELLOW_MASK_THRESHOLD = 110;
+    public static int BLUE_MASK_THRESHOLD = 57;
+    public static int RED_MASK_THRESHOLD = 198;
 
     /*
      * Elements for noise reduction
@@ -92,7 +91,7 @@ SampleDetectionPipeline extends OpenCvPipeline {
     }
 
     Stage[] stages = Stage.values();
-    int stageNum = 0;
+    public static int stageNum = 0;
 
 
     @Override
@@ -135,16 +134,16 @@ SampleDetectionPipeline extends OpenCvPipeline {
 
             case MASKS: {
                 Mat masks = new Mat();
-                Core.addWeighted(yellowThresholdMat, 1.0, redThresholdMat, 1.0, 0.0, masks);
+                Core.addWeighted(redThresholdMat, 1.0, yellowThresholdMat, 1.0, 0.0, masks);
                 Core.addWeighted(masks, 1.0, blueThresholdMat, 1.0, 0.0, masks);
-                return masks;
+                return redThresholdMat;
             }
 
             case MASKS_NR: {
                 Mat masksNR = new Mat();
-                Core.addWeighted(morphedYellowThreshold, 1.0, morphedRedThreshold, 1.0, 0.0, masksNR);
+                Core.addWeighted(morphedRedThreshold, 1.0, morphedYellowThreshold, 1.0, 0.0, masksNR);
                 Core.addWeighted(masksNR, 1.0, morphedBlueThreshold, 1.0, 0.0, masksNR);
-                return masksNR;
+                return morphedRedThreshold;
             }
 
             case CONTOURS: {
@@ -245,8 +244,7 @@ SampleDetectionPipeline extends OpenCvPipeline {
             angle = 195;
             x = 0;
             y = 0;
-        }
-        else {
+        } else {
             angle = -( rotRectAngle - 180 );
             x = rotRectX;
             y = rotRectY;
@@ -271,15 +269,15 @@ SampleDetectionPipeline extends OpenCvPipeline {
         CenterStone.add((int) rotRectX);
         internalStoneList.add(analyzedStone);
         if (!Center.isEmpty()) {
-            if (Imgproc.contourArea(contour2f) >= 20000) {
-                if (Math.round(rotatedRectFitToContour.center.x) == Collections.min(Center)) {
+            //   if (Imgproc.contourArea(contour2f) >= 5000) {
+            if (Math.round(rotatedRectFitToContour.center.x) == Collections.min(Center)) {
 
-                }
-                //Я вот это чуть чуть поменял
-                //кросава
-                xSample = analyzedStone.xS/*(InchPerPixel / 640 )/* matrixKoeff*/;
-                ySample = analyzedStone.yS/*(InchPerPixel / 640 )/* matrixKoeff*/;
-                Angle = -(analyzedStone.angle - 90);
+            }
+            //Я вот это чуть чуть поменял
+            //кросава
+            xSample = analyzedStone.xS - 320/*(InchPerPixel / 640 )/* matrixKoeff*/;
+            ySample = analyzedStone.yS/*(InchPerPixel / 640 )/* matrixKoeff*/;
+            Angle = -( analyzedStone.angle - 90 );
                 /*
                 if (analyzedStone.angle <= 90) {
                     Angle = analyzedStone.angle;
@@ -288,8 +286,8 @@ SampleDetectionPipeline extends OpenCvPipeline {
                     Angle = analyzedStone.angle - 180;
                 }
                  */
-                Area = Imgproc.contourArea(contour2f);
-            }
+            Area = Imgproc.contourArea(contour2f);
+            // }
         }
     }
 

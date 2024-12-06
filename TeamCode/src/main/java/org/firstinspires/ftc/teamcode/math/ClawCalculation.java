@@ -99,7 +99,6 @@ public class ClawCalculation {
                 {1}
         };
 
-
         double[][] coordBaseFrame = new double[4][1];
         for (int i = 0; i < 4; i++) {
             coordBaseFrame[i][0] = finalHomgen0C[i][0] * camRefCoord[0][0] +
