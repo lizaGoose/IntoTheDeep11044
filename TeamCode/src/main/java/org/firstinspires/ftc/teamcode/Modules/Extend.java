@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 @Config
 class ExtendConstants {
     public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(-0.025, 0.0, 0.0, -0.0005);
+
     public static int MAX_POSITION = 200;
     public static int MIN_POSITION = 8;
 }
@@ -50,7 +51,13 @@ public class Extend {
     public void teleop() {
         switch (currentMode) {
             case DRIVER_CONTROL:
-                motor.setPower(gamepad.right_stick_y);
+                if (gamepad.right_stick_y !=0) {
+                    motor.setPower(gamepad.right_stick_y);
+                    setReference(motor.getCurrentPosition());
+                }
+                else {
+                    PIDControl();
+                }
                 break;
             case VISION_CONTROL:
                //itor.setPower(cam.extendingError);
@@ -62,13 +69,7 @@ public class Extend {
         if (gamepad.right_stick_y != 0) {
             currentMode = Mode.DRIVER_CONTROL;
         }
-    /*  if(gamepad1.a){
-          currentMode = Mode.VISION_CONTROL;
-      }
-      if((cam.sample_status == true) && currentMode == Mode.VISION_CONTROL){
-          currentMode = Mode.CLOSE;
 
-      }*/
     }
 
     double reference = 0;
