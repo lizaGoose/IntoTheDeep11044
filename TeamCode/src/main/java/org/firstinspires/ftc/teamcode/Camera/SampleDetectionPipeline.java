@@ -134,16 +134,16 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
 
             case MASKS: {
                 Mat masks = new Mat();
-                Core.addWeighted(redThresholdMat, 1.0, yellowThresholdMat, 1.0, 0.0, masks);
+                Core.addWeighted(yellowThresholdMat, 1.0, redThresholdMat, 1.0, 0.0, masks);
                 Core.addWeighted(masks, 1.0, blueThresholdMat, 1.0, 0.0, masks);
-                return redThresholdMat;
+                return masks;
             }
 
             case MASKS_NR: {
                 Mat masksNR = new Mat();
-                Core.addWeighted(morphedRedThreshold, 1.0, morphedYellowThreshold, 1.0, 0.0, masksNR);
+                Core.addWeighted(morphedYellowThreshold, 1.0, morphedRedThreshold, 1.0, 0.0, masksNR);
                 Core.addWeighted(masksNR, 1.0, morphedBlueThreshold, 1.0, 0.0, masksNR);
-                return morphedRedThreshold;
+                return masksNR;
             }
 
             case CONTOURS: {

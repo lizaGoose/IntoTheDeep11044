@@ -5,9 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Modules.Diff;
 
 import java.io.DataInput;
@@ -19,7 +21,9 @@ public class AnglesToServos extends LinearOpMode {
     boolean buttonState;
     public int pos;
     private ElapsedTime timer;
-    Servo test, test1;
+    Servo test;
+    DcMotor test1;
+    public DistanceSensor distanceSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -32,9 +36,10 @@ public class AnglesToServos extends LinearOpMode {
         lf = hardwareMap.get(DcMotorEx.class, "leftFront");
         lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //test = hardwareMap.get(Servo.class, "right_diff_servo");
-        test1 = hardwareMap.get(Servo.class, "left_diff_servo");
+        test1 = hardwareMap.get(DcMotor.class, "hangMotor");
         //tes.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        test1.setDirection(Servo.Direction.REVERSE);
+        //test1.setDirection(Servo.Direction.REVERSE);
+        test1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         timer = new ElapsedTime();
@@ -43,8 +48,9 @@ public class AnglesToServos extends LinearOpMode {
         timer.reset();
         double reference = 0;
         while (opModeIsActive()){
-
-            if (gamepad1.dpad_left){
+            distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
+            test1.setPower(gamepad2.left_stick_y);
+          /*  if (gamepad1.dpad_left){
                 test.setPosition(1);
                 test1.setPosition(1);
             }
@@ -84,10 +90,11 @@ public class AnglesToServos extends LinearOpMode {
 
 
             telemetry.addData("enc", tes.getCurrentPosition());*/
-            telemetry.addData("ref", reference);
-            telemetry.addData("enc", gamepad1.right_stick_y);
+            telemetry.addData("handPos", distanceSensor.getDistance(DistanceUnit.MM));
+           /* telemetry.addData("ref", reference);
+            telemetry.addData("enc", gamepad1.right_stick_y);*/
             telemetry.update();
-            timer.reset();
+          //  timer.reset();
         }
     }
 }

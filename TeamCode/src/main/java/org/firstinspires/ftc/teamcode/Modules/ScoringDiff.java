@@ -15,10 +15,10 @@ import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 
 @Config
 class ScoringDiffConstants {
-    public static double PICK_POS = 0.92;
+    public static double PICK_POS = 0.96;
     public static double SCOR_POS = 0.5;
-    public static double PICK_SPEC = 0.4;
-    public static double SCORE_SPEC = 0.6;
+    public static double PICK_SPEC = 0.51;
+    public static double SCORE_SPEC = 1;
 }
 
 public class ScoringDiff {
@@ -35,7 +35,7 @@ public class ScoringDiff {
         SCORE_SPEC
     }
 
-    Mode currentMode = Mode.PICK_POSITION;
+    Mode currentMode = Mode.PICK_SPEC;
 
     public ScoringDiff(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;

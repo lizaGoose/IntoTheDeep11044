@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.AIM_POS;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.LOOK_POS;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.MAX_POS;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.STRAIGHT_POS;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TAKE_POS;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.VERTICAL_POS;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,9 +22,10 @@ class PerkidConstants {
     public static double VERTICAL_POS = 0.62;
     public static double STRAIGHT_POS = 0.37;
 
-    public static double TRANSFER_POS = 0.74;
-    public static double AIM_POS = 0.42;
-    public static double TAKE_POS = 0.28;
+    public static double TRANSFER_POS = 0.71;
+    public static double AIM_POS = 0.37;
+    public static double TAKE_POS = 0.27;
+    public static double LOOK_POS = 0.5;
 }
 
 public class Perkid {
@@ -34,10 +38,12 @@ public class Perkid {
     enum Mode {
         SCORE_POSITION,
         PICK_POSITION,
-        AIM_POSITION
+        AIM_POSITION,
+        UP_POSITION,
+        LOOK
     }
 
-    Mode currentMode = Mode.PICK_POSITION;
+    Mode currentMode = Mode.SCORE_POSITION;
 
     public Perkid(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
@@ -61,6 +67,15 @@ public class Perkid {
             case AIM_POSITION:
                 left.setPosition(AIM_POS);
                 right.setPosition(AIM_POS);
+                break;
+            case UP_POSITION:
+                left.setPosition(STRAIGHT_POS);
+                right.setPosition(STRAIGHT_POS);
+                break;
+            case LOOK:
+                left.setPosition(LOOK_POS);
+                right.setPosition(LOOK_POS);
+                break;
         }
 
     }

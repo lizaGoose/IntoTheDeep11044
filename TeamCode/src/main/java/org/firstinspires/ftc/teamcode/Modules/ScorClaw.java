@@ -15,7 +15,7 @@ public class ScorClaw {
         PICK,
         DROP
     }
-    ScorClaw.Mode currentMode = Mode.DROP;
+    ScorClaw.Mode currentMode = Mode.PICK;
 
     public ScorClaw(LinearOpMode linearOpMode){
         this.linearOpMode = linearOpMode;
@@ -28,7 +28,7 @@ public class ScorClaw {
                 claw.setPosition(0.76);
                 break;
             case DROP:
-                claw.setPosition(0.51);
+                claw.setPosition(0.56);
                 break;
         }
 

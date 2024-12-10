@@ -33,17 +33,19 @@ public class Lift {
         leftMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "leftLift");
         rightMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "rightLift");
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        gamepad = linearOpMode.gamepad2;
+        gamepad = linearOpMode.gamepad1;
 
         timer = new ElapsedTime();
     }
-    public enum Mode{
+
+    public enum Mode {
         HIGH_BASKET,
         LOW_BASKET,
         HIGH_CHAMBER,
         LOW_CHAMBER,
         NULL_POSE
     }
+
     Mode currentMode = Mode.NULL_POSE;
     double reference = 0;
     double lastError = 0;
@@ -54,9 +56,9 @@ public class Lift {
         double position = leftMotor.getCurrentPosition();
         double error = reference - position;
 
-        double derivative = (error - lastError) / timer.seconds();
+        double derivative = ( error - lastError ) / timer.seconds();
         integralSum += error * timer.seconds();
-        out = (COEFFICIENTS.p * error) + (COEFFICIENTS.i * integralSum) + (COEFFICIENTS.d * derivative) + COEFFICIENTS.f;
+        out = ( COEFFICIENTS.p * error ) + ( COEFFICIENTS.i * integralSum ) + ( COEFFICIENTS.d * derivative ) + COEFFICIENTS.f;
 
         leftMotor.setPower(out);
         rightMotor.setPower(out);
@@ -75,15 +77,15 @@ public class Lift {
         reference = Math.max(reference, MIN_POSITION);
         this.reference = reference;
     }
-    public void  teleop(){
-        switch (currentMode){
+
+    public void teleop() {
+        switch (currentMode) {
             case NULL_POSE:
-                if (gamepad.right_stick_y !=0) {
+                if (gamepad.right_stick_y != 0) {
                     leftMotor.setPower(gamepad.left_stick_y);
                     rightMotor.setPower(gamepad.left_stick_y);
                     setReference(leftMotor.getCurrentPosition());
-                }
-                else {
+                } else {
                     PIDControl();
                 }
                 break;

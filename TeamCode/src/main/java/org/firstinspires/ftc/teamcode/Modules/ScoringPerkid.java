@@ -15,10 +15,11 @@ import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 
 @Config
 class ScoringPerkidConstants {
+    public static double TRANSITIVE_POS = 0.46;
     public static double PICK_POS = 0.512;
     public static double SAMP_POS = 0.1;
     public static double SPEC_POS = 0.84;
-    public static double PICK_SPEC = 0.35;
+    public static double PICK_SPEC = 0.42;
 }
 
 public class ScoringPerkid {
@@ -30,12 +31,12 @@ public class ScoringPerkid {
 
     enum Mode {
         SPECIMEN,
-    PICK,
-    SAMPLE,
+        PICK,
+        SAMPLE,
         PICK_SPECIMEN
     }
 
-    Mode currentMode = Mode.PICK;
+    Mode currentMode = Mode.PICK_SPECIMEN;
 
     public ScoringPerkid(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;

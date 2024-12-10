@@ -18,10 +18,10 @@ import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 
 @Config
 class ExtendConstants {
-    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(-0.025, 0.0, 0.0, -0.0005);
+    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(-0.03, 0.0, -0.0005, 0.0);
 
     public static int MAX_POSITION = 200;
-    public static int MIN_POSITION = 8;
+    public static int MIN_POSITION = 0;
 }
 
 public class Extend {
@@ -51,16 +51,16 @@ public class Extend {
     public void teleop() {
         switch (currentMode) {
             case DRIVER_CONTROL:
-                if (gamepad.right_stick_y !=0) {
-                    motor.setPower(gamepad.right_stick_y);
+                if (gamepad.right_stick_y != 0) {
+                    motor.setPower(-gamepad.right_stick_y);
                     setReference(motor.getCurrentPosition());
                 }
-                else {
+               else {
                     PIDControl();
                 }
                 break;
             case VISION_CONTROL:
-               //itor.setPower(cam.extendingError);
+                //itor.setPower(cam.extendingError);
                 break;
             case CLOSE:
                 motor.setTargetPosition(0);
@@ -79,11 +79,11 @@ public class Extend {
 
     public void PIDControl() {
         double position = motor.getCurrentPosition();
-        double error = position - reference ;
+        double error = position - reference;
 
-        double derivative = (error - lastError) / timer.seconds();
+        double derivative = ( error - lastError ) / timer.seconds();
         integralSum += error * timer.seconds();
-        out = (COEFFICIENTS.p * error) + (COEFFICIENTS.i * integralSum) + (COEFFICIENTS.d * derivative) + COEFFICIENTS.f;
+        out = ( COEFFICIENTS.p * error ) + ( COEFFICIENTS.i * integralSum ) + ( COEFFICIENTS.d * derivative ) + COEFFICIENTS.f;
 
         motor.setPower(out);
 

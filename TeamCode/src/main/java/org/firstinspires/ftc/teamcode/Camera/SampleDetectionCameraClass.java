@@ -71,9 +71,9 @@ public class SampleDetectionCameraClass {
     public void visionInUse() {
 
         //clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
+        //distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
         List<Double> Ang = new ArrayList<Double>();
-        distance = distanceSensor.getDistance(DistanceUnit.INCH);
+      //  distance = distanceSensor.getDistance(DistanceUnit.INCH);
 
        /* if (pip.Center.size() != 0) {
 
@@ -111,7 +111,7 @@ public class SampleDetectionCameraClass {
         handError = Math.round(x);
 
 
-        if (extendingError == 0 && handError == 0 && ( distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*/) {
+       /* if (extendingError == 0 && handError == 0 && ( distanceSensor.getDistance(DistanceUnit.MM) <= 30 )/*&& clawError == 0*//*) {
             sample_status = true;
         } else {
             sample_status = false;
@@ -151,9 +151,28 @@ public class SampleDetectionCameraClass {
         linearOpMode.telemetry.update();*/
     }
 
-    public void operatorControl() {
-        pip.YELLOW_MASK_THRESHOLD = 110;
-        pip.BLUE_MASK_THRESHOLD = 57;
-        pip.RED_MASK_THRESHOLD = 198;
+    public void operatorControlBlue() {
+        if (linearOpMode.gamepad1.square) {
+            pip.YELLOW_MASK_THRESHOLD = 110;
+            pip.BLUE_MASK_THRESHOLD = 57;
+            pip.RED_MASK_THRESHOLD = 198;
+        }
+        if (linearOpMode.gamepad1.circle){
+            pip.YELLOW_MASK_THRESHOLD = 85;
+            pip.BLUE_MASK_THRESHOLD = 138;
+            pip.RED_MASK_THRESHOLD = 70;
+        }
+    }
+    public void operatorControlRed() {
+        if (linearOpMode.gamepad1.square) {
+            pip.YELLOW_MASK_THRESHOLD = 110;
+            pip.BLUE_MASK_THRESHOLD = 57;
+            pip.RED_MASK_THRESHOLD = 198;
+        }
+        if (linearOpMode.gamepad1.circle){
+            pip.YELLOW_MASK_THRESHOLD = 55;
+            pip.BLUE_MASK_THRESHOLD = 70;
+            pip.RED_MASK_THRESHOLD = 155;
+        }
     }
 }

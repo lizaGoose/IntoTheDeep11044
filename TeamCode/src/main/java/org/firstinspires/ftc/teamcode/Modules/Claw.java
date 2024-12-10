@@ -14,26 +14,27 @@ public class Claw {
         PICK,
         DROP
     }
+
     Claw.Mode currentMode = Mode.PICK;
 
-    public Claw(LinearOpMode linearOpMode){
+    public Claw(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
-        claw = linearOpMode.hardwareMap.get(Servo.class, "Claw");
+        claw = linearOpMode.hardwareMap.get(Servo.class, "claw_servo");
 
 
     }
-    public void teleop(){
+
+    public void teleop() {
         switch (currentMode) {
             case PICK:
-                claw.setPosition(0.35);
-
+                claw.setPosition(0.9);
 
                 break;
             case DROP:
-              claw.setPosition(0);
+                claw.setPosition(0.5);
                 break;
-    }
+        }
 
     }
 }
