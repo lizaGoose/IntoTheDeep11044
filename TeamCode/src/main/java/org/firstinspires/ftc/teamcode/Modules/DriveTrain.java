@@ -36,8 +36,7 @@ public class DriveTrain {
                 drive.setWeightedDrivePower(new Pose2d(heading, x, y));
                 break;
             case NON:
-                drive.setMotorPowers(gamepad1.right_stick_y, 0, 0, gamepad1.right_stick_y);
-
+                drive.setMotorPowers(-gamepad1.right_stick_y, 0, gamepad1.right_stick_y, 0);
                 break;
         }
 

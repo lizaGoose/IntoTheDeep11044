@@ -172,7 +172,7 @@ public class ModulesBlue {
                 }
                 if (gamepad2.b) { // circle
                     clawScor.currentMode = ScorClaw.Mode.DROP;
-                    scorPer.currentMode = ScoringPerkid.Mode.PICK_SPECIMEN;
+                    scorPer.currentMode = ScoringPerkid.Mode.PICK_SPEC;
                     diffScor.currentMode = ScoringDiff.Mode.PICK_SPEC;
                     perkid.currentMode = Perkid.Mode.SCORE_POSITION;
                     hand.currentMode = Hand.Mode.FORWARD;

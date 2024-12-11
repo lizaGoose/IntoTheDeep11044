@@ -21,7 +21,7 @@ public class AnglesToServos extends LinearOpMode {
     boolean buttonState;
     public int pos;
     private ElapsedTime timer;
-    Servo test;
+    DcMotor test;
     DcMotor test1;
     public DistanceSensor distanceSensor;
 
@@ -35,11 +35,12 @@ public class AnglesToServos extends LinearOpMode {
         lr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lf = hardwareMap.get(DcMotorEx.class, "leftFront");
         lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //test = hardwareMap.get(Servo.class, "right_diff_servo");
-        test1 = hardwareMap.get(DcMotor.class, "hangMotor");
+        test = hardwareMap.get(DcMotor.class, "rightLift");
+        test1 = hardwareMap.get(DcMotor.class, "leftLift");
         //tes.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         //test1.setDirection(Servo.Direction.REVERSE);
         test1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        test.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         timer = new ElapsedTime();
@@ -49,7 +50,8 @@ public class AnglesToServos extends LinearOpMode {
         double reference = 0;
         while (opModeIsActive()){
             distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
-            test1.setPower(gamepad2.left_stick_y);
+            test1.setPower(gamepad1.right_stick_y);
+            test.setPower(gamepad1.right_stick_y);
           /*  if (gamepad1.dpad_left){
                 test.setPosition(1);
                 test1.setPosition(1);

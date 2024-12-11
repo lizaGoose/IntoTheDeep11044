@@ -117,12 +117,8 @@ public class Modules {
                 if (gamepad2.dpad_down) {
                     perkid.currentMode = Perkid.Mode.PICK_POSITION;
                     diff.currentMode = Diff.Mode.PICK_DOWN;
-                    //pickupTimer.reset();
-                    //  claw.currentMode = Claw.Mode.PICK;
                 }
-             /*   if (300 >= pickupTimer.milliseconds() && pickupTimer.milliseconds() >= 200) {
-                    claw.currentMode = Claw.Mode.PICK;
-                }*/
+
                 if (timer.milliseconds() <= 200) {
                     clawScor.currentMode = ScorClaw.Mode.DROP;
                     claw.currentMode = Claw.Mode.PICK;
@@ -173,7 +169,7 @@ public class Modules {
                 }
                 if (gamepad2.b) { // circle
                     clawScor.currentMode = ScorClaw.Mode.DROP;
-                    scorPer.currentMode = ScoringPerkid.Mode.PICK_SPECIMEN;
+                    scorPer.currentMode = ScoringPerkid.Mode.PICK_SPEC;
                     diffScor.currentMode = ScoringDiff.Mode.PICK_SPEC;
                     perkid.currentMode = Perkid.Mode.SCORE_POSITION;
                     hand.currentMode = Hand.Mode.FORWARD;
@@ -196,35 +192,25 @@ public class Modules {
                 }
                 if (gamepad1.dpad_up) {
                     hang.currentMode = Hang.Mode.ENGAGED;
-                    dt.currentMode = DriveTrain.Mode.NON;
+                 //   dt.currentMode = DriveTrain.Mode.NON;
                     hangTimer.reset();
                 }
                 if (gamepad1.dpad_down) {
                     hang.currentMode = Hang.Mode.NOT_ENGAGED;
 
                 }
-                if (hang.currentMode == Hang.Mode.NOT_ENGAGED) {
-                    dt.currentMode = DriveTrain.Mode.DRIVER_CONTROL;
+                if (hang.currentMode == Hang.Mode.ENGAGED) {
+
+                    dt.currentMode = DriveTrain.Mode.NON;
                 }
             else{
-                    dt.currentMode = DriveTrain.Mode.NON;
+                    dt.currentMode = DriveTrain.Mode.DRIVER_CONTROL;
                 }
                 if(gamepad1.dpad_right){
                     perkid.currentMode = Perkid.Mode.LOOK;
                     diff.currentMode = Diff.Mode.GET_DOWN;
                 }
-                /*if (timerScor.milliseconds() <= 700) {
-                    clawScor.currentMode = ScorClaw.Mode.PICK;
-                }
 
-                 */
-
-               /* if (scorDiffStoper < 10){
-                    scorDiffStoper+=1;
-                }
-                else {
-                    diffScor.currentMode = ScoringDiff.Mode.SCORE_SPEC;
-                }*/
 
                 break;
         }

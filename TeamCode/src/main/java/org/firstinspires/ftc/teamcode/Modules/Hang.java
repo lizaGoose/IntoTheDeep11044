@@ -56,7 +56,7 @@ public class Hang {
 
     }
 
-    Mode currentMode = Mode.DOWN_POS;
+    Mode currentMode = Mode.NOT_ENGAGED;
     double reference = 0;
     double lastError = 0;
     double integralSum = 0;

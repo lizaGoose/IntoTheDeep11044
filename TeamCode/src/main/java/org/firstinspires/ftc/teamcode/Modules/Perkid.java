@@ -1,12 +1,6 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.AIM_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.LOOK_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.MAX_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.STRAIGHT_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TAKE_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.VERTICAL_POS;
+
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -18,14 +12,17 @@ import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 
 @Config
 class PerkidConstants {
-    public static double MAX_POS = 0.77;
+   /* public static double MAX_POS = 0.77;
     public static double VERTICAL_POS = 0.62;
     public static double STRAIGHT_POS = 0.37;
 
     public static double TRANSFER_POS = 0.71;
     public static double AIM_POS = 0.37;
     public static double TAKE_POS = 0.27;
-    public static double LOOK_POS = 0.5;
+    public static double LOOK_POS = 0.5;*/
+   public static double TRANSFER_POS = 0.71;
+    public static double LOOK_POS = 0.47;
+    public static double PICK_UP = 0.30;
 }
 
 public class Perkid {
@@ -40,7 +37,10 @@ public class Perkid {
         PICK_POSITION,
         AIM_POSITION,
         UP_POSITION,
-        LOOK
+
+        TRANSFER,
+        LOOK,
+        PICK_UP
     }
 
     Mode currentMode = Mode.SCORE_POSITION;
@@ -56,7 +56,7 @@ public class Perkid {
 
     public void teleop() {
         switch (currentMode) {
-            case SCORE_POSITION:
+        /*    case SCORE_POSITION:
                 left.setPosition(TRANSFER_POS);
                 right.setPosition(TRANSFER_POS);
                 break;
@@ -75,6 +75,18 @@ public class Perkid {
             case LOOK:
                 left.setPosition(LOOK_POS);
                 right.setPosition(LOOK_POS);
+                break;*/
+            case TRANSFER:
+                left.setPosition(PerkidConstants.TRANSFER_POS);
+                right.setPosition(PerkidConstants.TRANSFER_POS);
+                break;
+            case LOOK:
+                left.setPosition(PerkidConstants.LOOK_POS);
+                right.setPosition(PerkidConstants.LOOK_POS);
+                break;
+            case PICK_UP:
+                left.setPosition(PerkidConstants.PICK_UP);
+                right.setPosition(PerkidConstants.PICK_UP);
                 break;
         }
 

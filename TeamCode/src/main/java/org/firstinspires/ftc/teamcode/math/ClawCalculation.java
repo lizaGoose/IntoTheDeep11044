@@ -43,6 +43,9 @@ public class ClawCalculation {
         double leftDiff = ( ( angle + rotation / 2 ) / 90 + 1 ) / 2;
         double rightDiff = ( ( angle - rotation / 2 ) / 90 + 1 ) / 2;
 
+        leftDiff += 0.18;
+        rightDiff += 0.18;
+
         return Arrays.asList(leftDiff, rightDiff);
     }
 

@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.AIM_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.MAX_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TAKE_POS;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
 
 import com.acmerobotics.dashboard.config.Config;

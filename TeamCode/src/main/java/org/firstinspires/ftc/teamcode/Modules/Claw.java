@@ -10,12 +10,11 @@ public class Claw {
     Gamepad gamepad1;
     Servo claw;
 
-    enum Mode {
-        PICK,
-        DROP
+    public enum Mode {
+        PICK, DROP
     }
 
-    Claw.Mode currentMode = Mode.PICK;
+    public Mode currentMode = Mode.PICK;
 
     public Claw(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
@@ -29,7 +28,6 @@ public class Claw {
         switch (currentMode) {
             case PICK:
                 claw.setPosition(0.9);
-
                 break;
             case DROP:
                 claw.setPosition(0.5);

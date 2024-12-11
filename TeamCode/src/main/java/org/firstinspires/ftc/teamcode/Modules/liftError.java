@@ -73,8 +73,8 @@ public class liftError {
         switch (currentMode) {
             case NULL_POSE:
                // if (gamepad.right_stick_y != 0) {
-                    leftMotor.setPower(-gamepad.right_stick_y);
-                    rightMotor.setPower(-gamepad.right_stick_y);
+                    leftMotor.setPower(gamepad.right_stick_y);
+                    rightMotor.setPower(gamepad.right_stick_y);
                     //setReference(leftMotor.getCurrentPosition());
               /*  } else {
                     PIDControl();

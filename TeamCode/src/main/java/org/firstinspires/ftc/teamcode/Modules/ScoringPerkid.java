@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.AIM_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.MAX_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TAKE_POS;
+
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -15,11 +13,13 @@ import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 
 @Config
 class ScoringPerkidConstants {
-    public static double TRANSITIVE_POS = 0.46;
+  /*  public static double TRANSITIVE_POS = 0.46;
     public static double PICK_POS = 0.512;
     public static double SAMP_POS = 0.1;
     public static double SPEC_POS = 0.84;
-    public static double PICK_SPEC = 0.42;
+    public static double PICK_SPEC = 0.42;*/
+  public static double PICK_SPEC = 0.42;
+    public static double TRANSFER_POS = 0.512;
 }
 
 public class ScoringPerkid {
@@ -33,10 +33,12 @@ public class ScoringPerkid {
         SPECIMEN,
         PICK,
         SAMPLE,
-        PICK_SPECIMEN
+        PICK_SPEC,
+        TRANSFER
+
     }
 
-    Mode currentMode = Mode.PICK_SPECIMEN;
+    Mode currentMode = Mode.PICK_SPEC;
 
     public ScoringPerkid(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
@@ -49,7 +51,7 @@ public class ScoringPerkid {
 
     public void teleop() {
         switch (currentMode) {
-            case SPECIMEN:
+            /*case SPECIMEN:
                 left.setPosition(ScoringPerkidConstants.SPEC_POS);
                 right.setPosition(ScoringPerkidConstants.SPEC_POS);
                 break;
@@ -60,12 +62,15 @@ public class ScoringPerkid {
             case PICK:
                 left.setPosition(ScoringPerkidConstants.PICK_POS);
                 right.setPosition(ScoringPerkidConstants.PICK_POS);
-                break;
-            case PICK_SPECIMEN:
+                break;*/
+            case PICK_SPEC:
                 left.setPosition(ScoringPerkidConstants.PICK_SPEC);
                 right.setPosition(ScoringPerkidConstants.PICK_SPEC);
                 break;
-
+            case TRANSFER:
+                left.setPosition(ScoringPerkidConstants.TRANSFER_POS);
+                right.setPosition(ScoringPerkidConstants.TRANSFER_POS);
+                break;
         }
 
     }
