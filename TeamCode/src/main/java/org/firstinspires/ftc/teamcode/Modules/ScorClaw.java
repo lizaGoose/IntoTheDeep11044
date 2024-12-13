@@ -28,7 +28,7 @@ public class ScorClaw {
                 claw.setPosition(0.76);
                 break;
             case DROP:
-                claw.setPosition(0.56);
+                claw.setPosition(0.52);
                 break;
         }
 

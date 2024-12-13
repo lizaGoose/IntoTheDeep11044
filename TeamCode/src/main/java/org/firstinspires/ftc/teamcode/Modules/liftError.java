@@ -70,15 +70,20 @@ public class liftError {
     }
 
     public void teleop() {
+        double error = pos - leftMotor.getCurrentPosition();
         switch (currentMode) {
             case NULL_POSE:
-               // if (gamepad.right_stick_y != 0) {
+
+                if (gamepad.right_stick_y != 0){
                     leftMotor.setPower(gamepad.right_stick_y);
                     rightMotor.setPower(gamepad.right_stick_y);
-                    //setReference(leftMotor.getCurrentPosition());
-              /*  } else {
-                    PIDControl();
-                }*/
+                    pos = leftMotor.getCurrentPosition();
+                }
+                    else{
+                    leftMotor.setPower(error*0.02);
+                    rightMotor.setPower(error*0.02);
+                }
+
                 break;
             case P_REGULATOR:
                 if(gamepad.left_stick_y !=0){
@@ -87,7 +92,7 @@ public class liftError {
                     pos = rightMotor.getCurrentPosition();
                 }
                 else {
-                    double error = pos - rightMotor.getCurrentPosition();
+                  //  double error = pos - rightMotor.getCurrentPosition();
                     leftMotor.setPower(-error);
                     rightMotor.setPower(-error);
                 }
@@ -96,6 +101,8 @@ public class liftError {
 
                     }
                 }
+                break;
+
 
         }
     }

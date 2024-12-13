@@ -19,6 +19,8 @@ class ScoringDiffConstants {
 
     public static double PICK_SPEC = 0.51;
     public static double GET_FROM_CLAW = 0.96;
+    public static double SCORE_SAMP = 0.58;
+    public static double SCORE_SPEC= 0.86;
 }
 
 public class ScoringDiff {
@@ -34,7 +36,8 @@ public class ScoringDiff {
         PICK_POSITION,
         PICK_SPEC,
         SCORE_SPEC,
-        GET_FROM_CLAW
+        GET_FROM_CLAW,
+
     }
 
     Mode currentMode = Mode.PICK_SPEC;
@@ -60,6 +63,12 @@ public class ScoringDiff {
                 break;
             case GET_FROM_CLAW:
                 diff.setPosition(ScoringDiffConstants.GET_FROM_CLAW);
+                break;
+            case SCORE_SAMP:
+                diff.setPosition(ScoringDiffConstants.SCORE_SAMP);
+                break;
+            case SCORE_SPEC:
+                diff.setPosition(ScoringDiffConstants.SCORE_SPEC);
                 break;
         /*    case SCORE_SPEC:
                 diff.setPosition(ScoringDiffConstants.SCORE_SPEC);

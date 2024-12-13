@@ -22,7 +22,7 @@ class PerkidConstants {
     public static double LOOK_POS = 0.5;*/
    public static double TRANSFER_POS = 0.71;
     public static double LOOK_POS = 0.47;
-    public static double PICK_UP = 0.30;
+    public static double PICK_UP = 0.26;
 }
 
 public class Perkid {

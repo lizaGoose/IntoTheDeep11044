@@ -19,7 +19,10 @@ class ScoringPerkidConstants {
     public static double SPEC_POS = 0.84;
     public static double PICK_SPEC = 0.42;*/
   public static double PICK_SPEC = 0.42;
-    public static double TRANSFER_POS = 0.512;
+    public static double TRANSFER_POS = 0.547;
+    public static double SCORE_SAMP = 0.1;
+    public static double TRANSFER_SPEC = 0.84;
+    public static double SCOR_SPEC = 0.84;
 }
 
 public class ScoringPerkid {
@@ -34,7 +37,10 @@ public class ScoringPerkid {
         PICK,
         SAMPLE,
         PICK_SPEC,
-        TRANSFER
+        TRANSFER,
+        SCORE_SAMP,
+        TRANSFER_SPEC,
+        SCOR_SPEC
 
     }
 
@@ -71,6 +77,19 @@ public class ScoringPerkid {
                 left.setPosition(ScoringPerkidConstants.TRANSFER_POS);
                 right.setPosition(ScoringPerkidConstants.TRANSFER_POS);
                 break;
+            case SCORE_SAMP:
+                left.setPosition(ScoringPerkidConstants.SCORE_SAMP);
+                right.setPosition(ScoringPerkidConstants.SCORE_SAMP);
+                break;
+            case TRANSFER_SPEC:
+                left.setPosition(ScoringPerkidConstants.TRANSFER_SPEC);
+                right.setPosition(ScoringPerkidConstants.TRANSFER_SPEC);
+                break;
+            case SCOR_SPEC:
+                left.setPosition(ScoringPerkidConstants.SCOR_SPEC);
+                right.setPosition(ScoringPerkidConstants.SCOR_SPEC);
+                break;
+
         }
 
     }

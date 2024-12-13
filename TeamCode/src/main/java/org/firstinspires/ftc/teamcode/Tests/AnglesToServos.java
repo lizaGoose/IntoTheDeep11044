@@ -49,7 +49,7 @@ public class AnglesToServos extends LinearOpMode {
         timer.reset();
         double reference = 0;
         while (opModeIsActive()){
-            distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
+            distanceSensor = hardwareMap.get(DistanceSensor.class, "DistanceFront");
             test1.setPower(gamepad1.right_stick_y);
             test.setPower(gamepad1.right_stick_y);
           /*  if (gamepad1.dpad_left){

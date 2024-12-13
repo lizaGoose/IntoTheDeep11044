@@ -222,8 +222,8 @@ public class Diff {
                 right.setPosition(diff.get(1));
                 break;
             case TRANSFER:
-                left.setPosition(TRANSFER);
-                right.setPosition(TRANSFER);
+                //left.setPosition(TRANSFER);
+              //  right.setPosition(TRANSFER);
                 break;
             case STRAIGHT_DOWN:
                 rotation = rotation - Math.pow(( -gamepad2.right_trigger + gamepad2.left_trigger ) / 2, 3) * timer.milliseconds() * ROTATION_SPEED;

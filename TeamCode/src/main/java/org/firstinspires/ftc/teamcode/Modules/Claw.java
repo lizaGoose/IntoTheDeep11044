@@ -11,7 +11,8 @@ public class Claw {
     Servo claw;
 
     public enum Mode {
-        PICK, DROP
+        PICK,
+        DROP
     }
 
     public Mode currentMode = Mode.PICK;
