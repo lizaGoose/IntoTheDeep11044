@@ -31,8 +31,8 @@ public class SmartIntakeController {
 
     public void updateTest() {
         double x = 0;
-        double y = 0;
-        double z = 0;
+        double y = 0.0243;
+        double z = 0.12745;
 
         List<Double> result = ClawCalculation.inverseKinematics(x, y, z);
 

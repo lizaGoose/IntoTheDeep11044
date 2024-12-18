@@ -39,10 +39,19 @@ public class DriveTrain {
                 drive.setMotorPowers(-gamepad1.right_stick_y, 0, gamepad1.right_stick_y, 0);
                 break;
         }
-
-        x = -gamepad1.left_stick_x;
-        y = gamepad1.left_stick_y;
-        heading = -gamepad1.right_trigger + gamepad1.left_trigger;
+        if (gamepad1.right_bumper) {
+            x = -gamepad1.left_stick_x;
+            y = gamepad1.left_stick_y;
+            heading = -0.25;
+        } else if (gamepad1.left_bumper) {
+            x = -gamepad1.left_stick_x;
+            y = gamepad1.left_stick_y;
+            heading = 0.25;
+        } else {
+            x = -gamepad1.left_stick_x;
+            y = gamepad1.left_stick_y;
+            heading = -gamepad1.right_trigger + gamepad1.left_trigger;
+        }
 
 
     }

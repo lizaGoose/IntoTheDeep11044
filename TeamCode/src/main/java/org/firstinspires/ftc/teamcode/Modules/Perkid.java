@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 
 
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.STRAIGHT_POS;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.VERTICAL_POS;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,15 +16,16 @@ import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 @Config
 class PerkidConstants {
    /* public static double MAX_POS = 0.77;
-    public static double VERTICAL_POS = 0.62;
-    public static double STRAIGHT_POS = 0.37;
-
+    */
+    public static double VERTICAL_POS = 0.63;
+    public static double STRAIGHT_POS = 0.39;
+    /*
     public static double TRANSFER_POS = 0.71;
     public static double AIM_POS = 0.37;
     public static double TAKE_POS = 0.27;
     public static double LOOK_POS = 0.5;*/
    public static double TRANSFER_POS = 0.71;
-    public static double LOOK_POS = 0.47;
+    public static double LOOK_POS = 0.37;
     public static double PICK_UP = 0.26;
 }
 
@@ -89,6 +93,20 @@ public class Perkid {
                 right.setPosition(PerkidConstants.PICK_UP);
                 break;
         }
+    }
 
+    public void setAngle(double angle) {
+        double position = angleToPosition(angle);
+
+        left.setPosition(position);
+        right.setPosition(position);
+    }
+
+    public double angleToPosition(double angle) {
+        double position = ((angle / 90) + 1) / 2;
+
+        position = (VERTICAL_POS - STRAIGHT_POS) * 2 * position + 2 * STRAIGHT_POS - VERTICAL_POS;
+
+        return position;
     }
 }

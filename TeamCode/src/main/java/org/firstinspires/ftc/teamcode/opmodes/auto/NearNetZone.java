@@ -26,12 +26,14 @@ public class NearNetZone extends LinearOpMode {
 
         Trajectory traj;
         try {
-            traj = drive.buildTrajectory("traj6.json")
-                    .waitForAt(.9, 2000)
+            traj = drive.buildTrajectory("traj4.json")
+                    /*.waitForAt(.9, 2000)
                     .waitForAt(1.9, 2000)
                     .waitForAt(2.9, 2000)
                     .waitForAt(3.9, 2000)
                     .waitForAt(4.9, 2000)
+                     */
+                    .addTurnMarker(0, 45)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);

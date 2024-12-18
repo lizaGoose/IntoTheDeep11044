@@ -14,6 +14,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Config
+class LiftErrorConstants {
+    public static double d = 0.00047;
+}
 
 public class liftError {
     public final DcMotorEx leftMotor, rightMotor;
@@ -21,6 +25,7 @@ public class liftError {
     OpMode linearOpMode;
     Gamepad gamepad;
     public double pos;
+
 
     public liftError(OpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
@@ -75,14 +80,25 @@ public class liftError {
             case NULL_POSE:
 
                 if (gamepad.right_stick_y != 0){
-                    leftMotor.setPower(gamepad.right_stick_y);
-                    rightMotor.setPower(gamepad.right_stick_y);
+                    leftMotor.setPower(-gamepad.right_stick_y);
+                    rightMotor.setPower(-gamepad.right_stick_y);
                     pos = leftMotor.getCurrentPosition();
                 }
-                    else{
-                    leftMotor.setPower(error*0.02);
-                    rightMotor.setPower(error*0.02);
+                else if( -15 <= leftMotor.getCurrentPosition() && leftMotor.getCurrentPosition()  <= 15){
+                    if(-gamepad.right_stick_y < 0) {
+                        leftMotor.setPower(0);
+                        rightMotor.setPower(0);
+                    }
+                    else if(-gamepad.right_stick_y >= 0){
+                        leftMotor.setPower(-gamepad.right_stick_y);
+                        rightMotor.setPower(-gamepad.right_stick_y);
+                    }
                 }
+                    else{
+                    leftMotor.setPower(-error*LiftErrorConstants.d);
+                    rightMotor.setPower(-error*LiftErrorConstants.d);
+                }
+
 
                 break;
             case P_REGULATOR:

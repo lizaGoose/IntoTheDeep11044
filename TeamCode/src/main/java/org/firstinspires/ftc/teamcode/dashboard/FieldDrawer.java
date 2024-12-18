@@ -11,6 +11,11 @@ import java.util.List;
 
 public class FieldDrawer {
 
+    public static String stroke_color = "red";
+    public static int stroke_width = 1;
+
+    public static String fill_color = "red";
+
     public static void drawBezierCurve(Canvas c,
                                 BezierCurve curve,
                                 int width,

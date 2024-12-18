@@ -45,7 +45,7 @@ public class Drive {
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.DOWN, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
         imu.resetYaw();
 
@@ -73,7 +73,7 @@ public class Drive {
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.DOWN, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
         imu.resetYaw();
 
@@ -84,19 +84,18 @@ public class Drive {
         runner = new TrajectoryRunner();
     }
 
-    public void setMotorPowers(double lf, double lb, double rf, double rb) {
+    public void setMotorPowers(double lf, double lb, double rb, double rf) {
         leftFrontDrive.setPower(lf);
         leftBackDrive.setPower(lb);
-        rightFrontDrive.setPower(rf);
         rightBackDrive.setPower(rb);
+        rightFrontDrive.setPower(rf);
     }
 
     public void setMotorPowers(double[] motorPowers) {
         leftFrontDrive.setPower(motorPowers[0]);
         leftBackDrive.setPower(motorPowers[1]);
-        rightFrontDrive.setPower(motorPowers[2]);
-        rightBackDrive.setPower(motorPowers[3]);
-
+        rightBackDrive.setPower(motorPowers[2]);
+        rightFrontDrive.setPower(motorPowers[3]);
     }
 
     public double[] setPowerByPose(Pose2d pose) {
@@ -171,12 +170,10 @@ public class Drive {
     }
 
     public Pose2d getPoseEstimate() {
-        updateLocalizer();
         return localizer.getPoseEstimate();
     }
 
     public Pose2d getVelocityEstimate() {
-        updateLocalizer();
         return localizer.getPoseVelocity();
     }
 
@@ -230,6 +227,7 @@ public class Drive {
     }
 
     public void update() {
+        updateLocalizer();
         Pose2d res = runner.update(getPoseEstimate(), getVelocityEstimate());
         setPowerByPoseField(res);
     }

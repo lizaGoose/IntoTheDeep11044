@@ -17,10 +17,11 @@ class ScoringDiffConstants {
     public static double PICK_SPEC = 0.51;
     public static double SCORE_SPEC = 1;*/
 
-    public static double PICK_SPEC = 0.51;
-    public static double GET_FROM_CLAW = 0.96;
-    public static double SCORE_SAMP = 0.58;
-    public static double SCORE_SPEC= 0.86;
+    public static double PICK_SPEC = 0.49;
+    public static double GET_FROM_CLAW = 1;
+    public static double SCORE_SAMP = 0.7;
+    public static double SCORE_SPEC= 1;
+    public static double TRANSFER_SPEC= 0.86;
 }
 
 public class ScoringDiff {
@@ -37,6 +38,7 @@ public class ScoringDiff {
         PICK_SPEC,
         SCORE_SPEC,
         GET_FROM_CLAW,
+        TRANSFER_SPEC
 
     }
 
@@ -69,6 +71,9 @@ public class ScoringDiff {
                 break;
             case SCORE_SPEC:
                 diff.setPosition(ScoringDiffConstants.SCORE_SPEC);
+                break;
+            case TRANSFER_SPEC:
+                diff.setPosition(ScoringDiffConstants.TRANSFER_SPEC);
                 break;
         /*    case SCORE_SPEC:
                 diff.setPosition(ScoringDiffConstants.SCORE_SPEC);

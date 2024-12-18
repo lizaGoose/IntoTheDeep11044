@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Camera.CameraTest;
+import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
 @Config
 class HandConstants {
@@ -40,7 +41,7 @@ public class Hand {
         this.linearOpMode = linearOpMode;
         gamepad = linearOpMode.gamepad2;
         hand = linearOpMode.hardwareMap.get(Servo.class, "horizontal_servo");
-        hand.scaleRange(1 - (0.83 + 0.15), 1 - (0.83 - 0.15));
+        hand.scaleRange(0.01, 0.34);
 
         cam = new CameraTest();
         timer = new ElapsedTime();
@@ -61,6 +62,12 @@ public class Hand {
                 hand.setPosition(0.5);
                 break;
         }
+    }
+
+    public void setAngle(double angle) {
+        double position = ClawCalculation.angleToServoPos(angle, 90);
+
+        hand.setPosition(position);
     }
 
     public void resetTimer() {

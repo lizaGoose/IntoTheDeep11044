@@ -52,7 +52,7 @@ public class Extend {
         switch (currentMode) {
             case DRIVER_CONTROL:
                 if (gamepad.right_stick_y != 0) {
-                    motor.setPower(-gamepad.right_stick_y);
+                    motor.setPower(-gamepad.left_stick_y);
                     setReference(motor.getCurrentPosition());
                 }
                else {

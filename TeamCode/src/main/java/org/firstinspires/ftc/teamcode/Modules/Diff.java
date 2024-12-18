@@ -22,7 +22,7 @@ import java.util.List;
 @Config
 class DiffConstants {
   //  public static double UP_POS = 1.0;
-    public static double HORIZONTAL_DOWN = 0.2;
+    public static double HORIZONTAL_DOWN = 0.35;
     public static double PICK_UP = 0.4;
 
     public static double FORWARD = 0.68;
@@ -30,7 +30,8 @@ class DiffConstants {
     //public static double PICK_DOWN = 0.23 + 0.17;
     //public static double TRANSFER = 0.76 + 0.17;
     public static double TRANSFER = 0.76 + 0.17;
-    public static double ROTATION_SPEED = 0.012;
+    public static double ROTATION_SPEED = 0.35;
+    public static double MAX_ROT = 1;
 }
 
 @Config
@@ -53,6 +54,7 @@ public class Diff {
     private List<Double> diff = ClawCalculation.angleAndRotToDiffFix(angle_config, rotation_config);
     private double lastCamera = 0;
 
+
     public enum Mode {
         DRIVER_CONTROL,
         GET_UP,
@@ -67,6 +69,7 @@ public class Diff {
 
         TRANSFER,
         PICK_UP,
+
     }
 
     public Mode currentMode = Mode.TRANSFER;
@@ -233,6 +236,7 @@ public class Diff {
                 right.setPosition(HORIZONTAL_DOWN - rotation);
                 timer.reset();
                 break;
+
             case PICK_DOWN:
                // left.setPosition(PICK_DOWN + rotation);
                 //right.setPosition(PICK_DOWN - rotation);

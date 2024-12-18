@@ -12,6 +12,7 @@ public class TrajectoryBuilder {
     private final Vector2d[] points;
     private final List<StopPoint> stops = new ArrayList<>();
     private final List<SpatialMarker> spatialMarkers = new ArrayList<>();
+    private final List<TurnMarker> turnMarkers = new ArrayList<>();
 
     public TrajectoryBuilder(File file) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -20,6 +21,16 @@ public class TrajectoryBuilder {
 
     public TrajectoryBuilder addSpatialMarker(double t, MarkerRunnable runnable) {
         spatialMarkers.add(new SpatialMarker(t, runnable));
+        return this;
+    }
+
+    public TrajectoryBuilder addTurnMarker(int curve, VariableProducer producer) {
+        turnMarkers.add(new TurnMarker(curve, producer));
+        return this;
+    }
+
+    public TrajectoryBuilder addTurnMarker(int curve, double angle) {
+        turnMarkers.add(new TurnMarker(curve, (t) -> angle));
         return this;
     }
 
@@ -35,6 +46,6 @@ public class TrajectoryBuilder {
 
     public Trajectory build() {
         stops.add(new StopPoint((double) (points.length - 1) / 3, Integer.MAX_VALUE));
-        return new Trajectory(points, stops, spatialMarkers);
+        return new Trajectory(points, stops, spatialMarkers, turnMarkers);
     }
 }

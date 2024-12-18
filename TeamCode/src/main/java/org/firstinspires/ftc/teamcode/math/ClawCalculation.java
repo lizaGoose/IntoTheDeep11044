@@ -23,9 +23,19 @@ public class ClawCalculation {
     }
 
     public static List<Double> inverseKinematics(double x, double y, double z) {
-        double theta2 = Math.asin(y / d2);//horizontal
-        double fi1 = Math.asin(( x + d3 ) / Math.sqrt(Math.pow(d1, 2) + Math.pow(d2 * Math.cos(theta2), 2)));
-        double fi = Math.atan(d1 / ( d2 + Math.cos(theta2) ));
+        double theta2 = Math.asin(Math.toRadians(y / d2));//horizontal
+        double fi1 = Math.asin(Math.toRadians(( x + d3 ) / (Math.sqrt(Math.pow(d1, 2) + Math.pow(d2 * Math.cos(theta2), 2)))));
+        double fi = Math.atan(Math.toRadians(d1 / ( d2 + Math.cos(theta2) )));
+        double theta1 = fi1 - fi;//
+        double d0 = z - ( d2 * Math.cos(theta2) * Math.cos(theta1) ) + d1 * Math.sin(theta1);//extend
+        double theta3 = -Math.PI / 2 + theta1;
+        return Arrays.asList(d0, theta1, theta2, theta3);
+    }
+
+    public static List<Double> inverseKinematicsFix(double x, double y, double z) {
+        double theta2 = Math.asin(Math.toRadians(y / d2));//horizontal
+        double fi1 = Math.asin(Math.toRadians(( x + d3 ) / (Math.sqrt(Math.pow(d1, 2) + Math.pow(d2 * Math.cos(theta2), 2)))));
+        double fi = Math.atan(Math.toRadians(d1 / ( d2 + Math.cos(theta2) )));
         double theta1 = fi1 - fi;//
         double d0 = z - ( d2 * Math.cos(theta2) * Math.cos(theta1) ) + d1 * Math.sin(theta1);//extend
         double theta3 = -Math.PI / 2 + theta1;

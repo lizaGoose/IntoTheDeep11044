@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.dashboard.FieldDrawer;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.math.BezierCurve;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Config
 public class TrajectoryRunner {
@@ -25,25 +27,33 @@ public class TrajectoryRunner {
     private int curveIndex;
     private List<SpatialMarker> markers;
     private List<StopPoint> stopPoints;
+    private List<TurnMarker> turns;
     private ArrayList<Pose2d> poseHistory;
     private ArrayList<Vector2d> turnHistory;
 
     public static double kP = 0.2;
-    public static double kCentripetal = 0.00001;
+    public static double kCentripetal = 0.01;
+    public static double force = 0.7; // TODO: REMOVE
 
     public static boolean uselessFlag = false;
 
     double lastCurvature;
 
+    double lastHeadingError;
+
+    public static PIDFCoefficients turn_coefficients = new PIDFCoefficients(0, 0, 0, 0);
+
     public TrajectoryRunner() {
         clock = new ElapsedTime();
         dashboard = FtcDashboard.getInstance();
+        dashboard.setTelemetryTransmissionInterval(25);
     }
 
     public void followTrajectory(Trajectory trajectory) {
         currentTrajectory = trajectory;
         markers = trajectory.getMarkers();
         stopPoints = trajectory.getStopPoints();
+        turns = trajectory.getTurns();
         t = 0;
         curveIndex = 0;
         currentCurve = currentTrajectory.get(0);
@@ -66,7 +76,7 @@ public class TrajectoryRunner {
         Vector2d normDeriv = derivative.div(derivative.norm());
 
         double curvature = currentCurve.getCurvatureAt(t);
-        // double curvatureDeriv = (Math.abs(curvature) - Math.abs(lastCurvature)) / clock.seconds();
+        //double curvatureDeriv = (Math.abs(curvature) - Math.abs(lastCurvature)) / clock.seconds();
         double accel = curvatureToForce(curvature);
         /*
         if (curvatureDeriv > curvatureDerivLimit && Math.abs(curvature) > curvatureLimit) {
@@ -84,7 +94,25 @@ public class TrajectoryRunner {
         // Vector2d pathing_power = normDer.rotated(angle);
         Vector2d pathing_power = normDeriv.plus(error.times(kP));
 
-        result = new Pose2d(pathing_power.plus(centripetalForce).times(accel), 0);
+        double headingPower = 0;
+
+        double headingReference = 0;
+
+        if (!turns.isEmpty() && curveIndex == turns.get(0).curve) {
+            headingReference = Math.toRadians(turns.get(0).getProducer().produce(0));
+
+            double headingError = headingReference - poseEstimate.getHeading();
+
+            double headingDerivative = ( headingError - lastHeadingError ) / clock.seconds();
+
+            headingPower = ( turn_coefficients.p * headingError ) + ( turn_coefficients.i * 0 ) + ( turn_coefficients.d * headingDerivative );
+
+            lastHeadingError = headingError;
+        } else if (!turns.isEmpty() && curveIndex > turns.get(0).curve) {
+            turns.remove(0);
+        }
+
+        result = new Pose2d(pathing_power.plus(centripetalForce).times(accel), headingPower);
 
         t = currentCurve.getClosestTtoPoint(poseEstimate.vec());
         if (Math.abs(t - 1) <= 1e-6) {
@@ -102,8 +130,8 @@ public class TrajectoryRunner {
             markers.remove(0);
         }
 
-        if (!stopPoints.isEmpty() && (t + curveIndex >= stopPoints.get(0).t ||
-                (Math.abs((t + curveIndex) - stopPoints.get(0).t) <= 1e-6 /*&& error.norm() <= 1*/))) {
+        if (!stopPoints.isEmpty() && ( t + curveIndex >= stopPoints.get(0).t ||
+                ( Math.abs(( t + curveIndex ) - stopPoints.get(0).t) <= 1e-6 /*&& error.norm() <= 1*/ ) )) {
             if (stopPoints.get(0).milliseconds >= 0) {
                 stopPoints.get(0).milliseconds -= (int) clock.milliseconds();
             } else {
@@ -127,11 +155,15 @@ public class TrajectoryRunner {
         packet.put("pathing_power_norm", pathing_power.norm());
         packet.put("x", poseEstimate.getX());
         packet.put("y", poseEstimate.getY());
+        packet.put("heading", poseEstimate.getHeading());
+        packet.put("heading_reference", headingReference);
+        packet.put("heading_power", headingPower);
+
         packet.put("velocity", velocityEstimate.vec().norm());
         packet.put("curvature", curvature);
 
-        dashboard.sendTelemetryPacket(packet);
 
+        dashboard.sendTelemetryPacket(packet);
         clock.reset();
 
         return result;
@@ -160,6 +192,6 @@ public class TrajectoryRunner {
     }
 
     private double curvatureToForce(double curvature) {
-        return 0.9;
+        return force;
     }
 }

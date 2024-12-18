@@ -10,11 +10,13 @@ public class Trajectory {
     private final Vector2d[] points;
     private final List<StopPoint> stopPoints;
     private final List<SpatialMarker> markers;
+    private final List<TurnMarker> turns;
 
-    Trajectory(Vector2d[] points, List<StopPoint> stopPoints, List<SpatialMarker> markers) {
+    Trajectory(Vector2d[] points, List<StopPoint> stopPoints, List<SpatialMarker> markers, List<TurnMarker> turns) {
         this.points = points;
         this.stopPoints = stopPoints;
         this.markers = markers;
+        this.turns = turns;
     }
 
     public BezierCurve get(int i) {
@@ -36,5 +38,9 @@ public class Trajectory {
 
     public List<StopPoint> getStopPoints() {
         return stopPoints;
+    }
+
+    public List<TurnMarker> getTurns() {
+        return turns;
     }
 }
