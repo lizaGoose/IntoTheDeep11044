@@ -45,7 +45,6 @@ public class TrajectoryBuilder {
     }
 
     public Trajectory build() {
-        stops.add(new StopPoint((double) (points.length - 1) / 3, Integer.MAX_VALUE));
         return new Trajectory(points, stops, spatialMarkers, turnMarkers);
     }
 }

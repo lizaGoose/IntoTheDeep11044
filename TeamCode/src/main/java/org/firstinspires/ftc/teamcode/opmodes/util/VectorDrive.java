@@ -19,6 +19,7 @@ public class VectorDrive extends LinearOpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     public static double X = 0;
     public static double Y = 0;
+    public static double angle = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -41,6 +42,8 @@ public class VectorDrive extends LinearOpMode {
             }
             drive.updateLocalizer();
             telemetry.addData("Heading", drive.getPoseEstimate().getHeading());
+            telemetry.addData("Raw External Heading", drive.getRawExternalHeading());
+            telemetry.addData("Corrected Heading", drive.getCorrectedHeading(angle));
             telemetry.addData("x", drive.getPoseEstimate().getX());
             telemetry.addData("y", drive.getPoseEstimate().getY());
             telemetry.update();

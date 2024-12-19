@@ -21,7 +21,7 @@ import java.util.List;
 
 @Config
 class DiffConstants {
-  //  public static double UP_POS = 1.0;
+  //public static double UP_POS = 1.0;
     public static double HORIZONTAL_DOWN = 0.35;
     public static double PICK_UP = 0.4;
 

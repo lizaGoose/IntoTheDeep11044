@@ -2,17 +2,11 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
 import org.firstinspires.ftc.teamcode.Camera.SampleDetectionPipeline;
-import org.firstinspires.ftc.teamcode.Camera.SampleDetectionPipelinePNP;
-import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
 public class ModulesRed {
     LinearOpMode linearOpMode;
@@ -29,7 +23,7 @@ public class ModulesRed {
     ScoringPerkid scorPer;
     ScoringDiff diffScor;
     ScorClaw clawScor;
-    liftError lift;
+    LiftError lift;
     double countPerkid = 50;
     ElapsedTime timer, timerScor, pickupTimer, dropHumanTimer, hangTimer;
     Hang hang;
@@ -55,7 +49,7 @@ public class ModulesRed {
         pip = new SampleDetectionPipeline();
         clawScor = new ScorClaw(linearOpMode);
         scorPer = new ScoringPerkid(linearOpMode);
-        lift = new liftError(linearOpMode);
+        lift = new LiftError(linearOpMode);
         gamepad1 = linearOpMode.gamepad1;
         gamepad2 = linearOpMode.gamepad2;
         timer = new ElapsedTime();
@@ -105,7 +99,7 @@ public class ModulesRed {
             case OPERATOR_CONTROL:
                 cam.operatorControlBlue();
                 extend.currentMode = Extend.Mode.DRIVER_CONTROL;
-                lift.currentMode = liftError.Mode.NULL_POSE;
+                lift.currentMode = LiftError.Mode.NULL_POSE;
 
                 if (gamepad2.dpad_up) {
 

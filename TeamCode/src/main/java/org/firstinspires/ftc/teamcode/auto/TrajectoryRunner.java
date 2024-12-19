@@ -31,17 +31,17 @@ public class TrajectoryRunner {
     private ArrayList<Pose2d> poseHistory;
     private ArrayList<Vector2d> turnHistory;
 
-    public static double kP = 0.2;
-    public static double kCentripetal = 0.01;
+    public static double kP = 0.25;
+    public static double kCentripetal = 0.035;
     public static double force = 0.7; // TODO: REMOVE
 
-    public static boolean uselessFlag = false;
+    public boolean uselessFlag = false;
 
     double lastCurvature;
 
-    double lastHeadingError;
+    double lastHeadingError = 0;
 
-    public static PIDFCoefficients turn_coefficients = new PIDFCoefficients(0, 0, 0, 0);
+    public static PIDFCoefficients turn_coefficients = new PIDFCoefficients(0.15, 0, 0, 0);
 
     public TrajectoryRunner() {
         clock = new ElapsedTime();
@@ -101,7 +101,7 @@ public class TrajectoryRunner {
         if (!turns.isEmpty() && curveIndex == turns.get(0).curve) {
             headingReference = Math.toRadians(turns.get(0).getProducer().produce(0));
 
-            double headingError = headingReference - poseEstimate.getHeading();
+            double headingError = correctHeading(poseEstimate.getHeading(), headingReference);
 
             double headingDerivative = ( headingError - lastHeadingError ) / clock.seconds();
 
@@ -131,7 +131,7 @@ public class TrajectoryRunner {
         }
 
         if (!stopPoints.isEmpty() && ( t + curveIndex >= stopPoints.get(0).t ||
-                ( Math.abs(( t + curveIndex ) - stopPoints.get(0).t) <= 1e-6 /*&& error.norm() <= 1*/ ) )) {
+                ( Math.abs(( t + curveIndex ) - stopPoints.get(0).t) <= 1e-6  ) )) {
             if (stopPoints.get(0).milliseconds >= 0) {
                 stopPoints.get(0).milliseconds -= (int) clock.milliseconds();
             } else {
@@ -158,6 +158,7 @@ public class TrajectoryRunner {
         packet.put("heading", poseEstimate.getHeading());
         packet.put("heading_reference", headingReference);
         packet.put("heading_power", headingPower);
+        packet.put("corrected_heading", lastHeadingError);
 
         packet.put("velocity", velocityEstimate.vec().norm());
         packet.put("curvature", curvature);
@@ -189,6 +190,12 @@ public class TrajectoryRunner {
                     "green"
             );
         }
+    }
+
+    private double correctHeading(double heading, double reference) {
+        double H = heading - reference;
+        double x = 1 / (2 * Math.PI) * H + 0.5;
+        return 2 * Math.PI * (x - Math.floor(x)) - Math.PI;
     }
 
     private double curvatureToForce(double curvature) {

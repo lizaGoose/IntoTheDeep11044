@@ -208,6 +208,12 @@ public class Drive {
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
 
+    public double getCorrectedHeading(double angle) {
+        double H = getPoseEstimate().getHeading() - Math.toRadians(angle);
+        double x = 1 / (2 * Math.PI) * H + 0.5;
+        return 2 * Math.PI * (x - Math.floor(x)) - Math.PI;
+    }
+
     public Double getExternalHeadingVelocity() {
         return (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
     }

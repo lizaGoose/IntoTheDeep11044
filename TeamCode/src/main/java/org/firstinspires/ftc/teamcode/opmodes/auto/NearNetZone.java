@@ -11,12 +11,16 @@ import org.firstinspires.ftc.teamcode.drive.Drive;
 
 import java.io.IOException;
 
+// traj4 curve traj8
+
 @Config
 @Autonomous
 public class NearNetZone extends LinearOpMode {
     private Drive drive;
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
+
+    public static double angle = 90;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -26,14 +30,16 @@ public class NearNetZone extends LinearOpMode {
 
         Trajectory traj;
         try {
-            traj = drive.buildTrajectory("traj4.json")
+            traj = drive.buildTrajectory("traj9.json")
                     /*.waitForAt(.9, 2000)
                     .waitForAt(1.9, 2000)
                     .waitForAt(2.9, 2000)
                     .waitForAt(3.9, 2000)
                     .waitForAt(4.9, 2000)
                      */
-                    .addTurnMarker(0, 45)
+                    .addTurnMarker(0, 90)
+                    .addTurnMarker(1, 90)
+                    .waitForAt(2, 1000)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);

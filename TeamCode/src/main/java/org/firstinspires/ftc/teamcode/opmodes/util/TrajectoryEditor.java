@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.opmodes.test;
+package org.firstinspires.ftc.teamcode.opmodes.util;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -31,6 +32,7 @@ public class TrajectoryEditor extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         ObjectMapper objectMapper = new ObjectMapper();
+        dashboard.setTelemetryTransmissionInterval(25);
 
         waitForStart();
 
@@ -118,6 +120,8 @@ public class TrajectoryEditor extends LinearOpMode {
 
         int currentPoint = 0;
 
+        double heading = 0;
+
         while (opModeIsActive()) {
 
             TelemetryPacket packet = new TelemetryPacket();
@@ -133,6 +137,7 @@ public class TrajectoryEditor extends LinearOpMode {
                 FieldDrawer.drawBezierCurvePoints(canvas, curve, 1, "red");
             }
             FieldDrawer.drawPoint(canvas, points.get(currentPoint), 1, "yellow");
+            FieldDrawer.drawRobot(canvas, new Pose2d(points.get(currentPoint), heading));
 
             dashboard.sendTelemetryPacket(packet);
 
@@ -181,9 +186,12 @@ public class TrajectoryEditor extends LinearOpMode {
                 }
             }
             if (gamepad1.square) {
-                points.remove(points.size() - 1);
-                points.remove(points.size() - 1);
-                points.remove(points.size() - 1);
+                for (int i = 0; i < 3; ++i) {
+                    if (points.size() <= 4) {
+                        break;
+                    }
+                    points.remove(points.size() - 1);
+                }
                 while (gamepad1.square) {
                     telemetry.addLine("Yes");
                     telemetry.update();
@@ -207,6 +215,7 @@ public class TrajectoryEditor extends LinearOpMode {
                     telemetry.update();
                 }
             }
+            heading += 0.0001 * (gamepad1.right_trigger - gamepad1.left_trigger);
         }
     }
 }
