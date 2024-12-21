@@ -24,11 +24,11 @@ import java.util.List;
 @Config
 class DifferentialConstants {
     public static double HORIZONTAL_DOWN = 0.35;
-    public static double PICK_UP = 0.55;
-    public static double TRANSFER = 0.76 + 0.17;
+    public static double PICK_UP = 0.1;
+    public static double TRANSFER = 1;
     public static double SCORE_SAMP = 0.68;
 
-    public static double DISCRETE_ROTATION = 0.1;
+    public static double DISCRETE_ROTATION = 0.15;
 
     public static double FORWARD = 0.68;
     public static double DOWN = 0.275;

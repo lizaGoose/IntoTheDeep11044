@@ -24,9 +24,11 @@ class PerkidConstants {
     public static double AIM_POS = 0.37;
     public static double TAKE_POS = 0.27;
     public static double LOOK_POS = 0.5;*/
-   public static double TRANSFER_POS = 0.71;
-    public static double LOOK_POS = 0.37;
-    public static double PICK_UP = 0.26;
+    public static double TRANSFER_POS = 0.67;
+    public static double LOOK_POS = 0.45;
+    public static double TRANSFER_FROM_SUBMERSABLE = 0.47;
+    //0.37
+    public static double PICK_UP = 0.32;
 }
 
 public class Perkid {
@@ -44,7 +46,8 @@ public class Perkid {
 
         TRANSFER,
         LOOK,
-        PICK_UP
+        PICK_UP,
+        TRANSFER_FROM_SUBMERSABLE
     }
 
     Mode currentMode = Mode.SCORE_POSITION;
@@ -91,6 +94,10 @@ public class Perkid {
             case PICK_UP:
                 left.setPosition(PerkidConstants.PICK_UP);
                 right.setPosition(PerkidConstants.PICK_UP);
+                break;
+            case TRANSFER_FROM_SUBMERSABLE:
+                left.setPosition(PerkidConstants.TRANSFER_FROM_SUBMERSABLE);
+                right.setPosition(PerkidConstants.TRANSFER_FROM_SUBMERSABLE);
                 break;
         }
     }

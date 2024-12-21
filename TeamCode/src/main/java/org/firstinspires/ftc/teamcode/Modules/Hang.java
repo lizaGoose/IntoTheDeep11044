@@ -40,10 +40,10 @@ public class Hang {
     public Hang(OpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         hang = linearOpMode.hardwareMap.get(DcMotorEx.class, "hangMotor");
-        left = linearOpMode.hardwareMap.get(Servo.class, "left_lift_servo");
-        right = linearOpMode.hardwareMap.get(Servo.class, "right_lift_servo");
+    //    left = linearOpMode.hardwareMap.get(Servo.class, "left_lift_servo");
+      //  right = linearOpMode.hardwareMap.get(Servo.class, "right_lift_servo");
 
-        gamepad = linearOpMode.gamepad1;
+        gamepad = linearOpMode.gamepad2;
 
         timer = new ElapsedTime();
     }
@@ -100,16 +100,34 @@ public class Hang {
                 hang.setTargetPosition(HangConstants.UP_POS);*/
                 break;
             case ENGAGED:
-                left.setPosition(HangConstants.LEFT_ENGAGED);
-                right.setPosition(HangConstants.RIGHT_ENGAGED);
+              /*  left.setPosition(HangConstants.LEFT_ENGAGED);
+                right.setPosition(HangConstants.RIGHT_ENGAGED);*/
                 timer.reset();
 
                 break;
             case NOT_ENGAGED:
-                left.setPosition(HangConstants.LEFT_NOT_ENGAGED);
-                right.setPosition(HangConstants.RIGHT_NOT_ENGAGED);
+              /*  left.setPosition(HangConstants.LEFT_NOT_ENGAGED);
+                right.setPosition(HangConstants.RIGHT_NOT_ENGAGED);*/
                 break;
         }
-        hang.setPower((gamepad.triangle ? 1 : 0) + ( gamepad.cross ? -1 : 0 ));
+        if(hang.getCurrentPosition() <= 10){
+            if(-(gamepad.left_stick_y) <= 0){
+                hang.setPower(0);
+            }
+            else {
+                hang.setPower(-(gamepad.left_stick_y));
+            }
+        }
+        else if(hang.getCurrentPosition() >= 3500){
+            if(-(gamepad.left_stick_y) >= 0){
+                hang.setPower(0);
+            }
+            else {
+                hang.setPower(-(gamepad.left_stick_y));
+            }
+        }
+        else {
+            hang.setPower(-(gamepad.left_stick_y));
+        }
     }
 }

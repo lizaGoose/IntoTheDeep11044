@@ -13,7 +13,10 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+@Config
+class ExtendErrorConstants{
+    public static double d = 0.03;
+}
 
 public class extendError {
     OpMode linearOpMode;
@@ -77,7 +80,7 @@ public class extendError {
                     pos = motor.getCurrentPosition();
                 }
                 else{
-                    motor.setPower(error*0.03);
+                    motor.setPower(error*ExtendErrorConstants.d);
                 }
 
                 break;

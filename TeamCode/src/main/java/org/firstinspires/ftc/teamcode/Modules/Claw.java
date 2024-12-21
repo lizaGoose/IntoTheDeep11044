@@ -1,18 +1,28 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Config
+class ClawConstants{
+    public static double LIGHT = 0.645;
+    public static double PICK = 0.67;
+    public static double DROP = 0.15;
+    public static double TRANSFER = 0.37;
+}
 public class Claw {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
     Servo claw;
 
     public enum Mode {
+        LIGHT,
         PICK,
-        DROP
+        DROP,
+        TRANSFER
     }
 
     public Mode currentMode = Mode.PICK;
@@ -21,17 +31,21 @@ public class Claw {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
         claw = linearOpMode.hardwareMap.get(Servo.class, "claw_servo");
-
-
     }
 
     public void teleop() {
         switch (currentMode) {
             case PICK:
-                claw.setPosition(0.9);
+                claw.setPosition(ClawConstants.PICK);
                 break;
             case DROP:
-                claw.setPosition(0.5);
+                claw.setPosition(ClawConstants.DROP);
+                break;
+            case TRANSFER:
+                claw.setPosition(ClawConstants.TRANSFER);
+                break;
+            case LIGHT:
+                claw.setPosition(ClawConstants.LIGHT);
                 break;
         }
 

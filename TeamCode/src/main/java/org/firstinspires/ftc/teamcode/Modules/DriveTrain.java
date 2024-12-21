@@ -63,8 +63,8 @@ public class DriveTrain {
             heading = -gamepad1.right_trigger + gamepad1.left_trigger;
         }
         */
-        x = -gamepad1.left_stick_x;
-        y = gamepad1.left_stick_y;
+        x = gamepad1.left_stick_x;
+        y = -gamepad1.left_stick_y;
         heading = -gamepad1.right_trigger + gamepad1.left_trigger;
     }
 }

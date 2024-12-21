@@ -19,10 +19,10 @@ class ScoringPerkidConstants {
       public static double SPEC_POS = 0.84;
       public static double PICK_SPEC = 0.42;*/
     public static double PICK_SPEC = 0.38;
-    public static double TRANSFER_POS = 0.5;
+    public static double TRANSFER_POS = 0.57;
     public static double SCORE_SAMP = 0.05;
     public static double TRANSFER_SPEC = 0.9;
-    public static double SCOR_SPEC = 0.9;
+    public static double SCOR_SPEC = 0.94;
 }
 
 public class ScoringPerkid {

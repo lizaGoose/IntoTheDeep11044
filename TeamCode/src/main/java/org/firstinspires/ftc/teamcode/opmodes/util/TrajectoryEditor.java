@@ -73,14 +73,14 @@ public class TrajectoryEditor extends LinearOpMode {
                 }
             }
 
-            if (gamepad1.circle) {
+            if (gamepad1.cross || gamepad1.a) {
                 chosenFileName = filesList[chosenFileIndex];
-                while (gamepad1.circle) {
+                while (gamepad1.cross || gamepad1.a) {
                     telemetry.addLine("Yes");
                     telemetry.update();
                 }
             }
-            if (gamepad1.square) {
+            if (gamepad1.circle || gamepad1.b) {
                 if (CUSTOM_FILE_NAME == null) {
                     int index = 0;
                     for (String s : filesList) {
@@ -92,7 +92,7 @@ public class TrajectoryEditor extends LinearOpMode {
                 } else {
                     chosenFileName = CUSTOM_FILE_NAME;
                 }
-                while (gamepad1.square) {
+                while (gamepad1.circle || gamepad1.b) {
                     telemetry.addLine("Yes");
                     telemetry.update();
                 }
@@ -175,31 +175,31 @@ public class TrajectoryEditor extends LinearOpMode {
 
             points.set(currentPoint, point);
 
-            if (gamepad1.circle) {
+            if (gamepad1.cross || gamepad1.a) {
                 point = points.get(points.size() - 1);
                 points.add(point.plus(new Vector2d(0, 5)));
                 points.add(point.plus(new Vector2d(0, 10)));
                 points.add(point.plus(new Vector2d(0, 15)));
-                while (gamepad1.circle) {
+                while (gamepad1.cross || gamepad1.a) {
                     telemetry.addLine("Yes");
                     telemetry.update();
                 }
             }
-            if (gamepad1.square) {
+            if (gamepad1.circle || gamepad1.b) {
                 for (int i = 0; i < 3; ++i) {
                     if (points.size() <= 4) {
                         break;
                     }
                     points.remove(points.size() - 1);
                 }
-                while (gamepad1.square) {
+                while (gamepad1.circle || gamepad1.b) {
                     telemetry.addLine("Yes");
                     telemetry.update();
                 }
             }
-            if (gamepad1.cross) {
+            if (gamepad1.square || gamepad1.x) {
                 points.set(currentPoint, new Vector2d(X, Y));
-                while (gamepad1.cross) {
+                while (gamepad1.square || gamepad1.x) {
                     telemetry.addLine("Yes");
                     telemetry.update();
                 }

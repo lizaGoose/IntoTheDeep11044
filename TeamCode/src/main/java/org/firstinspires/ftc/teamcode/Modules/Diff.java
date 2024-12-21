@@ -23,7 +23,7 @@ import java.util.List;
 class DiffConstants {
   //public static double UP_POS = 1.0;
     public static double HORIZONTAL_DOWN = 0.35;
-    public static double PICK_UP = 0.4;
+    public static double PICK_UP = 0.52;
 
     public static double FORWARD = 0.68;
     public static double DOWN = 0.275;
