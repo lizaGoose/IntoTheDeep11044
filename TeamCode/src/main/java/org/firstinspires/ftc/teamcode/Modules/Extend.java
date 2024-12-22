@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.COEFFICIENTS;
+import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.HANG;
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.MAX_POSITION;
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.MIN_POSITION;
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.TICKS_PER_TAP;
@@ -22,6 +23,7 @@ class ExtendConstants {
     public static int MAX_POSITION = 250;
     public static int MIN_POSITION = 0;
     public static int TRANSFER = 60;
+    public static int HANG = 53;
 }
 
 public class Extend {
@@ -130,5 +132,8 @@ public class Extend {
 
     public void setTransfer() {
         reference = TRANSFER;
+    }
+    public void setHang() {
+        reference = HANG;
     }
 }

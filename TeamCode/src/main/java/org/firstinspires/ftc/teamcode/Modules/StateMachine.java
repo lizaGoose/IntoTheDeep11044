@@ -66,7 +66,8 @@ public class StateMachine {
         DROP_SPECIMEN_TO_HUMAN_ZONE,
         TRANSFER_SPEC,
         SCORE_SPEC,
-        PICK_SPEC
+        PICK_SPEC,
+        EMPTY
     }
 
     public State state = State.INITIAL;
@@ -128,6 +129,13 @@ public class StateMachine {
         if (state != State.PICK_UP_THE_BLOCK) {
             startForgetPosTimer = false;
             stopForgetPosTimer = false;
+        }
+        if (hang.hang.getCurrentPosition() >= 500){
+            scorPerkid.currentMode = ScoringPerkid.Mode.TRANSFER;
+            scorDiff.currentMode = ScoringDiff.Mode.GET_FROM_CLAW;
+            extend.setHang();
+            state = State.EMPTY;
+
         }
 
         switch (state) {
@@ -340,9 +348,15 @@ public class StateMachine {
                     diff.currentMode = Differential.Mode.TRANSFER;
                     perkid.currentMode = Perkid.Mode.TRANSFER;
                     extend.currentMode = Extend.Mode.PURE_PID;
-                } else if (fromClawToClawTimer.milliseconds() > 800 && fromClawToClawTimer.milliseconds() <= 1300) {
+                } else if (fromClawToClawTimer.milliseconds() > 800 && fromClawToClawTimer.milliseconds() <= 1000) {
                     claw.currentMode = Claw.Mode.PICK;
-                } else if (fromClawToClawTimer.milliseconds() > 1300 && fromClawToClawTimer.milliseconds() <= 2000) {
+                  //  extend.setTransfer();
+                }
+                else if(fromClawToClawTimer.milliseconds() > 1000 && fromClawToClawTimer.milliseconds() <= 1300){
+                    extend.setTransfer();
+                }
+
+                    else if (fromClawToClawTimer.milliseconds() > 1300 && fromClawToClawTimer.milliseconds() <= 2000) {
                     extend.setTransfer();
                 } else {
                     scorClaw.currentMode = ScorClaw.Mode.PICK;
@@ -442,6 +456,8 @@ public class StateMachine {
                         state = State.LOOK_FOR_BLOCK;
                     }
                 }
+                break;
+            case EMPTY:
                 break;
 
         }
