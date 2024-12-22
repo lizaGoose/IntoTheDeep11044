@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.AIM_SPECIMEN_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.AIM_SPECIMEN_1;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.HOLD_POS;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.INITIAL;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.RELAX_CLAW;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.WAIT_SCORE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.AIM_SPECIMEN_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.AIM_SPECIMEN_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.HOLD_POS;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.INITIAL;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.RELAX_CLAW;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.WAIT_SCORE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.PICK_UP_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.PICK_UP_SLOWDOWN;
 
@@ -77,9 +77,9 @@ public class PreloadTwoSpecimen extends LinearOpMode {
 
         relaxFlag = false;
 
-        Trajectory trajectoryToRungs, trajectoryPark, trajectoryToSpecimen;
+        Trajectory trajToRungs, trajPark, trajToSpecimen, trajSpecimenToRung;
         try {
-             trajectoryToRungs = drive.buildTrajectory("traj10.json")
+             trajToRungs = drive.buildTrajectory("traj10.json")
                      .addSpatialMarker(AIM_SPECIMEN_0, () -> {
                          scoringPerkid.transferSpecimen();
                          scoringDiff.pickSpecimen();
@@ -92,7 +92,7 @@ public class PreloadTwoSpecimen extends LinearOpMode {
                      })
                     .waitForAt(1, HOLD_POS)
                     .build();
-             trajectoryPark = drive.buildTrajectory("traj11.json")
+             trajPark = drive.buildTrajectory("traj11.json")
                      .addSpatialMarker(0, () -> {
                          TrajectoryRunner.force = PreloadTwoSpecimenConstants.SPECIMEN_ADD_FORCE;
 
@@ -111,23 +111,38 @@ public class PreloadTwoSpecimen extends LinearOpMode {
                      })
                      .waitForAt(1, HOLD_POS)
                      .build();
-            trajectoryToSpecimen = drive.buildTrajectory("traj12.json")
+            trajToSpecimen = drive.buildTrajectory("traj12.json")
                     .addSpatialMarker(0, () -> {
                         TrajectoryRunner.force = PICK_UP_SLOWDOWN;
                     })
+                    .build();
+            trajSpecimenToRung = drive.buildTrajectory("traj13.json")
+                    .addSpatialMarker(AIM_SPECIMEN_0, () -> {
+                        scoringPerkid.transferSpecimen();
+                        scoringDiff.pickSpecimen();
+                        scorClaw.close();
+
+                        perkid.aim();
+                        hand.setPosition(0.5);
+                        diff.aim();
+                    })
+                    .addSpatialMarker(AIM_SPECIMEN_1, () -> {
+                        scoringDiff.transferSpecimen();
+                    })
+                    .waitForAt(1, HOLD_POS + 100)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        drive.setPoseEstimate(new Pose2d(trajectoryToRungs.get(0).point0, 0));
+        drive.setPoseEstimate(new Pose2d(trajToRungs.get(0).point0, 0));
 
         scorClaw.close();
 
         waitForStart();
 
 
-        drive.followTrajectory(trajectoryToRungs);
+        drive.followTrajectory(trajToRungs);
 
         while (drive.isBusy() && opModeIsActive()) {
             drive.update();
@@ -136,7 +151,7 @@ public class PreloadTwoSpecimen extends LinearOpMode {
 
         hangSpecimen();
 
-        drive.followTrajectory(trajectoryPark);
+        drive.followTrajectory(trajPark);
 
         while (drive.isBusy() && opModeIsActive()) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
@@ -148,32 +163,33 @@ public class PreloadTwoSpecimen extends LinearOpMode {
             extend.PIDControl();
         }
 
-        drive.followTrajectory(trajectoryToSpecimen);
+        drive.setPoseEstimate(new Pose2d(trajToSpecimen.get(0).point0, 0));
 
         boolean pickedUp = false;
 
-        while (drive.isBusy() && opModeIsActive()) {
+        while (opModeIsActive()) {
             if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
-                drive.discardTrajectory();
                 pickedUp = true;
-
+                break;
             }
+            drive.setPowerByPoseField(new Pose2d(-PICK_UP_SLOWDOWN, 0, 0));
             drive.update();
             extend.PIDControl();
         }
+
+        drive.setPowerByPoseField(new Pose2d(0, 0, 0));
 
         if (!pickedUp) {
             return;
         }
 
-        TrajectoryRunner.force = 0.5;
         clock.reset();
         while (clock.milliseconds() < PICK_UP_CLAW) {
             scorClaw.close();
         }
         relaxFlag = false;
 
-        drive.followTrajectory(trajectoryToRungs);
+        drive.followTrajectory(trajSpecimenToRung);
 
         while (drive.isBusy() && opModeIsActive()) {
             drive.update();
@@ -182,7 +198,7 @@ public class PreloadTwoSpecimen extends LinearOpMode {
 
         hangSpecimen();
 
-        drive.followTrajectory(trajectoryPark);
+        drive.followTrajectory(trajPark);
 
         while (drive.isBusy() && opModeIsActive()) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
@@ -209,6 +225,7 @@ public class PreloadTwoSpecimen extends LinearOpMode {
 
     private void initRobot() {
         drive = new Drive(hardwareMap);
+        TrajectoryRunner.force = 0.5;
 
         scoringPerkid = new ScoringPerkid(this);
         scoringDiff = new ScoringDiff(this);

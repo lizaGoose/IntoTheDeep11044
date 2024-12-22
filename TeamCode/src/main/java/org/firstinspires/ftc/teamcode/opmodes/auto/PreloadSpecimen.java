@@ -108,7 +108,14 @@ public class PreloadSpecimen extends LinearOpMode {
 
         waitForStart();
 
+        /* *** WAIT *** */
+        clock.reset();
 
+        while (clock.seconds() < 10) {
+            telemetry.update();
+        }
+
+        /* *** GO TO RUNGS *** */
         drive.followTrajectory(trajectoryToRungs);
 
         while (drive.isBusy() && opModeIsActive()) {
@@ -118,6 +125,7 @@ public class PreloadSpecimen extends LinearOpMode {
 
         hangSpecimen();
 
+        /* *** GO TO HUMAN *** */
         drive.followTrajectory(trajectoryPark);
 
         while (drive.isBusy() && opModeIsActive()) {

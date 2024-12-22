@@ -214,10 +214,10 @@ public class TrajectoryRunner {
 
         packet.put("curves", currentTrajectory.size());
 
-        if (Math.abs(t + curveIndex - currentTrajectory.size()) <= 1e-3 && stopPoints.isEmpty()) {
+        if ((Math.abs(t + curveIndex - currentTrajectory.size()) <= 1e-2 && stopPoints.isEmpty()) ||
+            stopPoints.isEmpty()) {
             currentTrajectory = null;
         }
-
 
         dashboard.sendTelemetryPacket(packet);
         clock.reset();
