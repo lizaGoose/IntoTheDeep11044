@@ -64,6 +64,10 @@ public class Hand {
         }
     }
 
+    public void setPosition(double position) {
+        hand.setPosition(position);
+    }
+
     public void setAngle(double angle) {
         double position = ClawCalculation.angleToServoPos(angle, 90);
 

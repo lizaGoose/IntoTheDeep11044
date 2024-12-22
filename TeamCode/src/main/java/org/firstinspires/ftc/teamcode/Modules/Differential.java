@@ -216,6 +216,29 @@ public class Differential {
         }
     }
 
+    public void aim(double rotation) {
+        left.setPosition(HORIZONTAL_DOWN + rotation);
+        right.setPosition(HORIZONTAL_DOWN - rotation);
+    }
+
+    public void aim() {
+        aim(0);
+    }
+
+    public void pickUp(double rotation) {
+        left.setPosition(PICK_UP + rotation);
+        right.setPosition(PICK_UP - rotation);
+    }
+
+    public void pickUp() {
+        pickUp(0);
+    }
+
+    public void transfer() {
+        left.setPosition(TRANSFER);
+        right.setPosition(TRANSFER);
+    }
+
     public void setAngleRotation(double angle, double rotation) {
         List<Double> positions = angleRotationToPosition(angle, rotation);
 

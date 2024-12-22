@@ -105,8 +105,8 @@ public class Extend {
     double integralSum = 0;
     double out;
 
-    public void PIDControl() {
-        double position = motor.getCurrentPosition();
+    public double PIDControl() {
+        int position = motor.getCurrentPosition();
         double error = position - reference;
 
         double derivative = ( error - lastError ) / timer.seconds();
@@ -118,6 +118,7 @@ public class Extend {
         lastError = error;
 
         timer.reset();
+        return error;
     }
 
     public double getReference() {
@@ -128,6 +129,10 @@ public class Extend {
         reference = Math.min(reference, MAX_POSITION);
         reference = Math.max(reference, MIN_POSITION);
         this.reference = reference;
+    }
+
+    public double getPosition() {
+        return motor.getCurrentPosition();
     }
 
     public void setTransfer() {

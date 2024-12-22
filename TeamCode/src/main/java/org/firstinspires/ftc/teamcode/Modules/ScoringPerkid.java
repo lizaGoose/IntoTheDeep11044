@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
+import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.DROP_SAMPLE_TO_HUMAN;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,6 +20,7 @@ class ScoringPerkidConstants {
       public static double SPEC_POS = 0.84;
       public static double PICK_SPEC = 0.42;*/
     public static double PICK_SPEC = 0.38;
+    public static double DROP_SAMPLE_TO_HUMAN = 0.35;
     public static double TRANSFER_POS = 0.57;
     public static double SCORE_SAMP = 0.05;
     public static double TRANSFER_SPEC = 0.9;
@@ -91,6 +93,15 @@ public class ScoringPerkid {
                 break;
 
         }
+    }
 
+    public void transferSample() {
+        left.setPosition(TRANSFER_POS);
+        right.setPosition(TRANSFER_POS);
+    }
+
+    public void dropSampleToHuman() {
+        left.setPosition(DROP_SAMPLE_TO_HUMAN);
+        right.setPosition(DROP_SAMPLE_TO_HUMAN);
     }
 }

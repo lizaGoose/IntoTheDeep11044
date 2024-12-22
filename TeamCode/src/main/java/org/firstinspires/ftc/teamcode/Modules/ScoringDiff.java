@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.GET_FROM_CLAW;
+import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.PICK_SPEC;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -63,7 +66,7 @@ public class ScoringDiff {
                 diff.setPosition(ScoringDiffConstants.PICK_SPEC);
                 break;
             case GET_FROM_CLAW:
-                diff.setPosition(ScoringDiffConstants.GET_FROM_CLAW);
+                diff.setPosition(GET_FROM_CLAW);
                 break;
             case SCORE_SAMP:
                 diff.setPosition(ScoringDiffConstants.SCORE_SAMP);
@@ -82,6 +85,13 @@ public class ScoringDiff {
                 break;*/
 
         }
+    }
 
+    public void transferSample() {
+        diff.setPosition(GET_FROM_CLAW);
+    }
+
+    public void pickSpecimen() {
+        diff.setPosition(PICK_SPEC);
     }
 }

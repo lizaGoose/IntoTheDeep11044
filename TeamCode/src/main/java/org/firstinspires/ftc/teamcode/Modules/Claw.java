@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 
+import static org.firstinspires.ftc.teamcode.Modules.ClawConstants.DROP;
+import static org.firstinspires.ftc.teamcode.Modules.ClawConstants.LIGHT;
+import static org.firstinspires.ftc.teamcode.Modules.ClawConstants.PICK;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -45,9 +49,20 @@ public class Claw {
                 claw.setPosition(ClawConstants.TRANSFER);
                 break;
             case LIGHT:
-                claw.setPosition(ClawConstants.LIGHT);
+                claw.setPosition(LIGHT);
                 break;
         }
+    }
 
+    public void light() {
+        claw.setPosition(LIGHT);
+    }
+
+    public void open() {
+        claw.setPosition(DROP);
+    }
+
+    public void close() {
+        claw.setPosition(PICK);
     }
 }

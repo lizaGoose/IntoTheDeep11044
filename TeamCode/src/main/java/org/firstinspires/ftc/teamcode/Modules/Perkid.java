@@ -2,7 +2,11 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 
 
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.LOOK_POS;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.PICK_UP;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.STRAIGHT_POS;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_FROM_SUBMERSABLE;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.VERTICAL_POS;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -100,6 +104,26 @@ public class Perkid {
                 right.setPosition(PerkidConstants.TRANSFER_FROM_SUBMERSABLE);
                 break;
         }
+    }
+
+    public void aim() {
+        left.setPosition(LOOK_POS);
+        right.setPosition(LOOK_POS);
+    }
+
+    public void pickUp() {
+        left.setPosition(PICK_UP);
+        right.setPosition(PICK_UP);
+    }
+
+    public void transfer() {
+        left.setPosition(TRANSFER_POS);
+        right.setPosition(TRANSFER_POS);
+    }
+
+    public void liftSample() {
+        left.setPosition(TRANSFER_FROM_SUBMERSABLE);
+        right.setPosition(TRANSFER_FROM_SUBMERSABLE);
     }
 
     public void setAngle(double angle) {

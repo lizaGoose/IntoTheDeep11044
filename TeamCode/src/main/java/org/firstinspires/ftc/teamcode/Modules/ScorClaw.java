@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 
+import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.DROP;
+import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.PICK;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -37,12 +40,20 @@ public class ScorClaw {
                 claw.setPosition(ScorClawConstants.PICK);
                 break;
             case DROP:
-                claw.setPosition(ScorClawConstants.DROP);
+                claw.setPosition(DROP);
                 break;
             case RELAX:
                 claw.setPwmDisable();
                 break;
         }
 
+    }
+
+    public void open() {
+        claw.setPosition(DROP);
+    }
+
+    public void close() {
+        claw.setPosition(PICK);
     }
 }
