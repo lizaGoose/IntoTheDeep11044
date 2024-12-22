@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 @Config
 class ScorClawConstants {
     public static double PICK = 0.82;
-    public static double DROP = 0.52;
+    public static double DROP = 0.49;
 }
 
 public class ScorClaw {
@@ -55,5 +55,9 @@ public class ScorClaw {
 
     public void close() {
         claw.setPosition(PICK);
+    }
+
+    public void relax() {
+        claw.setPwmDisable();
     }
 }

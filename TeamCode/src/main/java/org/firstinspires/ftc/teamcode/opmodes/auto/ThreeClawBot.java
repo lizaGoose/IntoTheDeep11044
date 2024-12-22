@@ -5,10 +5,14 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.ANG
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_POSITION_THRESHOLD;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_TO_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_TO_MIDDLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_VELOCITY_THRESHOLD;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.X;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.X_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.Y;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.Y_HUMAN;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -32,9 +36,9 @@ import org.firstinspires.ftc.teamcode.drive.Drive;
 class ThreeClawConstants {
 
     public static double X = -48;
-    public static double Y = -48;
+    public static double Y = -50;
 
-    public static double X_HUMAN = -50;
+    public static double X_HUMAN = -60;
     public static double Y_HUMAN = -48;
 
     public static int EXTEND_TO_MIDDLE = 100;
@@ -49,6 +53,9 @@ class ThreeClawConstants {
     public static int EXTEND_TO_RIGHT = 100;
     public static double ANGLE_TO_RIGHT = 30;
     public static double DIFF_ROTATION_RIGHT = 0;
+
+    public static double EXTEND_VELOCITY_THRESHOLD = 5;
+    public static double EXTEND_POSITION_THRESHOLD = 5;
 }
 
 @Config
@@ -141,9 +148,11 @@ public class ThreeClawBot extends LinearOpMode {
         scoringDiff.transferSample();
         scorClaw.open();
 
+
+
         while (true) {
             double error = extend.PIDControl();
-            if (Math.abs(error) <= 3) {
+            if (Math.abs(error) <= EXTEND_POSITION_THRESHOLD && Math.abs(extend.motor.getVelocity()) < EXTEND_VELOCITY_THRESHOLD) {
                 break;
             }
             telemetry.addData("extend_pos", extend.getPosition());
@@ -151,7 +160,7 @@ public class ThreeClawBot extends LinearOpMode {
 
         clock.reset();
 
-        while (clock.milliseconds() < 400) {
+        while (clock.milliseconds() < 800) {
             perkid.pickUp();
             diff.pickUp(diffRotation);
 
@@ -160,7 +169,7 @@ public class ThreeClawBot extends LinearOpMode {
 
         clock.reset();
 
-        while (clock.milliseconds() < 300) {
+        while (clock.milliseconds() < 600) {
             claw.close();
             perkid.liftSample();
 
@@ -170,7 +179,7 @@ public class ThreeClawBot extends LinearOpMode {
         clock.reset();
 
         /* ***** START TRANSFER **** */
-        while (clock.milliseconds() < 800) {
+        while (clock.milliseconds() < 1600) {
             diff.transfer();
             hand.setPosition(0.5);
             perkid.transfer();
@@ -185,32 +194,34 @@ public class ThreeClawBot extends LinearOpMode {
             extend.PIDControl();
         }
 
-        while (clock.milliseconds() < 1300) {
+        while (clock.milliseconds() < 2600) {
             claw.close();
 
             extend.PIDControl();
         }
 
-        while (distInClaw.getDistance(DistanceUnit.MM) >= 17 || clock.milliseconds() < 2000) {
+        while (distInClaw.getDistance(DistanceUnit.MM) >= 17 || clock.milliseconds() < 4000) {
             extend.setTransfer();
             extend.PIDControl();
         }
 
         clock.reset();
 
-        while (clock.milliseconds() < 100) {
+        while (clock.milliseconds() < 500) {
             scorClaw.close();
-            claw.open();
+            extend.setCloser();
 
             extend.PIDControl();
         }
+
+        claw.open();
 
         /* ***** SAMPLE TO HUMAN ***** */
         scoringPerkid.dropSampleToHuman();
         scoringDiff.pickSpecimen();
 
         while (true) {
-            drive.setReference(new Pose2d(X, Y, Math.toRadians(0)));
+            drive.setReference(new Pose2d(X_HUMAN, Y_HUMAN, Math.toRadians(0)));
             Pose2d error = drive.toPoint();
             if (Math.abs(error.getHeading()) <= headingThreshold &&
                     Math.abs(drive.getParralelVelocity()) <= parralelVelThreshold && Math.abs(drive.getPerpendicularVelocity()) <= perpendicularVelThreshold) {
@@ -231,7 +242,7 @@ public class ThreeClawBot extends LinearOpMode {
 
         clock.reset();
 
-        while (clock.milliseconds() < 300) {
+        while (clock.milliseconds() < 600) {
             scorClaw.open();
         }
     }

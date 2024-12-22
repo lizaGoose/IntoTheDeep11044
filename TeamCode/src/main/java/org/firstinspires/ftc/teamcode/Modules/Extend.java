@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.MAX_POSITIO
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.MIN_POSITION;
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.TICKS_PER_TAP;
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.TRANSFER;
+import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.TRANSFER_CLOSER;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -22,8 +23,9 @@ class ExtendConstants {
 
     public static int MAX_POSITION = 250;
     public static int MIN_POSITION = 0;
-    public static int TRANSFER = 60;
-    public static int HANG = 53;
+    public static int TRANSFER = 51;
+    public static int TRANSFER_CLOSER = 20;
+    public static int HANG = 150;
 }
 
 public class Extend {
@@ -137,6 +139,10 @@ public class Extend {
 
     public void setTransfer() {
         reference = TRANSFER;
+    }
+
+    public void setCloser() {
+        reference = TRANSFER_CLOSER;
     }
     public void setHang() {
         reference = HANG;

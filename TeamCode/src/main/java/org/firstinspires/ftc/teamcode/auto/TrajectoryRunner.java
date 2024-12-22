@@ -21,7 +21,7 @@ public class TrajectoryRunner {
     private final ElapsedTime clock;
     private final FtcDashboard dashboard;
 
-    private Trajectory currentTrajectory;
+    private Trajectory currentTrajectory = null;
     private BezierCurve currentCurve;
     private double t;
     private int curveIndex;
@@ -33,22 +33,28 @@ public class TrajectoryRunner {
 
     public static double kP = 0.25;
     public static double kCentripetal = 0.035;
-    public static double force = 0.7; // TODO: REMOVE
+    public static double force = 0.5; // TODO: REMOVE
 
     public boolean uselessFlag = false;
 
     double lastCurvature;
 
-    double lastHeadingError = 0;
+    private double lastHeadingError = 0;
+    private double integralSumHeading = 0;
+    public static double headingUpper = 0.2, headingLower = 0.02;
 
-    public static PIDFCoefficients turn_coefficients = new PIDFCoefficients(0.15, 0, 0, 0);
+    public static PIDFCoefficients turnCoeffs = new PIDFCoefficients(0.7, 2, 0.04, 0);
 
-    public static PIDFCoefficients x_coefficients = new PIDFCoefficients(0, 0, 0, 0);
+    public static PIDFCoefficients xCoeffs = new PIDFCoefficients(0.15, 0, 0.004, 0);
 
-    public static PIDFCoefficients y_coefficients = new PIDFCoefficients(0, 0, 0, 0);
+    public static PIDFCoefficients yCoeffs = new PIDFCoefficients(0.15, 0, 0.004, 0);
+
+    public static double stopThreshold = 0.05;
 
     private double lastErrorX = 0;
+    private double integralSumX = 0;
     private double lastErrorY = 0;
+    private double integralSumY = 0;
 
     public TrajectoryRunner() {
         clock = new ElapsedTime();
@@ -70,6 +76,10 @@ public class TrajectoryRunner {
     }
 
     public Pose2d update(Pose2d poseEstimate, Pose2d velocityEstimate) {
+        if (currentTrajectory == null) {
+            return new Pose2d(0, 0, 0);
+        }
+
         Pose2d result = new Pose2d(0, 0, 0);
         t = currentCurve.getClosestTtoPoint(poseEstimate.vec());
 
@@ -77,44 +87,52 @@ public class TrajectoryRunner {
         Canvas fieldOverlay = packet.fieldOverlay();
 
         if (!stopPoints.isEmpty() && ( t + curveIndex >= stopPoints.get(0).t ||
-                ( Math.abs(( t + curveIndex ) - stopPoints.get(0).t) <= 1e-6 ) )) {
-            if (stopPoints.get(0).milliseconds >= 0) {
-                stopPoints.get(0).milliseconds -= (int) clock.milliseconds();
-            } else {
-                stopPoints.remove(0);
-            }
+                ( Math.abs(( t + curveIndex ) - stopPoints.get(0).t) <= stopThreshold ) )) {
 
-            Vector2d reference = currentCurve.getPointAt(t);
+            Vector2d reference = currentCurve.getPointAt(stopPoints.get(0).t);
             Vector2d error = reference.minus(poseEstimate.vec());
             double errorX = error.getX(), errorY = error.getY();
             double derivativeX = (errorX - lastErrorX) / clock.seconds(), derivativeY = (errorY - lastErrorY) / clock.seconds();
-            double powerX = (x_coefficients.p * errorX) + (x_coefficients.d * derivativeX);
-            double powerY = (y_coefficients.p * errorY) + (x_coefficients.d * derivativeY);
+            integralSumX += errorX * clock.seconds();
+            integralSumY += errorY * clock.seconds();
+            double powerX = ( xCoeffs.p * errorX ) + ( xCoeffs.i * integralSumX ) + ( xCoeffs.d * derivativeX );
+            double powerY = ( yCoeffs.p * errorY ) + ( yCoeffs.i * integralSumY ) + ( yCoeffs.d * derivativeY );
 
+            powerX = Math.min(Math.max(powerX, -force), force);
+            powerY = Math.min(Math.max(powerY, -force), force);
 
             double headingReference = stopPoints.get(0).angle;
             double headingError = correctHeading(poseEstimate.getHeading(), headingReference);
             double headingDerivative = ( headingError - lastHeadingError ) / clock.seconds();
-            double headingPower = ( turn_coefficients.p * headingError ) + ( turn_coefficients.i * 0 ) + ( turn_coefficients.d * headingDerivative );
+            if (Math.abs(headingError) > headingUpper) {
+                integralSumHeading = 0;
+            } else if (Math.abs(headingError) < headingLower) {
+                integralSumHeading = integralSumHeading;
+            } else {
+                integralSumHeading += headingError * clock.seconds();
+            }
+
+            double headingPower = ( turnCoeffs.p * headingError ) + ( turnCoeffs.i * integralSumHeading ) + ( turnCoeffs.d * headingDerivative );
 
             lastHeadingError = headingError;
             lastErrorX = errorX;
             lastErrorY = errorY;
+            packet.put("PID", true);
+            packet.put("curve", false);
 
             result = new Pose2d(powerX, powerY, headingPower);
 
-        } else if (Math.abs(t - 1) <= 1e-6) {
-            Vector2d reference = currentCurve.getPointAt(t);
-            Vector2d error = reference.minus(poseEstimate.vec());
-
-            curveIndex += 1;
-            if (curveIndex == currentTrajectory.size()) {
-                curveIndex -= 1;
-                result = new Pose2d(error.times(kP), 0);
+            if (stopPoints.get(0).milliseconds >= 0) {
+                stopPoints.get(0).milliseconds -= (int) clock.milliseconds();
             } else {
-                currentCurve = currentTrajectory.get(curveIndex);
+                stopPoints.remove(0);
+
             }
+
         } else {
+
+            integralSumHeading = 0;
+
             Vector2d reference = currentCurve.getPointAt(t);
             Vector2d error = reference.minus(poseEstimate.vec());
             //.div(reference.minus(poseEstimate.vec()).norm())
@@ -152,7 +170,7 @@ public class TrajectoryRunner {
 
                 double headingDerivative = ( headingError - lastHeadingError ) / clock.seconds();
 
-                headingPower = ( turn_coefficients.p * headingError ) + ( turn_coefficients.i * 0 ) + ( turn_coefficients.d * headingDerivative );
+                headingPower = ( turnCoeffs.p * headingError ) + ( turnCoeffs.i * 0 ) + ( turnCoeffs.d * headingDerivative );
 
                 lastHeadingError = headingError;
             } else if (!turns.isEmpty() && curveIndex > turns.get(0).curve) {
@@ -171,6 +189,9 @@ public class TrajectoryRunner {
             packet.put("heading_power", headingPower);
             packet.put("corrected_heading", lastHeadingError);
             packet.put("curvature", curvature);
+
+            packet.put("PID", false);
+            packet.put("curve", true);
         }
 
 
@@ -188,6 +209,14 @@ public class TrajectoryRunner {
         packet.put("heading", poseEstimate.getHeading());
 
         packet.put("velocity", velocityEstimate.vec().norm());
+
+        packet.put("t", t + curveIndex);
+
+        packet.put("curves", currentTrajectory.size());
+
+        if (Math.abs(t + curveIndex - currentTrajectory.size()) <= 1e-3 && stopPoints.isEmpty()) {
+            currentTrajectory = null;
+        }
 
 
         dashboard.sendTelemetryPacket(packet);
@@ -218,6 +247,10 @@ public class TrajectoryRunner {
         }
     }
 
+    public void discardTrajectory() {
+        currentTrajectory = null;
+    }
+
     private double correctHeading(double heading, double reference) {
         double H = heading - reference;
         double x = 1 / ( 2 * Math.PI ) * H + 0.5;
@@ -226,5 +259,9 @@ public class TrajectoryRunner {
 
     private double curvatureToForce(double curvature) {
         return force;
+    }
+
+    public boolean isBusy() {
+        return currentTrajectory != null;
     }
 }

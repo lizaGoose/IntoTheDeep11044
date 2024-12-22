@@ -25,7 +25,7 @@ import java.util.Objects;
 @TeleOp(group = "Trajectory")
 public class TrajectoryEditor extends LinearOpMode {
     public static String CUSTOM_FILE_NAME = null;
-    public static int X = 0, Y = 0;
+    public static double X = 0, Y = 0;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override

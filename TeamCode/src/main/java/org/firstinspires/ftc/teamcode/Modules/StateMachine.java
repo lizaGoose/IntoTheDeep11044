@@ -130,7 +130,7 @@ public class StateMachine {
             startForgetPosTimer = false;
             stopForgetPosTimer = false;
         }
-        if (hang.hang.getCurrentPosition() >= 500){
+        if (hang.hang.getCurrentPosition() >= 500) {
             scorPerkid.currentMode = ScoringPerkid.Mode.TRANSFER;
             scorDiff.currentMode = ScoringDiff.Mode.GET_FROM_CLAW;
             extend.setHang();
@@ -347,21 +347,20 @@ public class StateMachine {
                     scorPerkid.currentMode = ScoringPerkid.Mode.TRANSFER;
                     diff.currentMode = Differential.Mode.TRANSFER;
                     perkid.currentMode = Perkid.Mode.TRANSFER;
-                    extend.currentMode = Extend.Mode.PURE_PID;
-                } else if (fromClawToClawTimer.milliseconds() > 800 && fromClawToClawTimer.milliseconds() <= 1000) {
+                } else if (fromClawToClawTimer.milliseconds() > 800 && fromClawToClawTimer.milliseconds() <= 1300) {
                     claw.currentMode = Claw.Mode.PICK;
-                  //  extend.setTransfer();
-                }
-                else if(fromClawToClawTimer.milliseconds() > 1000 && fromClawToClawTimer.milliseconds() <= 1300){
+                    //  extend.setTransfer();
+                } else if (fromClawToClawTimer.milliseconds() > 1300 && fromClawToClawTimer.milliseconds() <= 1700) {
+                    extend.currentMode = Extend.Mode.PURE_PID;
                     extend.setTransfer();
-                }
-
-                    else if (fromClawToClawTimer.milliseconds() > 1300 && fromClawToClawTimer.milliseconds() <= 2000) {
+                } else if (fromClawToClawTimer.milliseconds() > 1700 && fromClawToClawTimer.milliseconds() <= 2000) {
                     extend.setTransfer();
-                } else {
+                } else if (fromClawToClawTimer.milliseconds() > 2000 && fromClawToClawTimer.milliseconds() <= 2250) {
                     scorClaw.currentMode = ScorClaw.Mode.PICK;
+                    extend.setCloser();
+                } else {
                     claw.currentMode = Claw.Mode.DROP;
-                    extend.setTransfer();
+                    extend.setCloser();
                     if (gamepad2.left_stick_y != 0) {
                         extend.setReference(extend.motor.getCurrentPosition());
                     }

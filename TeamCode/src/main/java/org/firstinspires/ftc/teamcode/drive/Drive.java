@@ -210,6 +210,10 @@ public class Drive {
         return localizer.getPoseEstimate();
     }
 
+    public void setPoseEstimate(Pose2d pose) {
+        localizer.setPoseEstimate(pose);
+    }
+
     public Pose2d getVelocityEstimate() {
         return localizer.getPoseVelocity();
     }
@@ -265,8 +269,12 @@ public class Drive {
     }
 
     public void followTrajectory(Trajectory trajectory) {
-        localizer.setPoseEstimate(new Pose2d(trajectory.get(0).point0, Math.toRadians(localizer.getHeading())));
+        //localizer.setPoseEstimate(new Pose2d(trajectory.get(0).point0, Math.toRadians(localizer.getHeading())));
         runner.followTrajectory(trajectory);
+    }
+
+    public void discardTrajectory() {
+        runner.discardTrajectory();
     }
 
     public Pose2d toPoint() {
@@ -319,6 +327,14 @@ public class Drive {
         return new Pose2d(errorX, errorY, headingError);
     }
 
+    public void update(boolean dryRun) {
+        updateLocalizer();
+        Pose2d res = runner.update(getPoseEstimate(), getVelocityEstimate());
+        if (!dryRun) {
+            setPowerByPoseField(res);
+        }
+    }
+
     public void update() {
         updateLocalizer();
         Pose2d res = runner.update(getPoseEstimate(), getVelocityEstimate());
@@ -340,5 +356,9 @@ public class Drive {
             integralSumY = 0;
         }
         this.reference = reference;
+    }
+
+    public boolean isBusy() {
+        return runner.isBusy();
     }
 }
