@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.AIM_SPECIMEN_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.AIM_SPECIMEN_1;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.HOLD_POS;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.INITIAL;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.RELAX_CLAW;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.WAIT_SCORE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.HOLD_POS;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.RELAX_CLAW;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_SCORE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_START;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -27,20 +27,6 @@ import org.firstinspires.ftc.teamcode.auto.TrajectoryRunner;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 
 import java.io.IOException;
-
-@Config
-class PreloadSpecimenConstants {
-    public static double AIM_SPECIMEN_0 = 0.05;
-    public static double AIM_SPECIMEN_1 = 0.7;
-
-    public static int HOLD_POS = 1000;
-
-    public static double WAIT_SCORE = 200;
-
-    public static double RELAX_CLAW = 200;
-    public static double INITIAL = 0.4;
-
-}
 
 @Autonomous
 public class PreloadSpecimen extends LinearOpMode {
@@ -111,7 +97,7 @@ public class PreloadSpecimen extends LinearOpMode {
         /* *** WAIT *** */
         clock.reset();
 
-        while (clock.seconds() < 10) {
+        while (clock.seconds() < WAIT_START) {
             telemetry.update();
         }
 

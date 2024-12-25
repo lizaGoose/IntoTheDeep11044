@@ -32,31 +32,6 @@ import org.firstinspires.ftc.teamcode.Modules.ScoringDiff;
 import org.firstinspires.ftc.teamcode.Modules.ScoringPerkid;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 
-@Config
-class ThreeClawConstants {
-
-    public static double X = -48;
-    public static double Y = -50;
-
-    public static double X_HUMAN = -60;
-    public static double Y_HUMAN = -48;
-
-    public static int EXTEND_TO_MIDDLE = 100;
-    public static double ANGLE_TO_MIDDLE = 0;
-    public static double DIFF_ROTATION_MIDDLE = 0;
-
-
-    public static int EXTEND_TO_LEFT = 100;
-    public static double ANGLE_TO_LEFT = -30;
-    public static double DIFF_ROTATION_LEFT = 0;
-
-    public static int EXTEND_TO_RIGHT = 100;
-    public static double ANGLE_TO_RIGHT = 30;
-    public static double DIFF_ROTATION_RIGHT = 0;
-
-    public static double EXTEND_VELOCITY_THRESHOLD = 5;
-    public static double EXTEND_POSITION_THRESHOLD = 5;
-}
 
 @Config
 @Autonomous

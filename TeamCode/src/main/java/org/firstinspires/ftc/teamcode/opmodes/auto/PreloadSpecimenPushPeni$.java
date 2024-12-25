@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.AIM_SPECIMEN_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.AIM_SPECIMEN_1;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.HOLD_POS;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.INITIAL;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.RELAX_CLAW;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadSpecimenConstants.WAIT_SCORE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.HOLD_POS;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.RELAX_CLAW;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_SCORE;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -43,7 +43,7 @@ class PreloadSpecimenPushConstants {
 }
 
 @Autonomous
-public class PreloadSpecimenPush extends LinearOpMode {
+public class PreloadSpecimenPushPeni$ extends LinearOpMode {
     private Drive drive;
     private ScoringPerkid scoringPerkid;
     private ScoringDiff scoringDiff;

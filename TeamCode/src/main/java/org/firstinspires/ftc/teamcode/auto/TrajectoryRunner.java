@@ -28,6 +28,9 @@ public class TrajectoryRunner {
     private List<SpatialMarker> markers;
     private List<StopPoint> stopPoints;
     private List<TurnMarker> turns;
+    private List<TimeMarker> timeMarkers;
+    private int lastStopPoint;
+    private ElapsedTime stopPointTimer;
     private ArrayList<Pose2d> poseHistory;
     private ArrayList<Vector2d> turnHistory;
 
@@ -67,12 +70,15 @@ public class TrajectoryRunner {
         markers = trajectory.getMarkers();
         stopPoints = trajectory.getStopPoints();
         turns = trajectory.getTurns();
+        timeMarkers = trajectory.getTimeMarkers();
         t = 0;
         curveIndex = 0;
         currentCurve = currentTrajectory.get(0);
         lastCurvature = currentCurve.getCurvatureAt(t);
         poseHistory = new ArrayList<>();
         turnHistory = new ArrayList<>();
+        lastStopPoint = 0;
+        stopPointTimer = new ElapsedTime();
     }
 
     public Pose2d update(Pose2d poseEstimate, Pose2d velocityEstimate) {
@@ -89,7 +95,18 @@ public class TrajectoryRunner {
         if (!stopPoints.isEmpty() && ( t + curveIndex >= stopPoints.get(0).t ||
                 ( Math.abs(( t + curveIndex ) - stopPoints.get(0).t) <= stopThreshold ) )) {
 
-            Vector2d reference = currentCurve.getPointAt(stopPoints.get(0).t);
+            if (!timeMarkers.isEmpty() && (stopPointTimer.milliseconds() >= timeMarkers.get(0).milliseconds
+                && timeMarkers.get(0).waitIndex == lastStopPoint)) {
+                timeMarkers.get(0).getRunnable().onMarkerReached();
+                timeMarkers.remove(0);
+            }
+
+            if (!timeMarkers.isEmpty() && timeMarkers.get(0).waitIndex < lastStopPoint) {
+                timeMarkers.get(0).getRunnable().onMarkerReached();
+                timeMarkers.remove(0);
+            }
+
+            Vector2d reference = currentCurve.getPointAt(stopPoints.get(0).t - curveIndex);
             Vector2d error = reference.minus(poseEstimate.vec());
             double errorX = error.getX(), errorY = error.getY();
             double derivativeX = (errorX - lastErrorX) / clock.seconds(), derivativeY = (errorY - lastErrorY) / clock.seconds();
@@ -118,6 +135,7 @@ public class TrajectoryRunner {
             lastErrorX = errorX;
             lastErrorY = errorY;
             packet.put("PID", true);
+            packet.put("wait_point_index", lastStopPoint);
             packet.put("curve", false);
 
             result = new Pose2d(powerX, powerY, headingPower);
@@ -126,11 +144,12 @@ public class TrajectoryRunner {
                 stopPoints.get(0).milliseconds -= (int) clock.milliseconds();
             } else {
                 stopPoints.remove(0);
-
+                lastStopPoint += 1;
+                stopPointTimer.reset();
             }
 
         } else {
-
+            stopPointTimer.reset();
             integralSumHeading = 0;
 
             Vector2d reference = currentCurve.getPointAt(t);
@@ -211,8 +230,18 @@ public class TrajectoryRunner {
         packet.put("velocity", velocityEstimate.vec().norm());
 
         packet.put("t", t + curveIndex);
+        packet.put("curve_index", curveIndex);
 
         packet.put("curves", currentTrajectory.size());
+
+        if (1 - t <= 1e-4 && curveIndex != currentTrajectory.size() - 1) {
+            if ((markers.isEmpty() || (int) Math.floor(markers.get(0).t) > curveIndex) &&
+                    (stopPoints.isEmpty() || (int) Math.floor(stopPoints.get(0).t) > curveIndex)) {
+                curveIndex += 1;
+                currentCurve = currentTrajectory.get(curveIndex);
+                t = 0;
+            }
+        }
 
         if ((Math.abs(t + curveIndex - currentTrajectory.size()) <= 1e-2 && stopPoints.isEmpty()) ||
             stopPoints.isEmpty()) {

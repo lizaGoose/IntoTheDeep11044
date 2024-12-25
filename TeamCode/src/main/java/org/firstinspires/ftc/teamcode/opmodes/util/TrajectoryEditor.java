@@ -68,7 +68,6 @@ public class TrajectoryEditor extends LinearOpMode {
             if (gamepad1.dpad_down) {
                 chosenFileIndex = (chosenFileIndex + 1) % filesList.length;
                 while (gamepad1.dpad_down) {
-                    telemetry.addLine("Yes");
                     telemetry.update();
                 }
             }
@@ -76,7 +75,6 @@ public class TrajectoryEditor extends LinearOpMode {
             if (gamepad1.cross || gamepad1.a) {
                 chosenFileName = filesList[chosenFileIndex];
                 while (gamepad1.cross || gamepad1.a) {
-                    telemetry.addLine("Yes");
                     telemetry.update();
                 }
             }

@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.AIM_SPECIMEN_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.AIM_SPECIMEN_1;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.HOLD_POS;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.INITIAL;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.RELAX_CLAW;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.WAIT_SCORE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.PICK_UP_CLAW;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.PreloadTwoSpecimenConstants.PICK_UP_SLOWDOWN;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.HOLD_POS;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.RELAX_CLAW;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.SPECIMEN_ADD_FORCE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_SCORE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.PICK_UP_CLAW;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.PICK_UP_SLOWDOWN;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -32,26 +33,6 @@ import org.firstinspires.ftc.teamcode.auto.TrajectoryRunner;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 
 import java.io.IOException;
-
-@Config
-class PreloadTwoSpecimenConstants {
-    public static double AIM_SPECIMEN_0 = 0.05;
-    public static double AIM_SPECIMEN_1 = 0.7;
-
-    public static int HOLD_POS = 1000;
-
-    public static double WAIT_SCORE = 200;
-
-    public static double RELAX_CLAW = 200;
-    public static double INITIAL = 0.4;
-
-
-    public static double SPECIMEN_ADD_FORCE = 0.6;
-    public static double PICK_UP_SLOWDOWN = 0.3;
-
-    public static double PICK_UP_CLAW = 200;
-
-}
 
 @Autonomous
 public class PreloadTwoSpecimen extends LinearOpMode {
@@ -94,7 +75,7 @@ public class PreloadTwoSpecimen extends LinearOpMode {
                     .build();
              trajPark = drive.buildTrajectory("traj11.json")
                      .addSpatialMarker(0, () -> {
-                         TrajectoryRunner.force = PreloadTwoSpecimenConstants.SPECIMEN_ADD_FORCE;
+                         TrajectoryRunner.force = SPECIMEN_ADD_FORCE;
 
                          relaxFlag = true;
                          clock.reset();
