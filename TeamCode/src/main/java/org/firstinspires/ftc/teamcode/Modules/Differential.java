@@ -4,6 +4,8 @@ import static org.firstinspires.ftc.teamcode.Modules.DiffConstants.PICK_UP;
 import static org.firstinspires.ftc.teamcode.Modules.DiffConstants.ROTATION_SPEED;
 import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.DISCRETE_ROTATION;
 import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.HORIZONTAL_DOWN;
+import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.RIGHT_SIDE_DROP_SAMPLE;
+import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.RIGHT_SIDE_DROP_SAMPLE_ROTATION;
 import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.SCORE_SAMP;
 import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.TRANSFER;
 import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.FORWARD;
@@ -32,6 +34,8 @@ class DifferentialConstants {
 
     public static double FORWARD = 0.68;
     public static double DOWN = 0.275;
+    public static double RIGHT_SIDE_DROP_SAMPLE = 0.975;
+    public static double RIGHT_SIDE_DROP_SAMPLE_ROTATION = 0.3;
 }
 
 @Config
@@ -60,7 +64,8 @@ public class Differential {
         STRAIGHT_DOWN_DISCRETE,
         SCORE_SAMP,
         ROTATION_FROM_DPAD,
-        VISION_HUYNYA
+        VISION_HUYNYA,
+        RIGHT_SIDE_DROP_SAMPLE
     }
 
     public Mode currentMode = Mode.TRANSFER;
@@ -212,6 +217,14 @@ public class Differential {
 
                 left.setPosition(diff.get(0));
                 right.setPosition(diff.get(1));
+                break;
+            case RIGHT_SIDE_DROP_SAMPLE:
+                rotation = RIGHT_SIDE_DROP_SAMPLE_ROTATION;
+                rotation = Math.max(rotation, -0.5);
+                rotation = Math.min(rotation, 0.5);
+                left.setPosition(RIGHT_SIDE_DROP_SAMPLE + rotation);
+                right.setPosition(RIGHT_SIDE_DROP_SAMPLE - rotation);
+                timer.reset();
                 break;
         }
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RIGHT_SIDE_DROP_SAMPLE;
 import static org.firstinspires.ftc.teamcode.Modules.HandConstants.ROTATION_SPEED;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 @Config
 class HandConstants {
     public static double ROTATION_SPEED = 0.01;
+    public static double RIGHT_SIDE_DROP_SAMPLE = 0;
 }
 
 public class Hand {
@@ -32,7 +34,8 @@ public class Hand {
     enum Mode {
         DRIVER_CONTROL,
         FORWARD,
-        VISION_CONTROL
+        VISION_CONTROL,
+        RIGHT_SIDE_DROP_SAMPLE
     }
 
     Mode currentMode = Mode.DRIVER_CONTROL;
@@ -61,6 +64,11 @@ public class Hand {
                 rotation = 0.5;
                 hand.setPosition(0.5);
                 break;
+            case RIGHT_SIDE_DROP_SAMPLE:
+                //rotation = 0.5;
+                hand.setPosition(RIGHT_SIDE_DROP_SAMPLE);
+                break;
+
         }
     }
 
