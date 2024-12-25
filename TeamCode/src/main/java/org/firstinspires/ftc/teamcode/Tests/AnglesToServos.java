@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.Tests;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -27,6 +30,7 @@ public class AnglesToServos extends LinearOpMode {
     DcMotor test;
     DcMotor test1;
     public DistanceSensor distanceSensor;
+    public ColorSensor color;
     SampleDetectionCameraClass cam;
 
     @Override
@@ -46,16 +50,22 @@ public class AnglesToServos extends LinearOpMode {
         //test1.setDirection(Servo.Direction.REVERSE);
         test1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         test.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "ScorClawDist");
+        color = hardwareMap.get(ColorSensor.class, "ScorClawDist");
 
 
         timer = new ElapsedTime();
 
         waitForStart();
-        timer.reset();
+       // timer.reset();
         double reference = 0;
         while (opModeIsActive()){
-       cam.visionInUse();
-            telemetry.addData("ik", ClawCalculation.inverseKinematics(0 ,cam.xActual, cam.yActual));
+     //  cam.visionInUse();
+            telemetry.addData("distance", distanceSensor.getDistance(DistanceUnit.MM));
+            telemetry.addData("alpha", color.alpha());
+            telemetry.addData("red", color.red());//
+            telemetry.addData("blue", color.blue());//
+           // telemetry.addData("alpha", color.alpha());
            /* telemetry.addData("ref", reference);
             telemetry.addData("enc", gamepad1.right_stick_y);*/
             telemetry.update();

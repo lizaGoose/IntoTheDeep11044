@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.RELAX_SCORE_
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -43,11 +44,12 @@ public class StateMachine {
     Differential diff;
     // SampleDetectionCameraClass cam;
     Hang hang;
-    ElapsedTime pickedUnpickedTimer, fromClawToClawTimer, dropSpecimenTimer, goToInitialFromScoreSample,humanDropPickSpecTimer, goFromScoreSpecTimer, fromTransferSpecimenToScore, forgetPosTimer, rightSideDropSampleTimer;
+    ElapsedTime pickedUnpickedTimer, fromClawToClawTimer, dropSpecimenTimer, goToInitialFromScoreSample, humanDropPickSpecTimer, goFromScoreSpecTimer, fromTransferSpecimenToScore, forgetPosTimer, rightSideDropSampleTimer;
     private final ElapsedTime specimenPickedUp, specimenToTransfer, movingBack;
     public DistanceSensor distanceSensor, distInClaw;
     LiftError lift;
     boolean sampleIsScored, startTimer, startTimerFromClawToClaw, startGoFromScorSpec, startFromClawToClaw, startForgetPosTimer, stopForgetPosTimer, startHumanDropPickSpec;
+    public ColorSensor color;
 
 
     DriveTrain dt;
@@ -147,7 +149,7 @@ public class StateMachine {
 
         switch (state) {
             case INITIAL:
-                if(rightSideDropSampleTimer.milliseconds() > 850) {
+                if (rightSideDropSampleTimer.milliseconds() > 850) {
                     sampleIsScored = false;
                     startTimer = false;
                     startTimerFromClawToClaw = false;
@@ -337,50 +339,49 @@ public class StateMachine {
                 if (startTimerFromClawToClaw && fromClawToClawTimer.milliseconds() >= 300) {
                     state = State.FROM_CLAW_TO_CLAW;
                 }
-                if(gamepad2.square){
+                if (gamepad2.square) {
                     state = State.RIGHT_SIDE_DROP_SAMPLE;
                 }
                 break;
 
             case RIGHT_SIDE_DROP_SAMPLE:
-               if(frontSensor.getState()){
-                   if (Math.abs(gamepad1.left_stick_y) >= 0.1 && !startHumanDropPickSpec) {
-                       startHumanDropPickSpec = true;
-                       humanDropPickSpecTimer.reset();
-                   }
-               }
-               if(humanDropPickSpecTimer.milliseconds() >= 800 && humanDropPickSpecTimer.milliseconds() <= 1300){
-                   state = State.RIGT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS;
-               }
-             if(gamepad1.circle) {
-                 rightSideDropSampleTimer.reset();
-             }
+                if (frontSensor.getState()) {
+                    if (Math.abs(gamepad1.left_stick_y) >= 0.1 && !startHumanDropPickSpec) {
+                        startHumanDropPickSpec = true;
+                        humanDropPickSpecTimer.reset();
+                    }
+                }
+                if (humanDropPickSpecTimer.milliseconds() >= 800 && humanDropPickSpecTimer.milliseconds() <= 1300) {
+                    state = State.RIGT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS;
+                }
+                if (gamepad1.circle) {
+                    rightSideDropSampleTimer.reset();
+                }
 
-             if(rightSideDropSampleTimer.milliseconds() >= 2000) {
-                 perkid.currentMode = Perkid.Mode.RIGHT_SIDE_DROP_SAMPLE;
-                 hand.currentMode = Hand.Mode.RIGHT_SIDE_DROP_SAMPLE;
-                 diff.currentMode = Differential.Mode.RIGHT_SIDE_DROP_SAMPLE;
-                 claw.currentMode = Claw.Mode.PICK;
-             }
+                if (rightSideDropSampleTimer.milliseconds() >= 2000) {
+                    perkid.currentMode = Perkid.Mode.RIGHT_SIDE_DROP_SAMPLE;
+                    hand.currentMode = Hand.Mode.RIGHT_SIDE_DROP_SAMPLE;
+                    diff.currentMode = Differential.Mode.RIGHT_SIDE_DROP_SAMPLE;
+                    claw.currentMode = Claw.Mode.PICK;
+                }
 
-           if(rightSideDropSampleTimer.milliseconds() > 400 && rightSideDropSampleTimer.milliseconds() <= 700){
-                 claw.currentMode = Claw.Mode.DROP;
-             }
+                if (rightSideDropSampleTimer.milliseconds() > 400 && rightSideDropSampleTimer.milliseconds() <= 700) {
+                    claw.currentMode = Claw.Mode.DROP;
+                }
 
                 break;
             case RIGT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS:
                 startHumanDropPickSpec = false;
 
-                if(rightSideDropSampleTimer.milliseconds() > 400 && rightSideDropSampleTimer.milliseconds() <= 700){
+                if (rightSideDropSampleTimer.milliseconds() > 400 && rightSideDropSampleTimer.milliseconds() <= 700) {
                     claw.currentMode = Claw.Mode.DROP;
-                }
-                else if(rightSideDropSampleTimer.milliseconds() >= 900 && rightSideDropSampleTimer.milliseconds() <= 1200){
+                } else if (rightSideDropSampleTimer.milliseconds() >= 900 && rightSideDropSampleTimer.milliseconds() <= 1200) {
                     perkid.currentMode = Perkid.Mode.LOOK;
                     //diff.currentMode = Differential.Mode.VISION_HUYNYA;
                     diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
-                   // scorClaw.currentMode = ScorClaw.Mode.DROP;
+                    // scorClaw.currentMode = ScorClaw.Mode.DROP;
                     hand.currentMode = Hand.Mode.DRIVER_CONTROL;
-                   // claw.currentMode = Claw.Mode.DROP;
+                    // claw.currentMode = Claw.Mode.DROP;
                     // lift.pos = 0;
                     if (gamepad2.triangle) {
                         state = State.INITIAL;
@@ -395,7 +396,7 @@ public class StateMachine {
                 scorDiff.currentMode = ScoringDiff.Mode.PICK_SPEC;
                 scorClaw.currentMode = ScorClaw.Mode.DROP;
 
-                if(gamepad1.circle) {
+                if (gamepad1.circle) {
                     rightSideDropSampleTimer.reset();
                 }
 

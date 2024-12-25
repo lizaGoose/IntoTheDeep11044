@@ -264,6 +264,11 @@ public class Differential {
         right.setPosition(rightPos);
     }
 
+    public void dropOverRightSide() {
+        left.setPosition(RIGHT_SIDE_DROP_SAMPLE + RIGHT_SIDE_DROP_SAMPLE_ROTATION);
+        right.setPosition(RIGHT_SIDE_DROP_SAMPLE - RIGHT_SIDE_DROP_SAMPLE_ROTATION);
+    }
+
     public List<Double> angleRotationToPosition(double angle, double rotation) {
         double leftDiff  = ((angle + rotation) / 90 + 1) / 2;
         double rightDiff = ((angle - rotation) / 90 + 1) / 2;

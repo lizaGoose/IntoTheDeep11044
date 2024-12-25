@@ -7,7 +7,7 @@ public class AutoCommonConstants {
     public static double AIM_SPECIMEN_0 = 0.05;
     public static double AIM_SPECIMEN_1 = 0.7;
 
-    public static int HOLD_POS = 500;
+    public static int HOLD_POS = 0;
 
     public static double WAIT_SCORE = 200;
 

@@ -76,6 +76,10 @@ public class Hand {
         hand.setPosition(position);
     }
 
+    public void dropOverRightSide() {
+        hand.setPosition(RIGHT_SIDE_DROP_SAMPLE);
+    }
+
     public void setAngle(double angle) {
         double position = ClawCalculation.angleToServoPos(angle, 90);
 

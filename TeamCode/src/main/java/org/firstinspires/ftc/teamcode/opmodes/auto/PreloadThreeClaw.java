@@ -17,7 +17,13 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.ANG
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_RIGHT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_HALF_CLOSE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_CLOSED;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_TEMP_CLOSED;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.HAND_LEFT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.HAND_MIDDLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.HAND_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.SLOWDOWN_FORCE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_EXTEND_HALF_CLOSE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_MIDDLE_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_RIGHT_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_TO_LEFT;
@@ -29,9 +35,11 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.RIG
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_AT_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_AT_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_AT_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_FOR_EXTEND;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_FOR_LEFT_ROTATION;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_FOR_MIDDLE_ROTATION;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_FOR_RIGHT_ROTATION;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_PICK_UP;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -110,12 +118,12 @@ public class PreloadThreeClaw extends LinearOpMode {
                         claw.open();
                      })
                      // PICK UP LEFT
-                     .waitForAt(1, WAIT_AT_LEFT + 1200, ANGLE_TO_LEFT)
+                     .waitForAt(1, WAIT_AT_LEFT + WAIT_PICK_UP + 650, ANGLE_TO_LEFT)
                      .addTimeMarker(WAIT_AT_LEFT, () -> {
                          extend.setReference(EXTEND_TO_LEFT);
                          diff.aim(DIFF_ROTATION_LEFT);
                          perkid.aim();
-                         hand.setPosition(0.5);
+                         hand.setPosition(HAND_LEFT);
                          claw.open();
                      })
                      .addTimeMarker(WAIT_AT_LEFT + 400, () -> {
@@ -125,7 +133,7 @@ public class PreloadThreeClaw extends LinearOpMode {
                      .addTimeMarker(WAIT_AT_LEFT + 600, () -> {
                          claw.close();
                      })
-                     .addTimeMarker(WAIT_AT_LEFT + 1150, () -> {
+                     .addTimeMarker(WAIT_AT_LEFT + WAIT_PICK_UP + 600, () -> {
                          diff.aim();
                          perkid.aim();
                      })
@@ -145,7 +153,7 @@ public class PreloadThreeClaw extends LinearOpMode {
                          claw.open();
                      })
                      // PICK UP MIDDLE
-                     .waitForAt(MIDDLE_STOP_POINT, WAIT_AT_MIDDLE + 1250, ANGLE_TO_MIDDLE)
+                     .waitForAt(MIDDLE_STOP_POINT, WAIT_AT_MIDDLE + WAIT_PICK_UP + 700, ANGLE_TO_MIDDLE)
                      .addTimeMarker(0, () -> {
 //                         hand.setPosition(0.5);
 //                         perkid.transfer();
@@ -157,7 +165,7 @@ public class PreloadThreeClaw extends LinearOpMode {
                      .addTimeMarker(WAIT_AT_MIDDLE, () -> {
                          diff.aim(DIFF_ROTATION_MIDDLE);
                          perkid.aim();
-                         hand.setPosition(0.5);
+                         hand.setPosition(HAND_MIDDLE);
                          claw.open();
                      })
                      .addTimeMarker(WAIT_AT_MIDDLE + 400, () -> {
@@ -167,32 +175,31 @@ public class PreloadThreeClaw extends LinearOpMode {
                      .addTimeMarker(WAIT_AT_MIDDLE + 600, () -> {
                          claw.close();
                      })
-                     .addTimeMarker(WAIT_AT_MIDDLE + 1150, () -> {
+                     .addTimeMarker(WAIT_AT_MIDDLE + WAIT_PICK_UP + 600, () -> {
                          diff.aim();
                          perkid.aim();
                      })
-                     .addTimeMarker(WAIT_AT_MIDDLE + 1200, () -> {
-                         extend.setReference(0);
+                     .addTimeMarker(WAIT_AT_MIDDLE + WAIT_PICK_UP + 650, () -> {
+                         extend.setReference(EXTEND_CLOSED);
                      })
                      // MIDDLE TO HUMAN
                      .waitForAt(RIGHT_STOP_POINT, WAIT_FOR_MIDDLE_ROTATION + 200, ANGLE_MIDDLE_TO_HUMAN)
                      .addTimeMarker(0, () -> {
-                         extend.setReference(0);
+                         extend.setReference(EXTEND_CLOSED);
                      })
                      .addTimeMarker(WAIT_FOR_MIDDLE_ROTATION / 2, () -> {
                          extend.setReference(EXTEND_MIDDLE_TO_HUMAN);
                      })
                      .addTimeMarker(WAIT_FOR_MIDDLE_ROTATION, () -> {
                          claw.open();
-                         DEBUG_END_FLAG = true;
                      })
                      // PICK UP RIGHT
-                     .waitForAt(RIGHT_STOP_POINT, EXTEND_HALF_CLOSE, ANGLE_MIDDLE_TO_HUMAN)
+                     .waitForAt(RIGHT_STOP_POINT, WAIT_EXTEND_HALF_CLOSE, ANGLE_MIDDLE_TO_HUMAN)
                      .addTimeMarker(0, () -> {
                          claw.open();
-                         extend.setReference(0);
+                         extend.setReference(EXTEND_CLOSED);
                      })
-                     .waitForAt(RIGHT_STOP_POINT, WAIT_AT_RIGHT + 1200, ANGLE_TO_RIGHT)
+                     .waitForAt(RIGHT_STOP_POINT, WAIT_AT_RIGHT + WAIT_FOR_EXTEND + WAIT_PICK_UP + 650, ANGLE_TO_RIGHT)
                      .addTimeMarker(0, () -> {
 //                         hand.setPosition(0.5);
 //                         perkid.transfer();
@@ -204,30 +211,39 @@ public class PreloadThreeClaw extends LinearOpMode {
                          extend.setReference(EXTEND_TO_RIGHT);
                          diff.aim(DIFF_ROTATION_RIGHT);
                          perkid.aim();
-                         hand.setPosition(0.5);
+                         hand.setPosition(HAND_RIGHT);
                          claw.open();
                      })
-                     .addTimeMarker(WAIT_AT_RIGHT + 400, () -> {
+                     .addTimeMarker(WAIT_AT_RIGHT + WAIT_FOR_EXTEND + 400, () -> {
                          diff.pickUp(DIFF_ROTATION_RIGHT);
                          perkid.pickUp();
                      })
-                     .addTimeMarker(WAIT_AT_RIGHT + 600, () -> {
+                     .addTimeMarker(WAIT_AT_RIGHT + WAIT_FOR_EXTEND + 600, () -> {
                          claw.close();
                      })
-                     .addTimeMarker(WAIT_AT_RIGHT + 1150, () -> {
+                     .addTimeMarker(WAIT_AT_RIGHT + WAIT_FOR_EXTEND + WAIT_PICK_UP + 600, () -> {
                          diff.aim();
                          perkid.aim();
                      })
                      // RIGHT TO HUMAN
-                     .waitForAt(RIGHT_STOP_POINT, WAIT_FOR_RIGHT_ROTATION + 100, ANGLE_RIGHT_TO_HUMAN)
-                     .addTimeMarker(0, () -> {
+                     .addTurnMarker(2, 0)
+                     .addSpatialMarker(2.1, () -> {
+                         extend.setReference(EXTEND_TEMP_CLOSED);
+                         hand.dropOverRightSide();
+                         perkid.dropOverRightSide();
+                         diff.dropOverRightSide();
+                         scorClaw.open();
+                     })
+                     .addSpatialMarker(2.2, () -> {
+                         TrajectoryRunner.force = SLOWDOWN_FORCE;
+                     })
+                     .addSpatialMarker(2.8, () -> {
+                         claw.open();
                          extend.setReference(0);
                      })
-                     .addTimeMarker(WAIT_FOR_RIGHT_ROTATION / 2, () -> {
-                         extend.setReference(EXTEND_RIGHT_TO_HUMAN);
-                     })
-                     .addTimeMarker(WAIT_FOR_RIGHT_ROTATION, () -> {
-                         claw.open();
+                     .waitForAt(3, 100)
+                     .addTimeMarker(100, () -> {
+                         scorClaw.close();
                      })
                      .build();
         } catch (IOException e) {
@@ -235,6 +251,7 @@ public class PreloadThreeClaw extends LinearOpMode {
         }
 
         drive.setPoseEstimate(new Pose2d(trajToRungs.get(0).point0, 0));
+        TrajectoryRunner.force = 0.5;
 
         scorClaw.close();
 
@@ -260,7 +277,7 @@ public class PreloadThreeClaw extends LinearOpMode {
         /* *** GO TO HUMAN AND DO EVERYTHING *** */
         drive.followTrajectory(trajToThree);
 
-        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
+        while (drive.isBusy() && opModeIsActive()) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
                 TrajectoryRunner.force = 0.5;

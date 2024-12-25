@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.LOOK_POS;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.PICK_UP;
+import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.RIGHT_SIDE_DROP_SAMPLE;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.STRAIGHT_POS;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_FROM_SUBMERSABLE;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
@@ -130,6 +131,11 @@ public class Perkid {
     public void liftSample() {
         left.setPosition(TRANSFER_FROM_SUBMERSABLE);
         right.setPosition(TRANSFER_FROM_SUBMERSABLE);
+    }
+
+    public void dropOverRightSide() {
+        left.setPosition(RIGHT_SIDE_DROP_SAMPLE);
+        right.setPosition(RIGHT_SIDE_DROP_SAMPLE);
     }
 
     public void setAngle(double angle) {

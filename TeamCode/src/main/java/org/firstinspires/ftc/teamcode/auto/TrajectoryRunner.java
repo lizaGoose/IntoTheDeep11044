@@ -137,6 +137,8 @@ public class TrajectoryRunner {
             packet.put("PID", true);
             packet.put("wait_point_index", lastStopPoint);
             packet.put("curve", false);
+            packet.put("power_x", powerX);
+            packet.put("power_y", powerY);
 
             result = new Pose2d(powerX, powerY, headingPower);
 
@@ -245,6 +247,7 @@ public class TrajectoryRunner {
 
         if ((Math.abs(t + curveIndex - currentTrajectory.size()) <= 1e-2 && stopPoints.isEmpty()) ||
             stopPoints.isEmpty()) {
+            packet.put("END_OF_TRAJ", true);
             currentTrajectory = null;
         }
 
