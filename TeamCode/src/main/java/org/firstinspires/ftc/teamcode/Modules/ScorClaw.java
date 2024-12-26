@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.DROP;
 import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.PICK;
+import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.VERY_DROP;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 class ScorClawConstants {
     public static double PICK = 0.82;
     public static double DROP = 0.49;
+    public static double VERY_DROP = 0.38;
 }
 
 public class ScorClaw {
@@ -59,5 +61,9 @@ public class ScorClaw {
 
     public void relax() {
         claw.setPwmDisable();
+    }
+
+    public void unrelax() {
+        claw.setPwmEnable();
     }
 }

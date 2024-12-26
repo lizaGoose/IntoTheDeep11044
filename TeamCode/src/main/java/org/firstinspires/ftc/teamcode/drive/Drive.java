@@ -35,8 +35,9 @@ public class Drive {
 
     private final TrajectoryRunner runner;
 
-    public static PIDFCoefficients xCoeffs = new PIDFCoefficients(0.15, 0, 0.004, 0), yCoeffs = new PIDFCoefficients(0.15, 0, 0.004, 0);
-    public static PIDFCoefficients turn_coefficients = new PIDFCoefficients(0.7, 2, 0.04, 0);
+    private final PIDFCoefficients xCoeffs = TrajectoryRunner.xCoeffs;
+    private final PIDFCoefficients yCoeffs = TrajectoryRunner.yCoeffs;
+    public static PIDFCoefficients turnCoeffs = TrajectoryRunner.turnCoeffs;
 
     private double lastErrorX = 0;
     private double integralSumX = 0;
@@ -288,7 +289,7 @@ public class Drive {
         double powerX = ( xCoeffs.p * errorX ) + ( xCoeffs.i * integralSumX ) + ( xCoeffs.d * derivativeX );
         double powerY = ( yCoeffs.p * errorY ) + ( yCoeffs.i * integralSumY ) + ( yCoeffs.d * derivativeY );
 
-        powerX = Math.min(Math.max(powerX, -0.7), 0.7);
+        powerX = Math.min(Math.max(powerX, -TrajectoryRunner.force), TrajectoryRunner.force);
         powerY = Math.min(Math.max(powerY, -0.7), 0.7);
 
         double headingReference = reference.getHeading();
@@ -302,7 +303,7 @@ public class Drive {
             integralSumHeading += headingError * clock.seconds();
         }
 
-        double headingPower = ( turn_coefficients.p * headingError ) + ( turn_coefficients.i * integralSumHeading ) + ( turn_coefficients.d * headingDerivative );
+        double headingPower = ( turnCoeffs.p * headingError ) + ( turnCoeffs.i * integralSumHeading ) + ( turnCoeffs.d * headingDerivative );
 
         TelemetryPacket packet = new TelemetryPacket();
 

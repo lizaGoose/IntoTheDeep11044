@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.PICK_UP;
 import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
+import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.AIM_SPEC;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.DROP_SAMPLE_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.PICK_SPEC;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.SCOR_SPEC;
@@ -24,6 +25,7 @@ class ScoringPerkidConstants {
       public static double SPEC_POS = 0.84;
       public static double PICK_SPEC = 0.42;*/
     public static double PICK_SPEC = 0.38;
+    public static double AIM_SPEC = 0.45;
     public static double DROP_SAMPLE_TO_HUMAN = 0.35;
     public static double TRANSFER_POS = 0.58;
     public static double SCORE_SAMP = 0.05;
@@ -112,6 +114,11 @@ public class ScoringPerkid {
     public void pickSpecimen() {
         left.setPosition(PICK_SPEC);
         right.setPosition(PICK_SPEC);
+    }
+
+    public void aimAtSpecimen() {
+        left.setPosition(AIM_SPEC);
+        right.setPosition(AIM_SPEC);
     }
 
     public void scoreSpecimen() {

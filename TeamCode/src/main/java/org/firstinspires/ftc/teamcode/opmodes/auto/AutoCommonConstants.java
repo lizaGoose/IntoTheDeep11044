@@ -12,7 +12,7 @@ public class AutoCommonConstants {
     public static double WAIT_SCORE = 200;
 
     public static double RELAX_CLAW = 150;
-    public static double INITIAL = 0.4;
+    public static double INITIAL = 0.2;
 
 
     public static double SPECIMEN_ADD_FORCE = 0.6;

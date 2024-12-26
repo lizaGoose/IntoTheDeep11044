@@ -6,10 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TrajectoryBuilder {
-    private final Vector2d[] points;
+    private final List<Vector2d> points;
     private final List<StopPoint> stops = new ArrayList<>();
     private final List<SpatialMarker> spatialMarkers = new ArrayList<>();
     private final List<TurnMarker> turnMarkers = new ArrayList<>();
@@ -17,7 +19,8 @@ public class TrajectoryBuilder {
 
     public TrajectoryBuilder(File file) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        points = objectMapper.readValue(file, Vector2d[].class);
+        Vector2d[] pointsArray = objectMapper.readValue(file, Vector2d[].class);
+        points = Arrays.asList(pointsArray);
     }
 
     public TrajectoryBuilder addSpatialMarker(double t, MarkerRunnable runnable) {
@@ -40,9 +43,9 @@ public class TrajectoryBuilder {
     }
 
     public TrajectoryBuilder waitForAt(double t, int milliseconds, double angle) {
-        if (t > (double) (points.length - 1) / 3) {
+        if (t > (double) ( points.size() - 1 ) / 3) {
             throw new IndexOutOfBoundsException(
-                    "Invalid index " + t + " (max is " + (points.length - 1) % 3 + ")"
+                    "Invalid index " + t + " (max is " + ( points.size() - 1 ) % 3 + ")"
             );
         }
         stops.add(new StopPoint(t, milliseconds, angle));
@@ -61,14 +64,39 @@ public class TrajectoryBuilder {
         }
         if (millisecond > stops.get(stops.size() - 1).milliseconds) {
             throw new IndexOutOfBoundsException(
-                    "Invalid time of " + millisecond + " (max is " + stops.get(stops.size() - 1).milliseconds +  ")"
+                    "Invalid time of " + millisecond + " (max is " + stops.get(stops.size() - 1).milliseconds + ")"
             );
         }
         timeMarkers.add(new TimeMarker(stops.size() - 1, millisecond, runnable));
         return this;
     }
 
+    public TrajectoryBuilder addTimeMarker(int millisecond, boolean relative, MarkerRunnable runnable) {
+        if (!relative) {
+            return addTimeMarker(millisecond, runnable);
+        }
+        if (stops.isEmpty()) {
+            throw new RuntimeException(
+                    "No stop markers to attach time marker"
+            );
+        }
+        if (millisecond > stops.get(stops.size() - 1).milliseconds) {
+            throw new IndexOutOfBoundsException(
+                    "Invalid time of " + millisecond + " (max is " + stops.get(stops.size() - 1).milliseconds + ")"
+            );
+        }
+        if (timeMarkers.isEmpty()) {
+            timeMarkers.add(new TimeMarker(stops.size() - 1, millisecond, runnable));
+            return this;
+        } else if (timeMarkers.get(timeMarkers.size() - 1).waitIndex < stops.size() - 1) {
+            timeMarkers.add(new TimeMarker(stops.size() - 1, millisecond, runnable));
+            return this;
+        }
+        timeMarkers.add(new TimeMarker(stops.size() - 1, millisecond + timeMarkers.get(timeMarkers.size() - 1).milliseconds, runnable));
+        return this;
+    }
+
     public Trajectory build() {
-        return new Trajectory(points, stops, spatialMarkers, turnMarkers, timeMarkers);
+        return new Trajectory(points.toArray(new Vector2d[0]), stops, spatialMarkers, turnMarkers, timeMarkers);
     }
 }
