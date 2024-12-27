@@ -81,7 +81,6 @@ public class TrajectoryRunner {
         turns = trajectory.getTurns().stream()
                 .map(TurnMarker::clone)
                 .collect(Collectors.toList());
-        timeMarkers = trajectory.getTimeMarkers();
         timeMarkers = trajectory.getTimeMarkers().stream()
                 .map(TimeMarker::clone)
                 .collect(Collectors.toList());

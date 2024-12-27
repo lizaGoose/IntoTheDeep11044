@@ -18,7 +18,7 @@ public class StopPoint {
     StopPoint(double t, int milliseconds, double angle) {
         this.t = t;
         this.milliseconds = milliseconds;
-        this.angle = Math.toRadians(angle);
+        this.angle = angle;
     }
 
     @NonNull

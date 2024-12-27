@@ -9,7 +9,7 @@ public class ThreeClawConstants {
     public static int EXTEND_TO_LEFT = 83;
     public static double ANGLE_TO_LEFT = -58;
     public static double DIFF_ROTATION_LEFT = -0.25;
-    public static double HAND_LEFT = 0.35;
+    public static double HAND_LEFT = 0.25;
 
 
     public static int EXTEND_LEFT_TO_HUMAN = 350;

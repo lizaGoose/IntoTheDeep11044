@@ -48,7 +48,7 @@ public class TrajectoryBuilder {
                     "Invalid index " + t + " (max is " + ( points.size() - 1 ) % 3 + ")"
             );
         }
-        stops.add(new StopPoint(t, milliseconds, angle));
+        stops.add(new StopPoint(t, milliseconds, Math.toRadians(angle)));
         return this;
     }
 
