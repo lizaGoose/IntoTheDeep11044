@@ -11,11 +11,9 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WA
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.PICK_UP_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.PICK_UP_SLOWDOWN;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 

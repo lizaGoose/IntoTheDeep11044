@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import androidx.annotation.NonNull;
+
 public class TurnMarker {
     public int curve;
     private VariableProducer producer;
@@ -15,5 +17,11 @@ public class TurnMarker {
 
     public void setProducer(VariableProducer producer) {
         this.producer = producer;
+    }
+
+    @NonNull
+    @Override
+    public TurnMarker clone() {
+        return new TurnMarker(this.curve, this.producer);
     }
 }

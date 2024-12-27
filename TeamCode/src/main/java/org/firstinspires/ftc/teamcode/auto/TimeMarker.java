@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import androidx.annotation.NonNull;
+
 public class TimeMarker {
     public int waitIndex;
     public int milliseconds;
@@ -17,5 +19,11 @@ public class TimeMarker {
 
     public void setRunnable(MarkerRunnable runnable) {
         this.runnable = runnable;
+    }
+
+    @NonNull
+    @Override
+    public TimeMarker clone() {
+        return new TimeMarker(this.waitIndex, this.milliseconds, this.runnable);
     }
 }

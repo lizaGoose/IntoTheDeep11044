@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import androidx.annotation.NonNull;
+
 public class SpatialMarker {
     public double t;
     private MarkerRunnable runnable;
@@ -15,5 +17,11 @@ public class SpatialMarker {
 
     public void setRunnable(MarkerRunnable runnable) {
         this.runnable = runnable;
+    }
+
+    @NonNull
+    @Override
+    public SpatialMarker clone() {
+        return new SpatialMarker(this.t, this.runnable);
     }
 }

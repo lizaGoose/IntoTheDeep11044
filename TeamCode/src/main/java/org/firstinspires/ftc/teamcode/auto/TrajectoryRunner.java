@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.math.BezierCurve;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Config
@@ -69,12 +70,21 @@ public class TrajectoryRunner {
 
     public void followTrajectory(Trajectory trajectory) {
         currentTrajectory = trajectory;
-        markers = trajectory.getMarkers();
-        stopPoints = trajectory.getStopPoints();
+        markers = trajectory.getMarkers().stream()
+                .map(SpatialMarker::clone)
+                .collect(Collectors.toList());
+        stopPoints = trajectory.getStopPoints().stream()
+                .map(StopPoint::clone)
+                .collect(Collectors.toList());
         lastStopPoint = 0;
         stopPointTime = 0;
-        turns = trajectory.getTurns();
+        turns = trajectory.getTurns().stream()
+                .map(TurnMarker::clone)
+                .collect(Collectors.toList());
         timeMarkers = trajectory.getTimeMarkers();
+        timeMarkers = trajectory.getTimeMarkers().stream()
+                .map(TimeMarker::clone)
+                .collect(Collectors.toList());
         t = 0;
         curveIndex = 0;
         currentCurve = currentTrajectory.get(0);
