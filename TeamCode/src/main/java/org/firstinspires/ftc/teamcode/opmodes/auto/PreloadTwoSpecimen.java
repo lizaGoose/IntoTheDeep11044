@@ -73,7 +73,7 @@ public class PreloadTwoSpecimen extends LinearOpMode {
                     .build();
              trajPark = drive.buildTrajectory("traj11.json")
                      .addSpatialMarker(0, () -> {
-                         TrajectoryRunner.force = SPECIMEN_ADD_FORCE;
+                         drive.setForce(SPECIMEN_ADD_FORCE);
 
                          relaxFlag = true;
                          clock.reset();
@@ -92,7 +92,7 @@ public class PreloadTwoSpecimen extends LinearOpMode {
                      .build();
             trajToSpecimen = drive.buildTrajectory("traj12.json")
                     .addSpatialMarker(0, () -> {
-                        TrajectoryRunner.force = PICK_UP_SLOWDOWN;
+                        drive.setForce(PICK_UP_SLOWDOWN);
                     })
                     .build();
             trajSpecimenToRung = drive.buildTrajectory("traj13.json")
@@ -135,7 +135,7 @@ public class PreloadTwoSpecimen extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive()) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
-                TrajectoryRunner.force = 0.5;
+                drive.resetForce();
             }
 
             drive.update();
@@ -182,7 +182,7 @@ public class PreloadTwoSpecimen extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive()) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
-                TrajectoryRunner.force = 0.5;
+                drive.resetForce();
             }
 
             drive.update();
@@ -204,7 +204,7 @@ public class PreloadTwoSpecimen extends LinearOpMode {
 
     private void initRobot() {
         drive = new Drive(hardwareMap);
-        TrajectoryRunner.force = 0.5;
+        drive.resetForce();
 
         scoringPerkid = new ScoringPerkid(this);
         scoringDiff = new ScoringDiff(this);

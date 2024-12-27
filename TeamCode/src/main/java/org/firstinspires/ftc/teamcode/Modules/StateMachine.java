@@ -45,7 +45,7 @@ public class StateMachine {
     // SampleDetectionCameraClass cam;
     Hang hang;
     ElapsedTime pickedUnpickedTimer, fromClawToClawTimer, dropSpecimenTimer, goToInitialFromScoreSample, humanDropPickSpecTimer, goFromScoreSpecTimer, fromTransferSpecimenToScore, forgetPosTimer, rightSideDropSampleTimer;
-    private final ElapsedTime specimenPickedUp, specimenToTransfer, movingBack;
+    private final ElapsedTime specimenPickedUp, specimenToTransfer;
     public DistanceSensor distanceSensor, distInClaw;
     LiftError lift;
     boolean sampleIsScored, startTimer, startTimerFromClawToClaw, startGoFromScorSpec, startFromClawToClaw, startForgetPosTimer, stopForgetPosTimer, startHumanDropPickSpec;
@@ -109,7 +109,6 @@ public class StateMachine {
         fromTransferSpecimenToScore = new ElapsedTime();
         specimenPickedUp = new ElapsedTime();
         specimenToTransfer = new ElapsedTime();
-        movingBack = new ElapsedTime();
         forgetPosTimer = new ElapsedTime();
     }
 

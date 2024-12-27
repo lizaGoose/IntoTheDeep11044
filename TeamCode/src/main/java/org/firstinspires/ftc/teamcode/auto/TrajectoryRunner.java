@@ -38,7 +38,8 @@ public class TrajectoryRunner {
 
     public static double kP = 0.25;
     public static double kCentripetal = 0.035;
-    public static double force = 0.5; // TODO: REMOVE
+    public static double FORCE = 0.5;
+    private double force = FORCE; // TODO: REMOVE
 
     public boolean uselessFlag = false;
 
@@ -153,6 +154,12 @@ public class TrajectoryRunner {
             packet.put("power_x", powerX);
             packet.put("power_y", powerY);
 
+            packet.put("reference_x", reference.getX());
+            packet.put("reference_y", reference.getY());
+            packet.put("reference_heading", headingReference);
+
+            //draw(fieldOverlay, poseEstimate, reference, new Vector2d(), reference);
+
             result = new Pose2d(powerX, powerY, headingPower);
 
             // draw(fieldOverlay, poseEstimate, reference, new Vector2d(), result.vec());
@@ -222,7 +229,7 @@ public class TrajectoryRunner {
             packet.put("pathing_power_norm", pathing_power.norm());
 
 
-            packet.put("heading_reference", headingReference);
+            packet.put("reference_heading", headingReference);
             packet.put("heading_power", headingPower);
             packet.put("corrected_heading", lastHeadingError);
             packet.put("curvature", curvature);
@@ -311,5 +318,13 @@ public class TrajectoryRunner {
 
     public boolean isBusy() {
         return currentTrajectory != null;
+    }
+
+    public void setForce(double force) {
+        this.force = force;
+    }
+
+    public void resetForce() {
+        this.force = FORCE;
     }
 }

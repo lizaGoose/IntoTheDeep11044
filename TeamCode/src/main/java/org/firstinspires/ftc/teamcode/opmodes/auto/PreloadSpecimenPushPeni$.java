@@ -81,7 +81,7 @@ public class PreloadSpecimenPushPeni$ extends LinearOpMode {
                     .build();
              trajectoryPark = drive.buildTrajectory("traj14.json")
                      .addSpatialMarker(0, () -> {
-                         TrajectoryRunner.force = 0.6;
+                         drive.setForce(0.6);
 
                          relaxFlag = true;
                          clock.reset();
@@ -98,7 +98,7 @@ public class PreloadSpecimenPushPeni$ extends LinearOpMode {
                      })
                      .waitForAt(2, 2000)
                      .addSpatialMarker(2, () -> {
-                         TrajectoryRunner.force = 0.4;
+                         drive.setForce(0.4);
                      })
                      .waitForAt(3, 2000)
                      .build();
@@ -135,7 +135,7 @@ public class PreloadSpecimenPushPeni$ extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive()) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
-                TrajectoryRunner.force = 0.5;
+                drive.setForce(0.5);
             }
 
             drive.update();
