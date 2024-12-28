@@ -8,14 +8,14 @@ public class ThreeClawConstants {
     public static double DELTA_1ST = 3;
     public static double DELTA_2ND = 0;
     public static double DELTA_3RD = 2.2;
-    public static double DELTA_4TH = -6.2;
+    public static double DELTA_4TH = -7.2;
     public static double DELTA_5TH = -4;
 
     public static int WAIT_AT_LEFT = 200;
-    public static int EXTEND_TO_LEFT = 93;
+    public static int EXTEND_TO_LEFT = 83;
     public static double ANGLE_TO_LEFT = -59;
     public static double DIFF_ROTATION_LEFT = -0.35;
-    public static double HAND_LEFT = 0.1;
+    public static double HAND_LEFT = 0.25;
 
     public static int EXTEND_LEFT_TO_HUMAN = 350;
     public static double ANGLE_LEFT_TO_HUMAN = -145;
@@ -23,10 +23,10 @@ public class ThreeClawConstants {
 
     public static double MIDDLE_STOP_POINT = 1.5;
     public static int WAIT_AT_MIDDLE = 200;
-    public static int EXTEND_TO_MIDDLE = 120;
+    public static int EXTEND_TO_MIDDLE = 110;
     public static double ANGLE_TO_MIDDLE = -58;
     public static double DIFF_ROTATION_MIDDLE = -0.35;
-    public static double HAND_MIDDLE = 0.1;
+    public static double HAND_MIDDLE = 0.25;
 
     public static int EXTEND_MIDDLE_TO_HUMAN = 350;
     public static double ANGLE_MIDDLE_TO_HUMAN = -145;
@@ -63,5 +63,5 @@ public class ThreeClawConstants {
     public static double POINT_PERKID_START_0 = 0.5;
     public static double POINT_PERKID_START_1 = 0.8;
 
-    public static double POINT_SPECIMEN_START_SCORE = 0.996;
+    public static double POINT_SPECIMEN_START_SCORE = 0.997;
 }

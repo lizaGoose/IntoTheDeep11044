@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 @Config
 class ScorClawConstants {
-    public static double PICK = 0.82;
+    public static double PICK = 0.93;
     public static double DROP = 0.49;
     public static double VERY_DROP = 0.38;
 }
