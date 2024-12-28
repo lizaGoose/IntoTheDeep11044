@@ -255,6 +255,10 @@ public class Drive {
         return 2 * Math.PI * ( x - Math.floor(x) ) - Math.PI;
     }
 
+    public double getCorrectedHeading() {
+        return getCorrectedHeading(0);
+    }
+
     public Double getExternalHeadingVelocity() {
         return (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
     }

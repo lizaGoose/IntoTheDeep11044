@@ -107,6 +107,7 @@ public class PreloadThreeClaw extends LinearOpMode {
         Trajectory trajSpecimenToRung5th, trajRungToSpecimen5th;
         try {
             trajToRungs = drive.buildTrajectory("traj10.json")
+                    .addTurnMarker(0, 0)
                     .addSpatialMarker(AIM_SPECIMEN_0, () -> {
                         scoringPerkid.transferSpecimen();
                         scoringDiff.pickSpecimen();
@@ -148,13 +149,15 @@ public class PreloadThreeClaw extends LinearOpMode {
                     .waitForAt(1, WAIT_AT_LEFT + WAIT_PICK_UP + 650, ANGLE_TO_LEFT)
                     .addTimeMarker(WAIT_AT_LEFT, () -> {
                         extend.setReference(EXTEND_TO_LEFT);
-                        diff.aim(DIFF_ROTATION_LEFT);
-                        perkid.aim();
                         hand.setPosition(HAND_LEFT);
+                        double rotation = ANGLE_TO_LEFT + hand.getAngle();
+                        diff.aimAngle(rotation);
+                        perkid.aim();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 400, () -> {
-                        diff.pickUp(DIFF_ROTATION_LEFT);
+                        double rotation = ANGLE_TO_LEFT + hand.getAngle();
+                        diff.pickUpAngle(rotation);
                         perkid.pickUp();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 600, () -> {
@@ -187,16 +190,19 @@ public class PreloadThreeClaw extends LinearOpMode {
 //                         diff.transfer();
 //                         claw.open();
                         extend.setReference(EXTEND_TO_MIDDLE);
-                        diff.aim(DIFF_ROTATION_MIDDLE);
+                        double rotation = ANGLE_TO_MIDDLE + hand.getAngle();
+                        diff.aimAngle(rotation);
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE, () -> {
-                        diff.aim(DIFF_ROTATION_MIDDLE);
-                        perkid.aim();
                         hand.setPosition(HAND_MIDDLE);
+                        double rotation = ANGLE_TO_MIDDLE + hand.getAngle();
+                        diff.aimAngle(rotation);
+                        perkid.aim();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + 400, () -> {
-                        diff.pickUp(DIFF_ROTATION_MIDDLE);
+                        double rotation = ANGLE_TO_MIDDLE + hand.getAngle();
+                        diff.pickUpAngle(rotation);
                         perkid.pickUp();
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + 600, () -> {
@@ -226,17 +232,20 @@ public class PreloadThreeClaw extends LinearOpMode {
 //                         perkid.transfer();
 //                         diff.transfer();
 //                         claw.open();
-                        diff.aim(DIFF_ROTATION_RIGHT);
+                        double rotation = ANGLE_TO_RIGHT + hand.getAngle();
+                        diff.aimAngle(rotation);
                     })
                     .addTimeMarker(WAIT_AT_RIGHT, () -> {
-                        extend.setReference(EXTEND_TO_RIGHT);
-                        diff.aim(DIFF_ROTATION_RIGHT);
-                        perkid.aim();
                         hand.setPosition(HAND_RIGHT);
+                        double rotation = ANGLE_TO_RIGHT + hand.getAngle();
+                        extend.setReference(EXTEND_TO_RIGHT);
+                        diff.aimAngle(rotation);
+                        perkid.aim();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_RIGHT + 400, () -> {
-                        diff.pickUp(DIFF_ROTATION_RIGHT);
+                        double rotation = ANGLE_TO_RIGHT + hand.getAngle();
+                        diff.pickUpAngle(rotation);
                         perkid.pickUp();
                     })
                     .addTimeMarker(WAIT_AT_RIGHT  + 600, () -> {
@@ -272,6 +281,7 @@ public class PreloadThreeClaw extends LinearOpMode {
                     })
                     .build();
             buildSpecimenToRung = drive.buildTrajectory("traj13.json")
+                    .addTurnMarker(0, 0)
                     .addSpatialMarker(POINT_PERKID_START_0, () -> {
                         scoringPerkid.transferSpecimen();
                         scoringDiff.pickSpecimen();
@@ -306,6 +316,7 @@ public class PreloadThreeClaw extends LinearOpMode {
                     .plusPoint(2, new Vector2d(0, DELTA_5TH))
                     .build();
             buildRungToSpecimen = drive.buildTrajectory("traj11.json")
+                    .addTurnMarker(0, 0)
                     .addSpatialMarker(0, () -> {
                         drive.setForce(SPECIMEN_ADD_FORCE);
 

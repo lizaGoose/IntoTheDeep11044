@@ -21,7 +21,7 @@ class ExtendConstants {
     public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(-0.018, 0.0, -0.000004, 0.015);
     public static double TICKS_PER_TAP = 30;
 
-    public static int MAX_POSITION = 210;
+    public static int MAX_POSITION = 300;
     public static int MIN_POSITION = 0;
     public static int TRANSFER = 51;
     public static int TRANSFER_CLOSER = 20;
