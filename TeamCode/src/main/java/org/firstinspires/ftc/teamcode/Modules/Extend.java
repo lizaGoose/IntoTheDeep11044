@@ -16,12 +16,14 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 @Config
 class ExtendConstants {
     public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(-0.018, 0.0, -0.000004, 0.015);
     public static double TICKS_PER_TAP = 30;
 
-    public static int MAX_POSITION = 210;
+    public static int MAX_POSITION = 300;
     public static int MIN_POSITION = 0;
     public static int TRANSFER = 51;
     public static int TRANSFER_CLOSER = 20;
@@ -36,12 +38,12 @@ public class Extend {
     boolean lastTriangleState = false, lastCrossState = false;
     public double setNewReference = 0;
 
-
     enum Mode {
         DRIVER_CONTROL,
         VISION_CONTROL,
         CLOSE,
-        PURE_PID
+        PURE_PID,
+        POWER
     }
 
     Extend.Mode currentMode = Mode.DRIVER_CONTROL;
@@ -53,7 +55,6 @@ public class Extend {
         motor = linearOpMode.hardwareMap.get(DcMotorEx.class, "extend_motor");
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
 
         timer = new ElapsedTime();
     }
@@ -95,6 +96,9 @@ public class Extend {
             case CLOSE:
                 motor.setTargetPosition(0);
                 break;
+            case POWER:
+                motor.setPower(power);
+                break;
         }
         if (gamepad.right_stick_y != 0) {
             currentMode = Mode.DRIVER_CONTROL;
@@ -133,8 +137,27 @@ public class Extend {
         this.reference = reference;
     }
 
+    double power = 0;
+
+    public void setPower(double power) {
+        this.power = Math.min(1, Math.max(power, -1));
+    }
+
+    public double getPower() {
+        return power;
+    }
+
+    public void resetEncoder() {
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     public double getPosition() {
         return motor.getCurrentPosition();
+    }
+
+    public double getAmps() {
+        return motor.getCurrent(CurrentUnit.AMPS);
     }
 
     public void setTransfer() {
@@ -144,6 +167,7 @@ public class Extend {
     public void setCloser() {
         reference = TRANSFER_CLOSER;
     }
+
     public void setHang() {
         reference = HANG;
     }

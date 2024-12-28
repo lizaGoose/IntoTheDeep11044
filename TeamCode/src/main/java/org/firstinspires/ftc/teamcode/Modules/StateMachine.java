@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
 
@@ -48,9 +49,11 @@ public class StateMachine {
     private final ElapsedTime specimenPickedUp, specimenToTransfer, movingBack;
     public DistanceSensor distanceSensor, distInClaw;
     LiftError lift;
+    // TODO: too many booleans
     boolean sampleIsScored, startTimer, startTimerFromClawToClaw, startGoFromScorSpec, startFromClawToClaw, startForgetPosTimer, stopForgetPosTimer, startHumanDropPickSpec;
     public ColorSensor color;
 
+    boolean startedMovingExtendBack = true;
 
     DriveTrain dt;
     public DigitalChannel frontSensor;
@@ -445,62 +448,17 @@ public class StateMachine {
                 if (startFromClawToClaw) {
                     claw.currentMode = Claw.Mode.PICK;
                     perkid.currentMode = Perkid.Mode.LOOK;
-                    if (Math.abs(gamepad1.left_stick_y) >= 0.1 && !startTimerFromClawToClaw) {
-                        fromClawToClawTimer.reset();
-                        startTimerFromClawToClaw = true;
-
-                    }
+                    startTimerFromClawToClaw = true;
                 }
                 if (startTimerFromClawToClaw && fromClawToClawTimer.milliseconds() >= 300) {
                     state = State.FROM_CLAW_TO_CLAW;
+                    startedMovingExtendBack = false;
                 }
-                //   }
-
-             /*   if (pickedUnpickedTimer.milliseconds() > 800 && distanceSensor.getDistance(DistanceUnit.MM) > DIFFERENTIAL_CLAW_THRESHOLD) {
-                    state = State.LOOK_FOR_BLOCK;
-                } else if (pickedUnpickedTimer.milliseconds() > 800 && distanceSensor.getDistance(DistanceUnit.MM) <= DIFFERENTIAL_CLAW_THRESHOLD) {
-                    claw.currentMode = Claw.Mode.PICK;
-                    perkid.currentMode = Perkid.Mode.LOOK;
-                    if (Math.abs(gamepad1.left_stick_y) >= 0.1 && !startTimerFromClawToClaw) {
-                        fromClawToClawTimer.reset();
-                        startTimerFromClawToClaw = true;
-                    }
-                }
-                if (startTimerFromClawToClaw && fromClawToClawTimer.milliseconds() >= 300) {
-                    state = State.FROM_CLAW_TO_CLAW;
-                }*/
-              /*  if(fromClawToClawTimer.milliseconds() <= 500){
-                    claw.currentMode = Claw.Mode.PICK;
-                    perkid.currentMode = Perkid.Mode.LOOK;
-                }
-                   /* if (Math.abs(gamepad1.left_stick_y) >= 0.1 && startTimerFromClawToClaw == false) {
-
-                        fromClawToClawTimer.reset();
-                        startTimerFromClawToClaw = true;
-                    }
-
-                    if (startTimerFromClawToClaw == true) {
-
-                        if (fromClawToClawTimer.milliseconds() > 900 && fromClawToClawTimer.milliseconds() <= 1400) {
-
-
-
-                        } else if (fromClawToClawTimer.milliseconds() > 1400) {
-                            extend.pos = 0;
-                            perkid.currentMode = Perkid.Mode.TRANSFER;
-
-                            state = State.FROM_CLAW_TO_CLAW;
-                        }
-                    }
-                    if (gamepad2.triangle) {
-                        state = State.INITIAL;
-                    }
-                }*/
                 break;
             case FROM_CLAW_TO_CLAW:
                 startFromClawToClaw = false;
                 startTimerFromClawToClaw = false;
-                if (fromClawToClawTimer.milliseconds() <= 800) {
+                if (fromClawToClawTimer.milliseconds() <= 800 && !startedMovingExtendBack) {
                     scorClaw.currentMode = ScorClaw.Mode.DROP;
                     claw.currentMode = Claw.Mode.LIGHT;
                     hand.currentMode = Hand.Mode.FORWARD;
@@ -508,18 +466,32 @@ public class StateMachine {
                     scorPerkid.currentMode = ScoringPerkid.Mode.TRANSFER;
                     diff.currentMode = Differential.Mode.TRANSFER;
                     perkid.currentMode = Perkid.Mode.TRANSFER;
-                } else if (fromClawToClawTimer.milliseconds() > 800 && fromClawToClawTimer.milliseconds() <= 1300) {
+                } else if (fromClawToClawTimer.milliseconds() > 800 && fromClawToClawTimer.milliseconds() <= 1300 && !startedMovingExtendBack) {
                     claw.currentMode = Claw.Mode.PICK;
                     //  extend.setTransfer();
-                } else if (fromClawToClawTimer.milliseconds() > 1300 && fromClawToClawTimer.milliseconds() <= 1700) {
+                } else if (fromClawToClawTimer.milliseconds() > 1300 && fromClawToClawTimer.milliseconds() <= 1700 && !startedMovingExtendBack) {
+                    extend.currentMode = Extend.Mode.POWER;
+                    extend.setPower(-1);
+                    fromClawToClawTimer.reset();
+                    startedMovingExtendBack = true;
+                }
+                if (startedMovingExtendBack && extend.getAmps() < 5 && extend.currentMode == Extend.Mode.POWER) {
+                    fromClawToClawTimer.reset();
+                } else {
                     extend.currentMode = Extend.Mode.PURE_PID;
+                    extend.setReference(extend.getPosition());
+                }
+                if (fromClawToClawTimer.milliseconds() > 0 && fromClawToClawTimer.milliseconds() <= 300
+                        && startedMovingExtendBack
+                        && extend.currentMode == Extend.Mode.PURE_PID) {
                     extend.setTransfer();
-                } else if (fromClawToClawTimer.milliseconds() > 1700 && fromClawToClawTimer.milliseconds() <= 2000) {
-                    extend.setTransfer();
-                } else if (fromClawToClawTimer.milliseconds() > 2000 && fromClawToClawTimer.milliseconds() <= 2250) {
+                } else if (fromClawToClawTimer.milliseconds() > 300 && fromClawToClawTimer.milliseconds() <= 550
+                        && startedMovingExtendBack
+                        && extend.currentMode == Extend.Mode.PURE_PID) {
                     scorClaw.currentMode = ScorClaw.Mode.PICK;
                     extend.setCloser();
-                } else {
+                } else if ( startedMovingExtendBack
+                            && extend.currentMode == Extend.Mode.PURE_PID) {
                     claw.currentMode = Claw.Mode.DROP;
                     extend.setCloser();
                     if (gamepad2.left_stick_y != 0) {
@@ -628,6 +600,7 @@ public class StateMachine {
         linearOpMode.telemetry.addData("extend", extend.motor.getCurrentPosition());
         linearOpMode.telemetry.addData("StartTimer", startTimer);
         linearOpMode.telemetry.addData("hang", hang.hang.getCurrentPosition());
+        linearOpMode.telemetry.addData("extend_voltage", extend.motor.getCurrent(CurrentUnit.AMPS));
         linearOpMode.telemetry.update();
     }
 }
