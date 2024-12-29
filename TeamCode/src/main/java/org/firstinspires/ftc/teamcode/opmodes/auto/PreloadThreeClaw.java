@@ -14,6 +14,10 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.ANG
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.ANGLE_LEFT_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.ANGLE_TO_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.ANGLE_TO_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DELTA_1ST;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DELTA_3RD;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DELTA_4TH;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DELTA_5TH;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_RIGHT;
@@ -24,7 +28,11 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.HAN
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.HAND_RIGHT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.POINT_PERKID_START_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.POINT_PERKID_START_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.POINT_SPECIMEN_START_SCORE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.SLOWDOWN_FORCE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.SLOWDOWN_POINT_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.SLOWDOWN_POINT_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.SLOWDOWN_POINT_2;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_EXTEND_HALF_CLOSE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_MIDDLE_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_TO_LEFT;
@@ -36,7 +44,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.RIG
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_AT_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_AT_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_AT_RIGHT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_FOR_EXTEND;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_FOR_HUMAN_ADJUST;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_FOR_LEFT_ROTATION;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_FOR_MIDDLE_ROTATION;
@@ -45,6 +52,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAI
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.WAIT_SPECIMEN_PICK_UP;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -62,7 +70,6 @@ import org.firstinspires.ftc.teamcode.Modules.ScoringDiff;
 import org.firstinspires.ftc.teamcode.Modules.ScoringPerkid;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
-import org.firstinspires.ftc.teamcode.auto.TrajectoryRunner;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 
 import java.io.IOException;
@@ -95,9 +102,12 @@ public class PreloadThreeClaw extends LinearOpMode {
         relaxFlag = false;
         TrajectoryBuilder buildSpecimenToRung, buildRungToSpecimen;
         Trajectory trajToRungs, trajToThree, trajSpecimenToRung, trajRungToSpecimen;
-        Trajectory trajSpecimenToRungCopy, trajRungToSpecimenCopy;
+        Trajectory trajSpecimenToRung3rd, trajRungToSpecimen3rd;
+        Trajectory trajSpecimenToRung4th, trajRungToSpecimen4th;
+        Trajectory trajSpecimenToRung5th, trajRungToSpecimen5th;
         try {
             trajToRungs = drive.buildTrajectory("traj10.json")
+                    .addTurnMarker(0, 0)
                     .addSpatialMarker(AIM_SPECIMEN_0, () -> {
                         scoringPerkid.transferSpecimen();
                         scoringDiff.pickSpecimen();
@@ -108,11 +118,19 @@ public class PreloadThreeClaw extends LinearOpMode {
                     .addSpatialMarker(AIM_SPECIMEN_1, () -> {
                         scoringDiff.transferSpecimen();
                     })
+                    .addSpatialMarker(POINT_SPECIMEN_START_SCORE, () -> {
+                        scoringPerkid.scoreSpecimen();
+                        scoringDiff.scoreSpecimen();
+                    })
                     .waitForAt(1, HOLD_POS)
+                    .plusPoint(2, new Vector2d(0, DELTA_1ST))
+                    .plusPoint(3, new Vector2d(0, DELTA_1ST))
                     .build();
             trajToThree = drive.buildTrajectory("traj15.json")
+                    .plusPoint(0, new Vector2d(0, DELTA_1ST))
+                    .plusPoint(1, new Vector2d(0, DELTA_1ST))
                     .addSpatialMarker(0, () -> {
-                        TrajectoryRunner.force = 0.6;
+                        drive.setForce(0.6);
 
                         relaxFlag = true;
                         clock.reset();
@@ -131,13 +149,15 @@ public class PreloadThreeClaw extends LinearOpMode {
                     .waitForAt(1, WAIT_AT_LEFT + WAIT_PICK_UP + 650, ANGLE_TO_LEFT)
                     .addTimeMarker(WAIT_AT_LEFT, () -> {
                         extend.setReference(EXTEND_TO_LEFT);
-                        diff.aim(DIFF_ROTATION_LEFT);
-                        perkid.aim();
                         hand.setPosition(HAND_LEFT);
+                        double rotation = ANGLE_TO_LEFT + hand.getAngle();
+                        diff.aimAngle(rotation);
+                        perkid.aim();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 400, () -> {
-                        diff.pickUp(DIFF_ROTATION_LEFT);
+                        double rotation = ANGLE_TO_LEFT + hand.getAngle();
+                        diff.pickUpAngle(rotation);
                         perkid.pickUp();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 600, () -> {
@@ -163,23 +183,26 @@ public class PreloadThreeClaw extends LinearOpMode {
                         claw.open();
                     })
                     // PICK UP MIDDLE
-                    .waitForAt(MIDDLE_STOP_POINT, WAIT_AT_MIDDLE + WAIT_PICK_UP + 700, ANGLE_TO_MIDDLE)
+                    .waitForAt(MIDDLE_STOP_POINT, WAIT_AT_MIDDLE + WAIT_PICK_UP + 650, ANGLE_TO_MIDDLE)
                     .addTimeMarker(0, () -> {
 //                         hand.setPosition(0.5);
 //                         perkid.transfer();
 //                         diff.transfer();
 //                         claw.open();
                         extend.setReference(EXTEND_TO_MIDDLE);
-                        diff.aim(DIFF_ROTATION_MIDDLE);
+                        double rotation = ANGLE_TO_MIDDLE + hand.getAngle();
+                        diff.aimAngle(rotation);
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE, () -> {
-                        diff.aim(DIFF_ROTATION_MIDDLE);
-                        perkid.aim();
                         hand.setPosition(HAND_MIDDLE);
+                        double rotation = ANGLE_TO_MIDDLE + hand.getAngle();
+                        diff.aimAngle(rotation);
+                        perkid.aim();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + 400, () -> {
-                        diff.pickUp(DIFF_ROTATION_MIDDLE);
+                        double rotation = ANGLE_TO_MIDDLE + hand.getAngle();
+                        diff.pickUpAngle(rotation);
                         perkid.pickUp();
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + 600, () -> {
@@ -189,14 +212,8 @@ public class PreloadThreeClaw extends LinearOpMode {
                         diff.aim();
                         perkid.aim();
                     })
-                    .addTimeMarker(WAIT_AT_MIDDLE + WAIT_PICK_UP + 650, () -> {
-                        extend.setReference(EXTEND_CLOSED);
-                    })
                     // MIDDLE TO HUMAN
                     .waitForAt(RIGHT_STOP_POINT, WAIT_FOR_MIDDLE_ROTATION + 200, ANGLE_MIDDLE_TO_HUMAN)
-                    .addTimeMarker(0, () -> {
-                        extend.setReference(EXTEND_CLOSED);
-                    })
                     .addTimeMarker(WAIT_FOR_MIDDLE_ROTATION / 2, () -> {
                         extend.setReference(EXTEND_MIDDLE_TO_HUMAN);
                     })
@@ -209,29 +226,32 @@ public class PreloadThreeClaw extends LinearOpMode {
                         claw.open();
                         extend.setReference(EXTEND_CLOSED);
                     })
-                    .waitForAt(RIGHT_STOP_POINT, WAIT_AT_RIGHT + WAIT_FOR_EXTEND + WAIT_PICK_UP + 650, ANGLE_TO_RIGHT)
+                    .waitForAt(RIGHT_STOP_POINT, WAIT_AT_RIGHT + WAIT_PICK_UP + 650, ANGLE_TO_RIGHT)
                     .addTimeMarker(0, () -> {
 //                         hand.setPosition(0.5);
 //                         perkid.transfer();
 //                         diff.transfer();
 //                         claw.open();
-                        diff.aim(DIFF_ROTATION_RIGHT);
+                        double rotation = ANGLE_TO_RIGHT + hand.getAngle();
+                        diff.aimAngle(rotation);
                     })
                     .addTimeMarker(WAIT_AT_RIGHT, () -> {
-                        extend.setReference(EXTEND_TO_RIGHT);
-                        diff.aim(DIFF_ROTATION_RIGHT);
-                        perkid.aim();
                         hand.setPosition(HAND_RIGHT);
+                        double rotation = ANGLE_TO_RIGHT + hand.getAngle();
+                        extend.setReference(EXTEND_TO_RIGHT);
+                        diff.aimAngle(rotation);
+                        perkid.aim();
                         claw.open();
                     })
-                    .addTimeMarker(WAIT_AT_RIGHT + WAIT_FOR_EXTEND + 400, () -> {
-                        diff.pickUp(DIFF_ROTATION_RIGHT);
+                    .addTimeMarker(WAIT_AT_RIGHT + 400, () -> {
+                        double rotation = ANGLE_TO_RIGHT + hand.getAngle();
+                        diff.pickUpAngle(rotation);
                         perkid.pickUp();
                     })
-                    .addTimeMarker(WAIT_AT_RIGHT + WAIT_FOR_EXTEND + 600, () -> {
+                    .addTimeMarker(WAIT_AT_RIGHT  + 600, () -> {
                         claw.close();
                     })
-                    .addTimeMarker(WAIT_AT_RIGHT + WAIT_FOR_EXTEND + WAIT_PICK_UP + 600, () -> {
+                    .addTimeMarker(WAIT_AT_RIGHT + WAIT_PICK_UP + 600, () -> {
                         diff.aim();
                         perkid.aim();
                     })
@@ -248,8 +268,10 @@ public class PreloadThreeClaw extends LinearOpMode {
                         scoringPerkid.aimAtSpecimen();
                         scorClaw.open();
                     })
+                    .addSpatialMarker(2 + SLOWDOWN_POINT_0, () -> {
+                        drive.setForce(SLOWDOWN_FORCE);
+                    })
                     .addSpatialMarker(2.8, () -> {
-                        TrajectoryRunner.force = SLOWDOWN_FORCE;
                         claw.open();
                         extend.setReference(0);
                     })
@@ -259,6 +281,7 @@ public class PreloadThreeClaw extends LinearOpMode {
                     })
                     .build();
             buildSpecimenToRung = drive.buildTrajectory("traj13.json")
+                    .addTurnMarker(0, 0)
                     .addSpatialMarker(POINT_PERKID_START_0, () -> {
                         scoringPerkid.transferSpecimen();
                         scoringDiff.pickSpecimen();
@@ -268,14 +291,34 @@ public class PreloadThreeClaw extends LinearOpMode {
                         hand.setPosition(0.5);
                         diff.aim();
                     })
+                    .addSpatialMarker(SLOWDOWN_POINT_1, () -> {
+                        drive.setForce(SLOWDOWN_FORCE);
+                    })
                     .addSpatialMarker(POINT_PERKID_START_1, () -> {
                         scoringDiff.transferSpecimen();
                     })
+                    .addSpatialMarker(POINT_SPECIMEN_START_SCORE, () -> {
+                        scoringPerkid.scoreSpecimen();
+                        scoringDiff.scoreSpecimen();
+                    })
                     .waitForAt(1, WAIT_HOLD_POS_AT_RUNG);
             trajSpecimenToRung = buildSpecimenToRung.build();
+            trajSpecimenToRung3rd = buildSpecimenToRung
+                    .plusPoint(3, new Vector2d(0, DELTA_3RD))
+                    .plusPoint(2, new Vector2d(0, DELTA_3RD))
+                    .build();
+            trajSpecimenToRung4th = buildSpecimenToRung
+                    .plusPoint(3, new Vector2d(0, DELTA_4TH))
+                    .plusPoint(2, new Vector2d(0, DELTA_4TH))
+                    .build();
+            trajSpecimenToRung5th = buildSpecimenToRung
+                    .plusPoint(3, new Vector2d(0, DELTA_5TH))
+                    .plusPoint(2, new Vector2d(0, DELTA_5TH))
+                    .build();
             buildRungToSpecimen = drive.buildTrajectory("traj11.json")
+                    .addTurnMarker(0, 0)
                     .addSpatialMarker(0, () -> {
-                        TrajectoryRunner.force = SPECIMEN_ADD_FORCE;
+                        drive.setForce(SPECIMEN_ADD_FORCE);
 
                         relaxFlag = true;
                         clock.reset();
@@ -290,20 +333,32 @@ public class PreloadThreeClaw extends LinearOpMode {
                         diff.transfer();
                         claw.open();
                     })
-                    .addSpatialMarker(0.9, () -> {
-                        TrajectoryRunner.force = SLOWDOWN_FORCE;
+                    .addSpatialMarker(SLOWDOWN_POINT_2, () -> {
+                        drive.setForce(SLOWDOWN_FORCE);
                     })
                     .waitForAt(1, WAIT_FOR_HUMAN_ADJUST + 100)
                     .addTimeMarker(WAIT_FOR_HUMAN_ADJUST, () -> {
                         scoringPerkid.pickSpecimen();
                     });
             trajRungToSpecimen = buildRungToSpecimen.build();
+            trajRungToSpecimen3rd = buildRungToSpecimen
+                    .plusPoint(0, new Vector2d(0, DELTA_3RD))
+                    .plusPoint(1, new Vector2d(0, DELTA_3RD))
+                    .build();
+            trajRungToSpecimen4th = buildRungToSpecimen
+                    .plusPoint(0, new Vector2d(0, DELTA_4TH))
+                    .plusPoint(1, new Vector2d(0, DELTA_4TH))
+                    .build();
+            trajRungToSpecimen5th = buildRungToSpecimen
+                    .plusPoint(0, new Vector2d(0, DELTA_5TH))
+                    .plusPoint(1, new Vector2d(0, DELTA_5TH))
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         drive.setPoseEstimate(new Pose2d(trajToRungs.get(0).point0, 0));
-        TrajectoryRunner.force = 0.5;
+        drive.resetForce();
 
         scorClaw.close();
 
@@ -335,7 +390,7 @@ public class PreloadThreeClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
-                TrajectoryRunner.force = 0.5;
+                drive.resetForce();
                 relaxFlag = false;
             }
 
@@ -343,7 +398,7 @@ public class PreloadThreeClaw extends LinearOpMode {
             extend.PIDControl();
         }
 
-        /* ***************** START CYCLE ***************** */
+        /* ***************** START 2ND SPECIMEN CYCLE ***************** */
 
         clock.reset();
         boolean pickedUp = false;
@@ -359,7 +414,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         scorClaw.close();
 
-        TrajectoryRunner.force = 0.6;
+        drive.setForce(0.6);
 
         drive.followTrajectory(trajSpecimenToRung);
 
@@ -368,7 +423,7 @@ public class PreloadThreeClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive()) {
             if (resetX && !frontSensor.getState()) {
                 Pose2d poseEstimate = drive.getPoseEstimate();
-                drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
+                //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
                 resetX = false;
             }
             drive.update();
@@ -382,7 +437,6 @@ public class PreloadThreeClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive()) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
-                TrajectoryRunner.force = 0.6;
                 relaxFlag = false;
             }
 
@@ -390,7 +444,7 @@ public class PreloadThreeClaw extends LinearOpMode {
             extend.PIDControl();
         }
 
-        // ********************* SECOND CYCLE **************************************************
+        // ********************* START 3ND SPECIMEN CYCLE **************************************************
 
         clock.reset();
         pickedUp = false;
@@ -406,16 +460,16 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         scorClaw.close();
 
-        TrajectoryRunner.force = 0.6;
+        drive.setForce(0.6);
 
-        drive.followTrajectory(trajSpecimenToRung);
+        drive.followTrajectory(trajSpecimenToRung3rd);
 
         resetX = true;
 
         while (drive.isBusy() && opModeIsActive()) {
             if (resetX && !frontSensor.getState()) {
                 Pose2d poseEstimate = drive.getPoseEstimate();
-                drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
+                //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
                 resetX = false;
             }
             drive.update();
@@ -424,12 +478,103 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         hangSpecimen();
 
-        drive.followTrajectory(trajRungToSpecimen);
+        drive.followTrajectory(trajRungToSpecimen3rd);
 
         while (drive.isBusy() && opModeIsActive()) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
-                TrajectoryRunner.force = 0.6;
+                relaxFlag = false;
+            }
+
+            drive.update();
+            extend.PIDControl();
+        }
+
+        // ********************* START 4TH SPECIMEN CYCLE **************************************************
+
+        clock.reset();
+        pickedUp = false;
+        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP) {
+            if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
+                pickedUp = true;
+            }
+        }
+
+        if (!pickedUp) {
+            return;
+        }
+
+        scorClaw.close();
+
+        drive.setForce(0.6);
+
+        drive.followTrajectory(trajSpecimenToRung4th);
+
+        resetX = true;
+
+        while (drive.isBusy() && opModeIsActive()) {
+            if (resetX && !frontSensor.getState()) {
+                Pose2d poseEstimate = drive.getPoseEstimate();
+                //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
+                resetX = false;
+            }
+            drive.update();
+            extend.PIDControl();
+        }
+
+        hangSpecimen();
+
+        drive.followTrajectory(trajRungToSpecimen4th);
+
+        while (drive.isBusy() && opModeIsActive()) {
+            if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
+                scorClaw.relax();
+                relaxFlag = false;
+            }
+
+            drive.update();
+            extend.PIDControl();
+        }
+
+        // ********************* START 5TH SPECIMEN CYCLE **************************************************
+
+        clock.reset();
+        pickedUp = false;
+        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP) {
+            if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
+                pickedUp = true;
+            }
+        }
+
+        if (!pickedUp) {
+            return;
+        }
+
+        scorClaw.close();
+
+        drive.setForce(0.6);
+
+        drive.followTrajectory(trajSpecimenToRung5th);
+
+        resetX = true;
+
+        while (drive.isBusy() && opModeIsActive()) {
+            if (resetX && !frontSensor.getState()) {
+                Pose2d poseEstimate = drive.getPoseEstimate();
+                //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
+                resetX = false;
+            }
+            drive.update();
+            extend.PIDControl();
+        }
+
+        hangSpecimen();
+
+        drive.followTrajectory(trajRungToSpecimen5th);
+
+        while (drive.isBusy() && opModeIsActive()) {
+            if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
+                scorClaw.relax();
                 relaxFlag = false;
             }
 

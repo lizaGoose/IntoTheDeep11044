@@ -24,7 +24,7 @@ public class ClawCalculation {
 
     public static List<Double> inverseKinematics(double x, double y, double z) {
         double theta2 = Math.asin(Math.toRadians(y / d2));//horizontal
-        double fi1 = Math.asin(Math.toRadians(( x + d3 ) / (Math.sqrt(Math.pow(d1, 2) + Math.pow(d2 * Math.cos(theta2), 2)))));
+        double fi1 = Math.asin(Math.toRadians(( x + d3 ) / ( Math.sqrt(Math.pow(d1, 2) + Math.pow(d2 * Math.cos(theta2), 2)) )));
         double fi = Math.atan(Math.toRadians(d1 / ( d2 + Math.cos(theta2) )));
         double theta1 = fi1 - fi;//
         double d0 = z - ( d2 * Math.cos(theta2) * Math.cos(theta1) ) + d1 * Math.sin(theta1);//extend
@@ -34,7 +34,7 @@ public class ClawCalculation {
 
     public static List<Double> inverseKinematicsFix(double x, double y, double z) {
         double theta2 = Math.asin(Math.toRadians(y / d2));//horizontal
-        double fi1 = Math.asin(Math.toRadians(( x + d3 ) / (Math.sqrt(Math.pow(d1, 2) + Math.pow(d2 * Math.cos(theta2), 2)))));
+        double fi1 = Math.asin(Math.toRadians(( x + d3 ) / ( Math.sqrt(Math.pow(d1, 2) + Math.pow(d2 * Math.cos(theta2), 2)) )));
         double fi = Math.atan(Math.toRadians(d1 / ( d2 + Math.cos(theta2) )));
         double theta1 = fi1 - fi;//
         double d0 = z - ( d2 * Math.cos(theta2) * Math.cos(theta1) ) + d1 * Math.sin(theta1);//extend
@@ -65,7 +65,11 @@ public class ClawCalculation {
     }
 
     public static double angleToServoPos(double angle, double range) {
-        return ( angle / range / 2 + 1 ) / 2;
+        return ( angle / range + 1 ) / 2;
+    }
+
+    public static double servoPosToAngle(double position, double range) {
+        return ( position * 2 - 1 ) * range;
     }
 
     public static List<Double> camToRealWorldCoordinates(double rotAngle, double xMov, double yMov, double xActual, double yActual, double pixelsPerInch) {
@@ -102,8 +106,8 @@ public class ClawCalculation {
         System.arraycopy(extraRowHomgen[0], 0, finalHomgen0C[3], 0, 4);
 
 
-        double x2Cm = xActual * pixelsPerInch/640;
-        double y2Cm = yActual * pixelsPerInch/640;
+        double x2Cm = xActual * pixelsPerInch / 640;
+        double y2Cm = yActual * pixelsPerInch / 640;
 
         double[][] camRefCoord = {
                 {x2Cm},

@@ -46,7 +46,7 @@ public class StateMachine {
     // SampleDetectionCameraClass cam;
     Hang hang;
     ElapsedTime pickedUnpickedTimer, fromClawToClawTimer, dropSpecimenTimer, goToInitialFromScoreSample, humanDropPickSpecTimer, goFromScoreSpecTimer, fromTransferSpecimenToScore, forgetPosTimer, rightSideDropSampleTimer;
-    private final ElapsedTime specimenPickedUp, specimenToTransfer, movingBack;
+    private final ElapsedTime specimenPickedUp, specimenToTransfer;
     public DistanceSensor distanceSensor, distInClaw;
     LiftError lift;
     // TODO: too many booleans
@@ -112,7 +112,6 @@ public class StateMachine {
         fromTransferSpecimenToScore = new ElapsedTime();
         specimenPickedUp = new ElapsedTime();
         specimenToTransfer = new ElapsedTime();
-        movingBack = new ElapsedTime();
         forgetPosTimer = new ElapsedTime();
     }
 

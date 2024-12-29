@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TrajectoryBuilder {
-    private final List<Vector2d> points;
+    private List<Vector2d> points;
     private final List<StopPoint> stops = new ArrayList<>();
     private final List<SpatialMarker> spatialMarkers = new ArrayList<>();
     private final List<TurnMarker> turnMarkers = new ArrayList<>();
@@ -21,6 +21,21 @@ public class TrajectoryBuilder {
         ObjectMapper objectMapper = new ObjectMapper();
         Vector2d[] pointsArray = objectMapper.readValue(file, Vector2d[].class);
         points = Arrays.asList(pointsArray);
+    }
+
+    public TrajectoryBuilder reverse() {
+        List<Vector2d> newPoints = new ArrayList<>();
+        for (int i = points.size(); i >= 0; --i) {
+            newPoints.add(points.get(0));
+        }
+        points = newPoints;
+        return this;
+    }
+
+    public TrajectoryBuilder plusPoint(int index, Vector2d point) throws IndexOutOfBoundsException {
+        Vector2d newPoint = points.get(index).plus(point);
+        points.set(index, newPoint);
+        return this;
     }
 
     public TrajectoryBuilder addSpatialMarker(double t, MarkerRunnable runnable) {

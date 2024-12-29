@@ -67,7 +67,7 @@ public class PreloadSpecimen extends LinearOpMode {
                     .build();
              trajectoryPark = drive.buildTrajectory("traj11.json")
                      .addSpatialMarker(0, () -> {
-                         TrajectoryRunner.force = 0.6;
+                         drive.setForce(0.6);
 
                          relaxFlag = true;
                          clock.reset();
@@ -117,7 +117,7 @@ public class PreloadSpecimen extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive()) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
-                TrajectoryRunner.force = 0.5;
+                drive.setForce(0.5);
             }
 
             drive.update();

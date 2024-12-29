@@ -38,7 +38,9 @@ public class TrajectoryRunner {
 
     public static double kP = 0.25;
     public static double kCentripetal = 0.035;
-    public static double force = 0.5; // TODO: REMOVE
+    public static double FORCE = 0.5;
+    private double force = FORCE; // TODO: REMOVE
+    public static double VELOCITY_THRESHOLD = 0.001;
 
     public boolean uselessFlag = false;
 
@@ -101,6 +103,9 @@ public class TrajectoryRunner {
         Pose2d result = new Pose2d(0, 0, 0);
         t = currentCurve.getClosestTtoPoint(poseEstimate.vec());
 
+        if (velocityEstimate.vec().norm() < VELOCITY_THRESHOLD && !stopPoints.isEmpty()) {
+            t = stopPoints.get(0).t;
+        }
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
 
@@ -116,6 +121,12 @@ public class TrajectoryRunner {
             if (!timeMarkers.isEmpty() && timeMarkers.get(0).waitIndex < lastStopPoint) {
                 timeMarkers.get(0).getRunnable().onMarkerReached();
                 timeMarkers.remove(0);
+            }
+
+            if (velocityEstimate.vec().norm() < VELOCITY_THRESHOLD) {
+                Vector2d reference = currentCurve.getPointAt(t);
+            } else {
+                Vector2d reference = currentCurve.getPointAt(stopPoints.get(0).t - curveIndex);
             }
 
             Vector2d reference = currentCurve.getPointAt(stopPoints.get(0).t - curveIndex);
@@ -152,6 +163,15 @@ public class TrajectoryRunner {
             packet.put("curve", false);
             packet.put("power_x", powerX);
             packet.put("power_y", powerY);
+
+            packet.put("reference_x", reference.getX());
+            packet.put("reference_y", reference.getY());
+            packet.put("reference_heading", headingReference);
+            packet.put("x_derivative", derivativeX);
+            packet.put("y_derivative", derivativeY);
+            packet.put("heading_derivative", headingDerivative);
+
+            //draw(fieldOverlay, poseEstimate, reference, new Vector2d(), reference);
 
             result = new Pose2d(powerX, powerY, headingPower);
 
@@ -222,7 +242,7 @@ public class TrajectoryRunner {
             packet.put("pathing_power_norm", pathing_power.norm());
 
 
-            packet.put("heading_reference", headingReference);
+            packet.put("reference_heading", headingReference);
             packet.put("heading_power", headingPower);
             packet.put("corrected_heading", lastHeadingError);
             packet.put("curvature", curvature);
@@ -244,6 +264,10 @@ public class TrajectoryRunner {
         packet.put("x", poseEstimate.getX());
         packet.put("y", poseEstimate.getY());
         packet.put("heading", poseEstimate.getHeading());
+
+        packet.put("x_vel", velocityEstimate.getX());
+        packet.put("y_vel", velocityEstimate.getY());
+        packet.put("heading_vel", velocityEstimate.getHeading());
 
         packet.put("velocity", velocityEstimate.vec().norm());
 
@@ -311,5 +335,13 @@ public class TrajectoryRunner {
 
     public boolean isBusy() {
         return currentTrajectory != null;
+    }
+
+    public void setForce(double force) {
+        this.force = force;
+    }
+
+    public void resetForce() {
+        this.force = FORCE;
     }
 }

@@ -255,6 +255,10 @@ public class Drive {
         return 2 * Math.PI * ( x - Math.floor(x) ) - Math.PI;
     }
 
+    public double getCorrectedHeading() {
+        return getCorrectedHeading(0);
+    }
+
     public Double getExternalHeadingVelocity() {
         return (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
     }
@@ -288,7 +292,7 @@ public class Drive {
         double powerX = ( xCoeffs.p * errorX ) + ( xCoeffs.i * integralSumX ) + ( xCoeffs.d * derivativeX );
         double powerY = ( yCoeffs.p * errorY ) + ( yCoeffs.i * integralSumY ) + ( yCoeffs.d * derivativeY );
 
-        powerX = Math.min(Math.max(powerX, -TrajectoryRunner.force), TrajectoryRunner.force);
+        powerX = Math.min(Math.max(powerX, -TrajectoryRunner.FORCE), TrajectoryRunner.FORCE);
         powerY = Math.min(Math.max(powerY, -0.7), 0.7);
 
         double headingReference = reference.getHeading();
@@ -356,6 +360,14 @@ public class Drive {
             integralSumY = 0;
         }
         this.reference = reference;
+    }
+
+    public void setForce(double force) {
+        runner.setForce(force);
+    }
+
+    public void resetForce() {
+        runner.resetForce();
     }
 
     public boolean isBusy() {

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RANGE;
+import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RANGE_END;
+import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RANGE_START;
 import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RIGHT_SIDE_DROP_SAMPLE;
 import static org.firstinspires.ftc.teamcode.Modules.HandConstants.ROTATION_SPEED;
 
@@ -16,8 +19,12 @@ import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
 @Config
 class HandConstants {
-    public static double ROTATION_SPEED = 0.01;
-    public static double RIGHT_SIDE_DROP_SAMPLE = 0;
+    public static double RANGE_START = 0.01;
+    public static double RANGE_END = 0.38;
+    public static double RANGE = 35;
+
+    public static double ROTATION_SPEED = 0.00;
+    public static double RIGHT_SIDE_DROP_SAMPLE = 0.35;
 }
 
 public class Hand {
@@ -44,7 +51,7 @@ public class Hand {
         this.linearOpMode = linearOpMode;
         gamepad = linearOpMode.gamepad2;
         hand = linearOpMode.hardwareMap.get(Servo.class, "horizontal_servo");
-        hand.scaleRange(0.01, 0.34);
+        hand.scaleRange(RANGE_START, RANGE_END);
 
         cam = new CameraTest();
         timer = new ElapsedTime();
@@ -76,12 +83,22 @@ public class Hand {
         hand.setPosition(position);
     }
 
+    public double getPosition() {
+        return hand.getPosition();
+    }
+
     public void dropOverRightSide() {
         hand.setPosition(RIGHT_SIDE_DROP_SAMPLE);
     }
 
+    public double getAngle() {
+        double position = hand.getPosition();
+
+        return ClawCalculation.servoPosToAngle(position, RANGE);
+    }
+
     public void setAngle(double angle) {
-        double position = ClawCalculation.angleToServoPos(angle, 90);
+        double position = ClawCalculation.angleToServoPos(angle, RANGE);
 
         hand.setPosition(position);
     }

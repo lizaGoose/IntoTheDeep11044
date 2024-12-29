@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.DiffConstants.PICK_UP;
-import static org.firstinspires.ftc.teamcode.Modules.DiffConstants.ROTATION_SPEED;
+import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.PICK_UP;
+import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.ROTATION_SPEED;
 import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.DISCRETE_ROTATION;
 import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.HORIZONTAL_DOWN;
 import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.RIGHT_SIDE_DROP_SAMPLE;
@@ -20,20 +20,23 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Config
 class DifferentialConstants {
     public static double HORIZONTAL_DOWN = 0.35;
-    public static double PICK_UP = 0.1;
+    public static double PICK_UP = 0.52;
+    public static double PICK_UP_ANGLE = -45;
     public static double TRANSFER = 0.95;
     public static double SCORE_SAMP = 0.68;
 
     public static double DISCRETE_ROTATION = 0.15;
 
-    public static double FORWARD = 0.68;
-    public static double DOWN = 0.275;
+    public static double ROTATION_SPEED = 0.35;
+    public static double FORWARD = 0.79;
+    public static double DOWN = 0.375;
     public static double RIGHT_SIDE_DROP_SAMPLE = 0.975;
     public static double RIGHT_SIDE_DROP_SAMPLE_ROTATION = 0.3;
 }
@@ -229,6 +232,11 @@ public class Differential {
         }
     }
 
+    public void aimAngle(double rotation) {
+        double angle = 90 * ((HORIZONTAL_DOWN - DOWN) / (FORWARD - DOWN) - 1);
+        setAngleRotation(angle, rotation);
+    }
+
     public void aim(double rotation) {
         left.setPosition(HORIZONTAL_DOWN + rotation);
         right.setPosition(HORIZONTAL_DOWN - rotation);
@@ -236,6 +244,11 @@ public class Differential {
 
     public void aim() {
         aim(0);
+    }
+
+    public void pickUpAngle(double rotation) {
+        double angle = 90 * ((PICK_UP - DOWN) / (FORWARD - DOWN) - 1);
+        setAngleRotation(angle, rotation);
     }
 
     public void pickUp(double rotation) {
@@ -267,6 +280,10 @@ public class Differential {
     public void dropOverRightSide() {
         left.setPosition(RIGHT_SIDE_DROP_SAMPLE + RIGHT_SIDE_DROP_SAMPLE_ROTATION);
         right.setPosition(RIGHT_SIDE_DROP_SAMPLE - RIGHT_SIDE_DROP_SAMPLE_ROTATION);
+    }
+
+    public List<Double> getPositions() {
+        return Arrays.asList(left.getPosition(), right.getPosition());
     }
 
     public List<Double> angleRotationToPosition(double angle, double rotation) {
