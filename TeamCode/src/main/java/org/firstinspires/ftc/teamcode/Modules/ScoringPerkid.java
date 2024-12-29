@@ -30,7 +30,7 @@ class ScoringPerkidConstants {
     public static double TRANSFER_POS = 0.58;
     public static double SCORE_SAMP = 0.05;
     public static double TRANSFER_SPEC = 0.9;
-    public static double SCOR_SPEC = 0.94;
+    public static double SCOR_SPEC = 0.91;
 }
 
 public class ScoringPerkid {
