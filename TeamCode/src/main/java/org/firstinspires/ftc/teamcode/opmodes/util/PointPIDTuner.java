@@ -39,7 +39,7 @@ public class PointPIDTuner extends OpMode {
                     .addSpatialMarker(SLOWDOWN_POINT, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
-                    .waitForAt(1, WAIT_POS)
+                    .waitForAt(1, WAIT_POS, -180)
                     .addTimeMarker(900, () -> {
                         drive.resetForce();
                     })
@@ -48,7 +48,7 @@ public class PointPIDTuner extends OpMode {
                     .addSpatialMarker(SLOWDOWN_POINT, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
-                    .waitForAt(1, WAIT_POS)
+                    .waitForAt(1, WAIT_POS, -180)
                     .addTimeMarker(900, () -> {
                         drive.resetForce();
                     })

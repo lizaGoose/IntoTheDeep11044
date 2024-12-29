@@ -117,7 +117,7 @@ public class TrajectoryEditor extends LinearOpMode {
 
         int currentPoint = 0;
 
-        double heading = 0;
+        double heading = Math.toRadians(270);
 
         while (opModeIsActive()) {
 

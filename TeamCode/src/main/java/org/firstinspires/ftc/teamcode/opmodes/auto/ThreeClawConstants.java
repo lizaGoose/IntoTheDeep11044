@@ -63,5 +63,5 @@ public class ThreeClawConstants {
     public static double POINT_PERKID_START_0 = 0.5;
     public static double POINT_PERKID_START_1 = 0.8;
 
-    public static double POINT_SPECIMEN_START_SCORE = 0.997;
+    public static double POINT_SPECIMEN_START_SCORE = 0.995;
 }

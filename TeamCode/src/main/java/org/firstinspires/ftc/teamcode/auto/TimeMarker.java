@@ -4,10 +4,10 @@ import androidx.annotation.NonNull;
 
 public class TimeMarker {
     public int waitIndex;
-    public int milliseconds;
+    public double milliseconds;
     private MarkerRunnable runnable;
 
-    TimeMarker(int waitIndex, int milliseconds, MarkerRunnable runnable) {
+    TimeMarker(int waitIndex, double milliseconds, MarkerRunnable runnable) {
         this.waitIndex = waitIndex;
         this.milliseconds = milliseconds;
         this.setRunnable(runnable);

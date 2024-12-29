@@ -24,7 +24,7 @@ class HandConstants {
     public static double RANGE = 35;
 
     public static double ROTATION_SPEED = 0.00;
-    public static double RIGHT_SIDE_DROP_SAMPLE = 0.35;
+    public static double RIGHT_SIDE_DROP_SAMPLE = 0;
 }
 
 public class Hand {

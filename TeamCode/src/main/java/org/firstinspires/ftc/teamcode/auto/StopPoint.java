@@ -6,7 +6,7 @@ import org.opencv.core.Mat;
 
 public class StopPoint {
     double t;
-    int milliseconds;
+    double milliseconds;
     double angle;
 
     StopPoint(double t, int milliseconds) {
@@ -15,7 +15,7 @@ public class StopPoint {
         this.angle = 0;
     }
 
-    StopPoint(double t, int milliseconds, double angle) {
+    StopPoint(double t, double milliseconds, double angle) {
         this.t = t;
         this.milliseconds = milliseconds;
         this.angle = angle;

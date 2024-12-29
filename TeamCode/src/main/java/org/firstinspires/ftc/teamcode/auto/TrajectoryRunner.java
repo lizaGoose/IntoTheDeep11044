@@ -103,9 +103,6 @@ public class TrajectoryRunner {
         Pose2d result = new Pose2d(0, 0, 0);
         t = currentCurve.getClosestTtoPoint(poseEstimate.vec());
 
-        if (velocityEstimate.vec().norm() < VELOCITY_THRESHOLD && !stopPoints.isEmpty()) {
-            t = stopPoints.get(0).t;
-        }
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
 
@@ -121,12 +118,6 @@ public class TrajectoryRunner {
             if (!timeMarkers.isEmpty() && timeMarkers.get(0).waitIndex < lastStopPoint) {
                 timeMarkers.get(0).getRunnable().onMarkerReached();
                 timeMarkers.remove(0);
-            }
-
-            if (velocityEstimate.vec().norm() < VELOCITY_THRESHOLD) {
-                Vector2d reference = currentCurve.getPointAt(t);
-            } else {
-                Vector2d reference = currentCurve.getPointAt(stopPoints.get(0).t - curveIndex);
             }
 
             Vector2d reference = currentCurve.getPointAt(stopPoints.get(0).t - curveIndex);
@@ -221,7 +212,7 @@ public class TrajectoryRunner {
             double headingReference = 0;
 
             if (!turns.isEmpty() && curveIndex == turns.get(0).curve) {
-                headingReference = Math.toRadians(turns.get(0).getProducer().produce(0));
+                headingReference = turns.get(0).getProducer().produce(t);
 
                 double headingError = correctHeading(poseEstimate.getHeading(), headingReference);
 

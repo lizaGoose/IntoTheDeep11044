@@ -18,9 +18,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DEL
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DELTA_3RD;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DELTA_4TH;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DELTA_5TH;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_LEFT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_MIDDLE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.DIFF_ROTATION_RIGHT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_CLOSED;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.EXTEND_TEMP_CLOSED;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.ThreeClawConstants.HAND_LEFT;
@@ -166,12 +163,13 @@ public class PreloadThreeClaw extends LinearOpMode {
                     .addTimeMarker(WAIT_AT_LEFT + WAIT_PICK_UP + 600, () -> {
                         diff.aim();
                         perkid.aim();
+                        DEBUG_END_FLAG = true;
                     })
                     .addTurnMarker(1, (t) -> {
                         if (t <= 0.5) {
-                            return ANGLE_LEFT_TO_HUMAN;
+                            return Math.toRadians(ANGLE_LEFT_TO_HUMAN);
                         } else {
-                            return ANGLE_MIDDLE_TO_HUMAN;
+                            return Math.toRadians(ANGLE_MIDDLE_TO_HUMAN);
                         }
                     })
                     // LEFT TO HUMAN
@@ -402,7 +400,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         clock.reset();
         boolean pickedUp = false;
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP) {
+        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
             if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
                 pickedUp = true;
             }
@@ -420,7 +418,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         boolean resetX = true;
 
-        while (drive.isBusy() && opModeIsActive()) {
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (resetX && !frontSensor.getState()) {
                 Pose2d poseEstimate = drive.getPoseEstimate();
                 //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
@@ -434,7 +432,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         drive.followTrajectory(trajRungToSpecimen);
 
-        while (drive.isBusy() && opModeIsActive()) {
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
                 relaxFlag = false;
@@ -448,7 +446,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         clock.reset();
         pickedUp = false;
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP) {
+        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
             if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
                 pickedUp = true;
             }
@@ -466,7 +464,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         resetX = true;
 
-        while (drive.isBusy() && opModeIsActive()) {
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (resetX && !frontSensor.getState()) {
                 Pose2d poseEstimate = drive.getPoseEstimate();
                 //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
@@ -480,7 +478,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         drive.followTrajectory(trajRungToSpecimen3rd);
 
-        while (drive.isBusy() && opModeIsActive()) {
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
                 relaxFlag = false;
@@ -494,7 +492,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         clock.reset();
         pickedUp = false;
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP) {
+        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
             if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
                 pickedUp = true;
             }
@@ -512,7 +510,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         resetX = true;
 
-        while (drive.isBusy() && opModeIsActive()) {
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (resetX && !frontSensor.getState()) {
                 Pose2d poseEstimate = drive.getPoseEstimate();
                 //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
@@ -526,7 +524,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         drive.followTrajectory(trajRungToSpecimen4th);
 
-        while (drive.isBusy() && opModeIsActive()) {
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
                 relaxFlag = false;
@@ -540,7 +538,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         clock.reset();
         pickedUp = false;
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP) {
+        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
             if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
                 pickedUp = true;
             }
@@ -558,7 +556,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         resetX = true;
 
-        while (drive.isBusy() && opModeIsActive()) {
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (resetX && !frontSensor.getState()) {
                 Pose2d poseEstimate = drive.getPoseEstimate();
                 //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
@@ -572,7 +570,7 @@ public class PreloadThreeClaw extends LinearOpMode {
 
         drive.followTrajectory(trajRungToSpecimen5th);
 
-        while (drive.isBusy() && opModeIsActive()) {
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
                 scorClaw.relax();
                 relaxFlag = false;

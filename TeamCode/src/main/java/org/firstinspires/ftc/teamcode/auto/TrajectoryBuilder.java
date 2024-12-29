@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class TrajectoryBuilder {
@@ -54,10 +55,10 @@ public class TrajectoryBuilder {
     }
 
     public TrajectoryBuilder addTurnMarker(int curve, double angle) {
-        return addTurnMarker(curve, (t) -> angle);
+        return addTurnMarker(curve, (t) -> Math.toRadians(angle));
     }
 
-    public TrajectoryBuilder waitForAt(double t, int milliseconds, double angle) {
+    public TrajectoryBuilder waitForAt(double t, double milliseconds, double angle) {
         if (t > (double) ( points.size() - 1 ) / 3) {
             throw new IndexOutOfBoundsException(
                     "Invalid index " + t + " (max is " + ( points.size() - 1 ) % 3 + ")"
@@ -67,11 +68,11 @@ public class TrajectoryBuilder {
         return this;
     }
 
-    public TrajectoryBuilder waitForAt(double t, int milliseconds) {
+    public TrajectoryBuilder waitForAt(double t, double milliseconds) {
         return waitForAt(t, milliseconds, 0);
     }
 
-    public TrajectoryBuilder addTimeMarker(int millisecond, MarkerRunnable runnable) {
+    public TrajectoryBuilder addTimeMarker(double millisecond, MarkerRunnable runnable) {
         if (stops.isEmpty()) {
             throw new RuntimeException(
                     "No stop markers to attach time marker"
@@ -112,6 +113,7 @@ public class TrajectoryBuilder {
     }
 
     public Trajectory build() {
+        spatialMarkers.sort(Comparator.comparingDouble(spatialMarker -> spatialMarker.t));
         return new Trajectory(points.toArray(new Vector2d[0]), stops, spatialMarkers, turnMarkers, timeMarkers);
     }
 }
