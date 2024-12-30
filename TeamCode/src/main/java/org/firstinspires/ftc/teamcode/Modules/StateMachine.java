@@ -227,7 +227,12 @@ public class StateMachine {
                 break;
             case SCORE_SPEC:
                 scorPerkid.currentMode = ScoringPerkid.Mode.SCOR_SPEC;
-                scorDiff.currentMode = ScoringDiff.Mode.SCORE_SPEC;
+                if (gamepad1.cross) {
+                    scorDiff.currentMode = ScoringDiff.Mode.MOVE_SPECIMENS;
+                    fromTransferSpecimenToScore.reset();
+                } else {
+                    scorDiff.currentMode = ScoringDiff.Mode.SCORE_SPEC;
+                }
                 hand.currentMode = Hand.Mode.DRIVER_CONTROL;
                 //zalupa
                 startGoFromScorSpec = false;
@@ -329,6 +334,16 @@ public class StateMachine {
                 if (gamepad2.cross) {
                     startFromClawToClaw = true;
                 }
+                if(gamepad1.triangle){
+                    scorPerkid.currentMode = ScoringPerkid.Mode.PICK_SPEC;
+                    scorDiff.currentMode = ScoringDiff.Mode.PICK_SPEC;
+                    if (distInClaw.getDistance(DistanceUnit.MM) >= 17) {
+                        specimenPickedUp.reset();
+                    }
+                    if (specimenPickedUp.milliseconds() > WAIT_UNTIL_SPECIMEN_PICKUP) {
+                        state = State.PICK_SPEC;
+                    }
+                }
                 if (startFromClawToClaw) {
                     claw.currentMode = Claw.Mode.PICK;
                     perkid.currentMode = Perkid.Mode.LOOK;
@@ -367,7 +382,7 @@ public class StateMachine {
                     claw.currentMode = Claw.Mode.PICK;
                 }
 
-                if (rightSideDropSampleTimer.milliseconds() > 400 && rightSideDropSampleTimer.milliseconds() <= 700) {
+                if (rightSideDropSampleTimer.milliseconds() > 0 && rightSideDropSampleTimer.milliseconds() <= 700) {
                     claw.currentMode = Claw.Mode.DROP;
                 }
 
@@ -375,7 +390,7 @@ public class StateMachine {
             case RIGT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS:
                 startHumanDropPickSpec = false;
 
-                if (rightSideDropSampleTimer.milliseconds() > 400 && rightSideDropSampleTimer.milliseconds() <= 700) {
+                if (rightSideDropSampleTimer.milliseconds() > 0 && rightSideDropSampleTimer.milliseconds() <= 700) {
                     claw.currentMode = Claw.Mode.DROP;
                 } else if (rightSideDropSampleTimer.milliseconds() >= 900 && rightSideDropSampleTimer.milliseconds() <= 1200) {
                     perkid.currentMode = Perkid.Mode.LOOK;
@@ -427,7 +442,7 @@ public class StateMachine {
                 if (pickedUnpickedTimer.milliseconds() > 400) {
                     claw.currentMode = Claw.Mode.PICK;
                     perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSABLE;
-                    if (gamepad2.right_stick_y != 0 || gamepad1.cross || gamepad1.triangle && !startForgetPosTimer) {
+                    if (gamepad2.right_stick_y != 0 || gamepad1.cross && !startForgetPosTimer) {
                         startForgetPosTimer = true;
                     }
                     if (!startForgetPosTimer) {

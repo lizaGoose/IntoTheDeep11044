@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.AIM_SPEC;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.GET_FROM_CLAW;
+import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.MOVE_SPECIMENS;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.PICK_SPEC;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.SCORE_SPEC;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.TRANSFER_SPEC;
@@ -21,11 +23,13 @@ class ScoringDiffConstants {
     public static double PICK_SPEC = 0.51;
     public static double SCORE_SPEC = 1;*/
 
-    public static double PICK_SPEC = 0.495;
+    public static double AIM_SPEC = 0.43; //0.39;
+    public static double PICK_SPEC = 0.48; //0.44;
     public static double GET_FROM_CLAW = 0.97;
     public static double SCORE_SAMP = 0.7;
     public static double SCORE_SPEC = 0.99;
     public static double TRANSFER_SPEC = 0.75;
+    public static double MOVE_SPECIMENS = 0.9;
 }
 
 public class ScoringDiff {
@@ -43,7 +47,8 @@ public class ScoringDiff {
         SCORE_SPEC,
         GET_FROM_CLAW,
         TRANSFER_SPEC,
-        RELAX
+        RELAX,
+        MOVE_SPECIMENS
     }
 
     Mode currentMode = Mode.PICK_SPEC;
@@ -82,6 +87,9 @@ public class ScoringDiff {
             case RELAX:
                 diff.setPwmDisable();
                 break;
+            case MOVE_SPECIMENS:
+                diff.setPosition(MOVE_SPECIMENS);
+                break;
         /*    case SCORE_SPEC:
                 diff.setPosition(ScoringDiffConstants.SCORE_SPEC);
                 break;*/
@@ -104,4 +112,11 @@ public class ScoringDiff {
     public void pickSpecimen() {
         diff.setPosition(PICK_SPEC);
     }
+
+    public void aimSpecimen() {
+        diff.setPosition(AIM_SPEC);
+    }
+
+    public void moveSpecimens(){diff.setPosition(MOVE_SPECIMENS);}
+
 }

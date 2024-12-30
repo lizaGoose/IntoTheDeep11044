@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.AUTO_COEFFICIENTS;
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.COEFFICIENTS;
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.HANG;
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.MAX_POSITION;
@@ -8,6 +9,7 @@ import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.TICKS_PER_T
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.TRANSFER;
 import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.TRANSFER_CLOSER;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,9 +23,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 @Config
 class ExtendConstants {
     public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(-0.018, 0.0, -0.000004, 0.015);
+    public static PIDFCoefficients AUTO_COEFFICIENTS = new PIDFCoefficients(-0.012, 0, -0.0005, 0);
     public static double TICKS_PER_TAP = 30;
 
-    public static int MAX_POSITION = 300;
+    public static int MAX_POSITION = 260;
     public static int MIN_POSITION = 0;
     public static int TRANSFER = 51;
     public static int TRANSFER_CLOSER = 20;
@@ -62,7 +65,7 @@ public class Extend {
     public void teleop() {
         switch (currentMode) {
             case DRIVER_CONTROL:
-                if (gamepad.triangle && !lastTriangleState) {
+              /*  if (gamepad.triangle && !lastTriangleState) {
                     // setReference(motor.getCurrentPosition() + TICKS_PER_TAP);
                     setNewReference = motor.getCurrentPosition() + TICKS_PER_TAP;
                 }
@@ -73,7 +76,7 @@ public class Extend {
                     setNewReference = motor.getCurrentPosition() - TICKS_PER_TAP;
                 }
 
-                lastTriangleState = gamepad.cross;
+                lastTriangleState = gamepad.cross;*/
 
                 if (gamepad2.right_stick_y != 0) {
                     motor.setPower(-gamepad2.right_stick_y);
@@ -118,6 +121,22 @@ public class Extend {
         double derivative = ( error - lastError ) / timer.seconds();
         integralSum += error * timer.seconds();
         out = ( COEFFICIENTS.p * error ) + ( COEFFICIENTS.i * integralSum ) + ( COEFFICIENTS.d * derivative ) + COEFFICIENTS.f;
+
+        motor.setPower(out);
+
+        lastError = error;
+
+        timer.reset();
+        return error;
+    }
+
+    public double AutoPIDControl() {
+        int position = motor.getCurrentPosition();
+        double error = position - reference;
+
+        double derivative = ( error - lastError ) / timer.seconds();
+        integralSum += error * timer.seconds();
+        out = ( AUTO_COEFFICIENTS.p * error ) + ( AUTO_COEFFICIENTS.i * integralSum ) + ( AUTO_COEFFICIENTS.d * derivative ) + AUTO_COEFFICIENTS.f;
 
         motor.setPower(out);
 

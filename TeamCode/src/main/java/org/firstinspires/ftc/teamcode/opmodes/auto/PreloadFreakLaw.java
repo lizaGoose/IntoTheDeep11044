@@ -21,6 +21,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.DELT
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.DIFF_ROTATION_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.DIFF_ROTATION_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.DIFF_ROTATION_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.DIST_SCOR_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.EXTEND_CLOSED;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.EXTEND_LEFT_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.EXTEND_MIDDLE_TO_HUMAN;
@@ -53,6 +54,8 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_RELAX_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_SPECIMEN_PICK_UP;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -91,6 +94,7 @@ public class PreloadFreakLaw extends LinearOpMode {
     private DistanceSensor distInClaw;
     private DigitalChannel frontSensor;
     private static boolean relaxFlag = false;
+    private FtcDashboard dashboard;
 
     // Make this true somewhere to stop program
     private boolean DEBUG_END_FLAG = false;
@@ -165,9 +169,11 @@ public class PreloadFreakLaw extends LinearOpMode {
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 400, () -> {
+                        perkid.pickUp();
+                    })
+                    .addTimeMarker(WAIT_AT_LEFT + 500, () -> {
                         double rotation = ANGLE_TO_LEFT + hand.getAngle() + 90 + DIFF_ROTATION_LEFT;
                         diff.pickUpAngle(rotation);
-                        perkid.pickUp();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 600, () -> {
                         claw.close();
@@ -211,9 +217,11 @@ public class PreloadFreakLaw extends LinearOpMode {
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + 400, () -> {
+                        perkid.pickUp();
+                    })
+                    .addTimeMarker(WAIT_AT_MIDDLE + 500, () -> {
                         double rotation = ANGLE_TO_MIDDLE + hand.getAngle() + 90 + DIFF_ROTATION_MIDDLE;
                         diff.pickUpAngle(rotation);
-                        perkid.pickUp();
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + 600, () -> {
                         claw.close();
@@ -255,9 +263,11 @@ public class PreloadFreakLaw extends LinearOpMode {
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_RIGHT + 400, () -> {
+                        perkid.pickUp();
+                    })
+                    .addTimeMarker(WAIT_AT_RIGHT + 500, () -> {
                         double rotation = ANGLE_TO_RIGHT + hand.getAngle() + 90 + DIFF_ROTATION_RIGHT;
                         diff.pickUpAngle(rotation);
-                        perkid.pickUp();
                     })
                     .addTimeMarker(WAIT_AT_RIGHT  + 600, () -> {
                         claw.close();
@@ -278,6 +288,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                         perkid.dropOverRightSide();
                         diff.dropOverRightSide();
                         scoringPerkid.aimAtSpecimen();
+                        scoringDiff.aimSpecimen();
                         scorClaw.open();
                     })
                     .addSpatialMarker(2 + SLOWDOWN_POINT_0, () -> {
@@ -290,6 +301,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                     .waitForAt(3, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_HUMAN_ADJUST, () -> {
                         scoringPerkid.pickSpecimen();
+                        scoringDiff.pickSpecimen();
                     })
                     .build();
             buildSpecimenToRung = drive.buildTrajectory("traj13transposed.json")
@@ -337,7 +349,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                     })
                     .addSpatialMarker(INITIAL, () -> {
                         scoringPerkid.aimAtSpecimen();
-                        scoringDiff.pickSpecimen();
+                        scoringDiff.aimSpecimen();
                         scorClaw.open();
 
                         hand.setPosition(0.5);
@@ -351,6 +363,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                     .waitForAt(1, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_HUMAN_ADJUST, () -> {
                         scoringPerkid.pickSpecimen();
+                        scoringDiff.pickSpecimen();
                     });
             trajRungToSpecimen = buildRungToSpecimen.build();
             trajRungToSpecimen3rd = buildRungToSpecimen
@@ -374,6 +387,11 @@ public class PreloadFreakLaw extends LinearOpMode {
 
         scorClaw.close();
 
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("extend_reference", extend.getReference());
+        packet.put("extend_position", extend.getPosition());
+        dashboard.sendTelemetryPacket(packet);
+
         waitForStart();
 
         /* ************************************************************************************* */
@@ -389,12 +407,18 @@ public class PreloadFreakLaw extends LinearOpMode {
         drive.followTrajectory(trajToRungs);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
+
+            packet = new TelemetryPacket();
+            packet.put("extend_reference", extend.getReference());
+            packet.put("extend_position", extend.getPosition());
+            dashboard.sendTelemetryPacket(packet);
+
             drive.update();
             extend.PIDControl();
         }
         // -31.362
 
-        hangSpecimen();
+        clock.reset();
 
         /* *** GO TO HUMAN AND DO EVERYTHING *** */
         drive.followTrajectory(trajToThree);
@@ -406,6 +430,11 @@ public class PreloadFreakLaw extends LinearOpMode {
                 relaxFlag = false;
             }
 
+            packet = new TelemetryPacket();
+            packet.put("extend_reference", extend.getReference());
+            packet.put("extend_position", extend.getPosition());
+            dashboard.sendTelemetryPacket(packet);
+
             drive.update();
             extend.PIDControl();
         }
@@ -415,13 +444,9 @@ public class PreloadFreakLaw extends LinearOpMode {
         clock.reset();
         boolean pickedUp = false;
         while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
-            if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
+            if (distInClaw.getDistance(DistanceUnit.MM) <= DIST_SCOR_CLAW) {
                 pickedUp = true;
             }
-        }
-
-        if (!pickedUp) {
-            return;
         }
 
         scorClaw.close();
@@ -442,7 +467,7 @@ public class PreloadFreakLaw extends LinearOpMode {
             extend.PIDControl();
         }
 
-        hangSpecimen();
+        clock.reset();
 
         drive.followTrajectory(trajRungToSpecimen);
 
@@ -461,13 +486,9 @@ public class PreloadFreakLaw extends LinearOpMode {
         clock.reset();
         pickedUp = false;
         while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
-            if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
+            if (distInClaw.getDistance(DistanceUnit.MM) <= DIST_SCOR_CLAW) {
                 pickedUp = true;
             }
-        }
-
-        if (!pickedUp) {
-            return;
         }
 
         scorClaw.close();
@@ -488,7 +509,7 @@ public class PreloadFreakLaw extends LinearOpMode {
             extend.PIDControl();
         }
 
-        hangSpecimen();
+        clock.reset();
 
         drive.followTrajectory(trajRungToSpecimen3rd);
 
@@ -507,13 +528,9 @@ public class PreloadFreakLaw extends LinearOpMode {
         clock.reset();
         pickedUp = false;
         while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
-            if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
+            if (distInClaw.getDistance(DistanceUnit.MM) <= DIST_SCOR_CLAW) {
                 pickedUp = true;
             }
-        }
-
-        if (!pickedUp) {
-            return;
         }
 
         scorClaw.close();
@@ -534,7 +551,7 @@ public class PreloadFreakLaw extends LinearOpMode {
             extend.PIDControl();
         }
 
-        hangSpecimen();
+        clock.reset();
 
         drive.followTrajectory(trajRungToSpecimen4th);
 
@@ -553,13 +570,9 @@ public class PreloadFreakLaw extends LinearOpMode {
         clock.reset();
         pickedUp = false;
         while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
-            if (distInClaw.getDistance(DistanceUnit.MM) <= 17) {
+            if (distInClaw.getDistance(DistanceUnit.MM) <= DIST_SCOR_CLAW) {
                 pickedUp = true;
             }
-        }
-
-        if (!pickedUp) {
-            return;
         }
 
         scorClaw.close();
@@ -580,7 +593,7 @@ public class PreloadFreakLaw extends LinearOpMode {
             extend.PIDControl();
         }
 
-        hangSpecimen();
+        clock.reset();
 
         drive.followTrajectory(trajRungToSpecimen5th);
 
@@ -593,17 +606,6 @@ public class PreloadFreakLaw extends LinearOpMode {
 
             drive.update();
             extend.PIDControl();
-        }
-    }
-
-    private void hangSpecimen() {
-        //scoringPerkid.scoreSpecimen();
-        //scoringDiff.scoreSpecimen();
-
-        clock.reset();
-
-        while (clock.milliseconds() < WAIT_SCORE) {
-            telemetry.update();
         }
     }
 
@@ -624,5 +626,6 @@ public class PreloadFreakLaw extends LinearOpMode {
         frontSensor = hardwareMap.get(DigitalChannel.class, "DistanceFront");
 
         clock = new ElapsedTime();
+        dashboard = FtcDashboard.getInstance();
     }
 }
