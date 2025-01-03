@@ -27,6 +27,7 @@ public class Lift {
     private final ElapsedTime timer;
     OpMode linearOpMode;
     Gamepad gamepad;
+    Gamepad gamepad2;
 
     public Lift(OpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
@@ -34,6 +35,7 @@ public class Lift {
         rightMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "rightLift");
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         gamepad = linearOpMode.gamepad1;
+        gamepad2 = linearOpMode.gamepad2;
 
         timer = new ElapsedTime();
     }
@@ -81,12 +83,12 @@ public class Lift {
     public void teleop() {
         switch (currentMode) {
             case NULL_POSE:
-                if (gamepad.right_stick_y != 0) {
-                    leftMotor.setPower(gamepad.left_stick_y);
-                    rightMotor.setPower(gamepad.left_stick_y);
+                if (gamepad2.right_stick_y != 0) {
+                    leftMotor.setPower(gamepad2.left_stick_y);
+                    rightMotor.setPower(gamepad2.left_stick_y);
                     setReference(leftMotor.getCurrentPosition());
                 } else {
-                    PIDControl();
+                    //PIDControl();
                 }
                 break;
 

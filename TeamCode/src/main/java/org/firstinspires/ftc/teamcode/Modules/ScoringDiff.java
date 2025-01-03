@@ -48,7 +48,8 @@ public class ScoringDiff {
         GET_FROM_CLAW,
         TRANSFER_SPEC,
         RELAX,
-        MOVE_SPECIMENS
+        MOVE_SPECIMENS,
+        AIM_POS
     }
 
     Mode currentMode = Mode.PICK_SPEC;
@@ -89,6 +90,9 @@ public class ScoringDiff {
                 break;
             case MOVE_SPECIMENS:
                 diff.setPosition(MOVE_SPECIMENS);
+                break;
+            case AIM_POS:
+                diff.setPosition(AIM_SPEC);
                 break;
         /*    case SCORE_SPEC:
                 diff.setPosition(ScoringDiffConstants.SCORE_SPEC);

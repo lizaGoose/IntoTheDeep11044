@@ -78,8 +78,17 @@ public class Extend {
 
                 lastTriangleState = gamepad.cross;*/
 
-                if (gamepad2.right_stick_y != 0) {
+             /*  if (gamepad2.right_stick_y != 0) {
                     motor.setPower(-gamepad2.right_stick_y);
+                    //setReference(motor.getCurrentPosition());
+                    setNewReference = motor.getCurrentPosition();
+                } else {
+                    if (!( gamepad.triangle && !lastTriangleState ) && !( gamepad.cross && !lastCrossState ))
+                        setReference(setNewReference);
+                    PIDControl();
+                }*/
+                if (gamepad.right_stick_y != 0) {
+                    motor.setPower(-gamepad.right_stick_y);
                     //setReference(motor.getCurrentPosition());
                     setNewReference = motor.getCurrentPosition();
                 } else {

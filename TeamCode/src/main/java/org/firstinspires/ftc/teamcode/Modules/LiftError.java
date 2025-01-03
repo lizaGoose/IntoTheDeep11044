@@ -27,7 +27,7 @@ public class LiftError {
         leftMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "leftLift");
         rightMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "rightLift");
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        gamepad = linearOpMode.gamepad1;
+        gamepad = linearOpMode.gamepad2;
 
      //   timer = new ElapsedTime();
     }
