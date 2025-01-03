@@ -28,6 +28,7 @@ public class DriveTrain {
     IMU imu;
     public double realHeading = 0;
     public double realControlHeading = 0;
+    public double d = 0.2;
 
     enum Mode {
         DRIVER_CONTROL,
@@ -65,12 +66,7 @@ public class DriveTrain {
                 y = -gamepad1.left_stick_y;
                 heading = realHeading;
                 realControlHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                if(heading >= 0) {
-                    drive.setWeightedDrivePower(new Pose2d(realControlHeading + heading, x, y));
-                }
-                else{
-                    drive.setWeightedDrivePower(new Pose2d(realControlHeading - heading, x, y));
-                }
+                drive.setWeightedDrivePower(new Pose2d((realControlHeading - heading)*d, x, y));
 
                 break;
             case NON:

@@ -149,12 +149,12 @@ public class StateMachine {
             state = State.EMPTY;
 
         }
-        if(state != State.TRANSFER_SPEC && state != State.SCORE_SPEC && state != State.PICK_UP_THE_BLOCK_SCORSPEC && state != State.LOOK_FOR_BLOCK_SCORSPEC){
+        //   if(state != State.TRANSFER_SPEC && state != State.SCORE_SPEC && state != State.PICK_UP_THE_BLOCK_SCORSPEC && state != State.LOOK_FOR_BLOCK_SCORSPEC){
             dt.currentMode = DriveTrain.Mode.DRIVER_CONTROL;
-        }
+       /* }
         else {
             dt.currentMode = DriveTrain.Mode.CONTROL_ANGLE;
-        }
+        }*/
        // lift.currentMode = LiftError.Mode.NULL_POSE;
 
         switch (state) {
