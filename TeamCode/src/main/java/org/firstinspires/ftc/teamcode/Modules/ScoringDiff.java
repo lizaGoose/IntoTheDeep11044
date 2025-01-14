@@ -117,6 +117,10 @@ public class ScoringDiff {
         diff.setPosition(PICK_SPEC);
     }
 
+    public void liftSpecimenFromWall() {
+        diff.setPosition(AIM_SPEC);
+    }
+
     public void aimSpecimen() {
         diff.setPosition(AIM_SPEC);
     }

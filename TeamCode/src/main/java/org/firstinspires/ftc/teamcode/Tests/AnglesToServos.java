@@ -19,6 +19,8 @@ import org.firstinspires.ftc.teamcode.Modules.Diff;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
 import java.io.DataInput;
+import java.util.ArrayList;
+import java.util.List;
 
 @TeleOp
 public class AnglesToServos extends LinearOpMode {
@@ -32,44 +34,27 @@ public class AnglesToServos extends LinearOpMode {
     public DistanceSensor distanceSensor;
     public ColorSensor color;
     SampleDetectionCameraClass cam;
+    public double xFromGamepad, yFromGamepad, xCoordMax = 499.293/25.4, yCoordMax = 544.599/25.4;
+    public List<Double> ik;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        rr = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rf = hardwareMap.get(DcMotorEx.class, "rightFront");
-        rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lr = hardwareMap.get(DcMotorEx.class, "leftRear");
-        lr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lf = hardwareMap.get(DcMotorEx.class, "leftFront");
-        lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        test = hardwareMap.get(DcMotor.class, "rightLift");
-        test1 = hardwareMap.get(DcMotor.class, "leftLift");
-        cam = new SampleDetectionCameraClass(this);
-        //tes.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        //test1.setDirection(Servo.Direction.REVERSE);
-        test1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        test.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "ScorClawDist");
-        color = hardwareMap.get(ColorSensor.class, "ScorClawDist");
 
 
         timer = new ElapsedTime();
 
         waitForStart();
-       // timer.reset();
+
         double reference = 0;
         while (opModeIsActive()){
-     //  cam.visionInUse();
-            telemetry.addData("distance", distanceSensor.getDistance(DistanceUnit.MM));
-            telemetry.addData("alpha", color.alpha());
-            telemetry.addData("red", color.red());//
-            telemetry.addData("blue", color.blue());//
-           // telemetry.addData("alpha", color.alpha());
-           /* telemetry.addData("ref", reference);
-            telemetry.addData("enc", gamepad1.right_stick_y);*/
-            telemetry.update();
-          //  timer.reset();
+            xFromGamepad = gamepad1.right_stick_x * xCoordMax;
+            yFromGamepad = gamepad1.right_stick_y * yCoordMax;
+            ik = ClawCalculation.inverseKinematics(10, xFromGamepad, yFromGamepad);
+            telemetry.addData("xFromGamepad", xFromGamepad);
+            telemetry.addData("yFromGamepad", yFromGamepad);
+            telemetry.addData("inverseKinematics", ik);
+            telemetry.update();// yCoordMax = ; xCoordMax = ;
+
         }
     }
 }

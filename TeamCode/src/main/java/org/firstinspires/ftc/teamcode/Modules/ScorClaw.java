@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 
+import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.AUTO_PICK;
 import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.DROP;
 import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.PICK;
 import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.VERY_DROP;
@@ -13,7 +14,8 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 @Config
 class ScorClawConstants {
-    public static double PICK = 0.93;
+    public static double AUTO_PICK = 1;
+    public static double PICK = 1;
     public static double DROP = 0.49;
     public static double VERY_DROP = 0.38;
 }

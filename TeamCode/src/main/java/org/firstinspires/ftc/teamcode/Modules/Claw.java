@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 class ClawConstants{
     public static double LIGHT = 0.605;
     public static double PICK = 0.67;
-    public static double DROP = 0.1;
+    public static double DROP = 0.05;
     public static double TRANSFER = 0.37;
 }
 public class Claw {

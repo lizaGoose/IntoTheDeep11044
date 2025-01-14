@@ -69,7 +69,6 @@ public class Lift {
 
         timer.reset();
     }
-
     public double getReference() {
         return reference;
     }
@@ -77,6 +76,7 @@ public class Lift {
     public void setReference(double reference) {
         reference = Math.min(reference, MAX_POSITION);
         reference = Math.max(reference, MIN_POSITION);
+
         this.reference = reference;
     }
 

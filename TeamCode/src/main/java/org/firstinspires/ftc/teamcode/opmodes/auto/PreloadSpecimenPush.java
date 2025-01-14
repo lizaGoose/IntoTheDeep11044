@@ -23,7 +23,6 @@ import org.firstinspires.ftc.teamcode.Modules.ScorClaw;
 import org.firstinspires.ftc.teamcode.Modules.ScoringDiff;
 import org.firstinspires.ftc.teamcode.Modules.ScoringPerkid;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
-import org.firstinspires.ftc.teamcode.auto.TrajectoryRunner;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 
 import java.io.IOException;
@@ -43,7 +42,7 @@ class PreloadSpecimenPushConstants {
 }
 
 @Autonomous
-public class PreloadSpecimenPushPeni$ extends LinearOpMode {
+public class PreloadSpecimenPush extends LinearOpMode {
     private Drive drive;
     private ScoringPerkid scoringPerkid;
     private ScoringDiff scoringDiff;

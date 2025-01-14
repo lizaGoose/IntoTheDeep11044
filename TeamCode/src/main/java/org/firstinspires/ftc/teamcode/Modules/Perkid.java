@@ -30,8 +30,8 @@ class PerkidConstants {
     public static double TAKE_POS = 0.27;
     public static double LOOK_POS = 0.5;*/
     public static double TRANSFER_POS = 0.67;
-    public static double LOOK_POS = 0.47;
-    public static double TRANSFER_FROM_SUBMERSABLE = 0.47;
+    public static double LOOK_POS = 0.42;
+    public static double TRANSFER_FROM_SUBMERSABLE = 0.53;
     //0.37
     public static double PICK_UP = 0.37;
     public static double RIGHT_SIDE_DROP_SAMPLE = 0.67;

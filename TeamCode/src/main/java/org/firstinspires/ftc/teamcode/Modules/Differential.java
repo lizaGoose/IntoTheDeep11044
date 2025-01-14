@@ -26,8 +26,8 @@ import java.util.List;
 
 @Config
 class DifferentialConstants {
-    public static double HORIZONTAL_DOWN = 0.35;
-    public static double PICK_UP = 0.43;
+    public static double HORIZONTAL_DOWN = 0.47;
+    public static double PICK_UP = 0.53;
     public static double PICK_UP_ANGLE = -45;
     public static double TRANSFER = 0.95;
     public static double SCORE_SAMP = 0.68;

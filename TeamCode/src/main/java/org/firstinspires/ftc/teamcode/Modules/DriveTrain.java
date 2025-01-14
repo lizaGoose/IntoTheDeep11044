@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 import static org.firstinspires.ftc.teamcode.Modules.DriveTrainConstants.POWER_WHILE_MOVING_BACK;
+import static org.firstinspires.ftc.teamcode.Modules.DriveTrainConstants.d;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.drive.MecanumDriveRR;
 @Config
 class DriveTrainConstants {
     public static double POWER_WHILE_MOVING_BACK = 0.5;
+    public static double d = 2;
 }
 
 public class DriveTrain {
@@ -28,7 +30,7 @@ public class DriveTrain {
     IMU imu;
     public double realHeading = 0;
     public double realControlHeading = 0;
-    public double d = 0.2;
+    //public double d = 0.2;
 
     enum Mode {
         DRIVER_CONTROL,
@@ -66,7 +68,7 @@ public class DriveTrain {
                 y = -gamepad1.left_stick_y;
                 heading = realHeading;
                 realControlHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                drive.setWeightedDrivePower(new Pose2d((realControlHeading - heading)*d, x, y));
+                drive.setWeightedDrivePower(new Pose2d((-realControlHeading + heading)*d, x, y));
 
                 break;
             case NON:

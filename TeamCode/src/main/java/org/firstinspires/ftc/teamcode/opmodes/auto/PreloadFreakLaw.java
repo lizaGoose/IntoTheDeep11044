@@ -37,6 +37,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POIN
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POINT_PERKID_START_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POINT_SPECIMEN_START_SCORE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POINT_SPECIMEN_START_SCORE_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POINT_THIRD_RELEASE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.RIGHT_STOP_POINT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_FORCE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_POINT_0;
@@ -117,7 +118,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                     .addSpatialMarker(AIM_SPECIMEN_0, () -> {
                         scoringPerkid.transferSpecimen();
                         scoringDiff.pickSpecimen();
-                        perkid.aim();
+                        perkid.liftSample();
                         hand.setPosition(0.5);
                         diff.aim();
                     })
@@ -295,8 +296,10 @@ public class PreloadFreakLaw extends LinearOpMode {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .addSpatialMarker(2.8, () -> {
-                        claw.open();
                         extend.setReference(0);
+                    })
+                    .addSpatialMarker(POINT_THIRD_RELEASE, () -> {
+                        claw.open();
                     })
                     .waitForAt(3, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_HUMAN_ADJUST, () -> {
@@ -305,14 +308,18 @@ public class PreloadFreakLaw extends LinearOpMode {
                     })
                     .build();
             buildSpecimenToRung = drive.buildTrajectory("traj13transposed.json")
+                    .addSpatialMarker(0, () -> {
+                        scoringDiff.liftSpecimenFromWall();
+                    })
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(POINT_PERKID_START_0, () -> {
                         scoringPerkid.transferSpecimen();
                         scoringDiff.pickSpecimen();
                         scorClaw.close();
 
-                        perkid.aim();
+                        perkid.liftSample();
                         hand.setPosition(0.5);
+                        claw.close();
                         diff.aim();
                     })
                     .addSpatialMarker(SLOWDOWN_POINT_1, () -> {
@@ -355,7 +362,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                         hand.setPosition(0.5);
                         perkid.transfer();
                         diff.transfer();
-                        claw.open();
+                        claw.close();
                     })
                     .addSpatialMarker(SLOWDOWN_POINT_2, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
@@ -377,6 +384,12 @@ public class PreloadFreakLaw extends LinearOpMode {
             trajRungToSpecimen5th = buildRungToSpecimen
                     .plusPoint(0, new Vector2d(DELTA_5TH, 0))
                     .plusPoint(1, new Vector2d(DELTA_5TH, 0))
+                    .addSpatialMarker(INITIAL + 0.02, () -> {
+                        drive.setForce(1);
+                    })
+                    .addSpatialMarker(SLOWDOWN_POINT_2 + 0.02, () -> {
+                        drive.setForce(1);
+                    })
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);

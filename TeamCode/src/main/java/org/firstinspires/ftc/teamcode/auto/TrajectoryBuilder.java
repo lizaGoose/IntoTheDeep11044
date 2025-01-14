@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TrajectoryBuilder {
     private List<Vector2d> points;
@@ -114,6 +115,6 @@ public class TrajectoryBuilder {
 
     public Trajectory build() {
         spatialMarkers.sort(Comparator.comparingDouble(spatialMarker -> spatialMarker.t));
-        return new Trajectory(points.toArray(new Vector2d[0]), stops, spatialMarkers, turnMarkers, timeMarkers);
+        return new Trajectory(points.toArray(new Vector2d[0]), stops, spatialMarkers.stream().map(SpatialMarker::clone).collect(Collectors.toList()), turnMarkers, timeMarkers);
     }
 }
