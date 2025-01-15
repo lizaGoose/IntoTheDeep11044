@@ -62,7 +62,7 @@ public class StateMachine {
     public DigitalChannel frontSensor;
     public static double upToChamber = -380, upToChamber2 = -430;
     public double zeroPos = 0;
-    SampleDetectionCameraClass cam;
+    //SampleDetectionCameraClass cam;
 
 
     public enum State {
@@ -88,7 +88,7 @@ public class StateMachine {
     public StateMachine(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
 
-        cam = new SampleDetectionCameraClass(linearOpMode);
+        //cam = new SampleDetectionCameraClass(linearOpMode);
         extend = new Extend(linearOpMode);
         claw = new Claw(linearOpMode);
         perkid = new Perkid(linearOpMode);
@@ -122,7 +122,7 @@ public class StateMachine {
         distanceSensor = linearOpMode.hardwareMap.get(DistanceSensor.class, "Color");
         distInClaw = linearOpMode.hardwareMap.get(DistanceSensor.class, "ScorClawDist");
         frontSensor = linearOpMode.hardwareMap.get(DigitalChannel.class, "DistanceFront");
-        cam.visionInUse();
+        //cam.visionInUse();
         extend.teleop();
         claw.teleop();
         perkid.teleop();
@@ -131,7 +131,7 @@ public class StateMachine {
         hand.teleop();
         scorClaw.teleop();
         lift.teleop();
-        diff.teleop(cam.Angle);
+        diff.teleop(0);
         dt.teleOp();
         hang.teleop();
 
