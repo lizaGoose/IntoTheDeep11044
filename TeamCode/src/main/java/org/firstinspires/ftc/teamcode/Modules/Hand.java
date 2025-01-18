@@ -19,8 +19,8 @@ import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
 @Config
 class HandConstants {
-    public static double RANGE_START = 0.01;
-    public static double RANGE_END = 0.38;
+    public static double RANGE_START = 0.17 - 0.15;
+    public static double RANGE_END = 0.17 + 0.15;
     public static double RANGE = 35;
 
     public static double ROTATION_SPEED = 0.00;

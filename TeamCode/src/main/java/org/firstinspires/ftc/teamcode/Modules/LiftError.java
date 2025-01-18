@@ -1,22 +1,28 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.LiftConstants.MAX_POSITION;
-import static org.firstinspires.ftc.teamcode.Modules.LiftConstants.MIN_POSITION;
+import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.MAX_POSITION;
+import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.MIN_POSITION;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 class LiftErrorConstants {
+    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.0, 0.0, 0.0, 0.0);
     public static double d = 0.00047;
+
+    public static int MAX_POSITION = 810;
+    public static int MIN_POSITION = 0;
 }
 
 public class LiftError {
     public final DcMotorEx leftMotor, rightMotor;
-    //private final ElapsedTime timer;
+    private final ElapsedTime timer;
     OpMode linearOpMode;
     Gamepad gamepad;
     public double pos;
@@ -29,7 +35,7 @@ public class LiftError {
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         gamepad = linearOpMode.gamepad2;
 
-     //   timer = new ElapsedTime();
+        timer = new ElapsedTime();
     }
 
     public enum Mode {
