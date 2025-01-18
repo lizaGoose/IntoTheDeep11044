@@ -9,24 +9,26 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 @Config
 class ClawConstants{
-    public static double LIGHT = 0.605;
+    public static double LIGHT = 0.67;
     public static double PICK = 0.67;
-    public static double DROP = 0.05;
+    public static double DROP = 0.4;
     public static double TRANSFER = 0.37;
 }
 public class Claw {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
-    Servo claw;
+    ServoImplEx claw;
 
     public enum Mode {
         LIGHT,
         PICK,
         DROP,
-        TRANSFER
+        TRANSFER,
+        RELAX
     }
 
     public Mode currentMode = Mode.PICK;
@@ -34,7 +36,7 @@ public class Claw {
     public Claw(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
-        claw = linearOpMode.hardwareMap.get(Servo.class, "claw_servo");
+        claw = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "claw_servo");
     }
 
     public void teleop() {
@@ -50,6 +52,9 @@ public class Claw {
                 break;
             case LIGHT:
                 claw.setPosition(LIGHT);
+                break;
+            case RELAX:
+                claw.setPwmDisable();
                 break;
         }
     }

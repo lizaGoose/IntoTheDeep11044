@@ -29,7 +29,7 @@ class ExtendConstants {
     public static int MAX_POSITION = 260;
     public static int MIN_POSITION = 0;
     public static int TRANSFER = 51;
-    public static int TRANSFER_CLOSER = -10;
+    public static int TRANSFER_CLOSER = 45;
     public static int HANG = 150;
 }
 

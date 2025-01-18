@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 import static org.firstinspires.ftc.teamcode.Modules.SensorsConstants.EXTEND_AMPS;
+import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.OFFSET_CLAW_CLOSE;
 import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.PICKED_UNPICKED_PICK_BLOCK;
 import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.REGISTER_MOVEMENT_AFTER;
 import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.SET_POS_TO_ZERO_SAMPLE;
@@ -33,6 +34,8 @@ class TimerConstants {
     public static double REGISTER_MOVEMENT_AFTER = 450;
     public static double SET_POS_TO_ZERO_SAMPLE = 300;
     public static double PICKED_UNPICKED_PICK_BLOCK = 450;
+
+    public static double OFFSET_CLAW_CLOSE = 0;
 }
 
 @Config
@@ -531,11 +534,11 @@ public class StateMachine {
                     extend.setReference(extend.getPosition());
                     stoppedMovingExtendBack = true;
                 }
-                if (fromClawToClawTimer.milliseconds() > 0 && fromClawToClawTimer.milliseconds() <= 300
+                if (fromClawToClawTimer.milliseconds() > 0 && fromClawToClawTimer.milliseconds() <= 600 + OFFSET_CLAW_CLOSE
                         && startedMovingExtendBack
                         && stoppedMovingExtendBack) {
                     scorPerkid.currentMode = ScoringPerkid.Mode.TRANSFER;
-                } else if (fromClawToClawTimer.milliseconds() > 300 && fromClawToClawTimer.milliseconds() <= 550
+                } else if (fromClawToClawTimer.milliseconds() > 600 + OFFSET_CLAW_CLOSE && fromClawToClawTimer.milliseconds() <= 850 + OFFSET_CLAW_CLOSE
                         && startedMovingExtendBack
                         && stoppedMovingExtendBack) {
                     scorClaw.currentMode = ScorClaw.Mode.PICK;
@@ -549,7 +552,7 @@ public class StateMachine {
                         extend.setReference(extend.motor.getCurrentPosition());
                     }
                 }
-                if (fromClawToClawTimer.milliseconds() > 750
+                if (fromClawToClawTimer.milliseconds() > 1050 + OFFSET_CLAW_CLOSE
                         && startedMovingExtendBack
                         && extend.currentMode == Extend.Mode.PURE_PID) {
                     startPickUpBlock = false;
