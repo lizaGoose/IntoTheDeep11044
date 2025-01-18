@@ -59,7 +59,7 @@ public class StateMachine {
     boolean startPickUpBlock;
     public ColorSensor color;
 
-    boolean startedMovingExtendBack = true;
+    boolean startedMovingExtendBack = true, stoppedMovingExtendBack = true;
 
     DriveTrain dt;
     public DigitalChannel frontSensor;
@@ -502,6 +502,7 @@ public class StateMachine {
                 if (startTimerFromClawToClaw && fromClawToClawTimer.milliseconds() >= 300) {
                     state = State.FROM_CLAW_TO_CLAW;
                     startedMovingExtendBack = false;
+                    stoppedMovingExtendBack = false;
                 }
                 break;
             case FROM_CLAW_TO_CLAW:
@@ -524,26 +525,26 @@ public class StateMachine {
                     fromClawToClawTimer.reset();
                     startedMovingExtendBack = true;
                 }
-                if (startedMovingExtendBack && extend.getAmps() < EXTEND_AMPS && extend.currentMode == Extend.Mode.POWER) {
+                if (startedMovingExtendBack && extend.getAmps() < EXTEND_AMPS && !stoppedMovingExtendBack) {
                     fromClawToClawTimer.reset();
                 } else {
-                    extend.currentMode = Extend.Mode.PURE_PID;
                     extend.setReference(extend.getPosition());
+                    stoppedMovingExtendBack = true;
                 }
                 if (fromClawToClawTimer.milliseconds() > 0 && fromClawToClawTimer.milliseconds() <= 300
                         && startedMovingExtendBack
-                        && extend.currentMode == Extend.Mode.PURE_PID) {
+                        && stoppedMovingExtendBack) {
                     scorPerkid.currentMode = ScoringPerkid.Mode.TRANSFER;
                 } else if (fromClawToClawTimer.milliseconds() > 300 && fromClawToClawTimer.milliseconds() <= 550
                         && startedMovingExtendBack
-                        && extend.currentMode == Extend.Mode.PURE_PID) {
+                        && stoppedMovingExtendBack) {
                     scorClaw.currentMode = ScorClaw.Mode.PICK;
-                    extend.setCloser();
-                } else if (startedMovingExtendBack
-                        && extend.currentMode == Extend.Mode.PURE_PID) {
-                    claw.currentMode = Claw.Mode.DROP;
+                    extend.currentMode = Extend.Mode.PURE_PID;
                     extend.resetEncoder();
                     extend.setZero();
+                } else if (startedMovingExtendBack
+                        && stoppedMovingExtendBack) {
+                    claw.currentMode = Claw.Mode.DROP;
                     if (gamepad2.left_stick_y != 0) {
                         extend.setReference(extend.motor.getCurrentPosition());
                     }
