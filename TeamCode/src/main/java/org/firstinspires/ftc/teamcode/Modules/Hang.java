@@ -1,24 +1,23 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.LiftConstants.COEFFICIENTS;
-import static org.firstinspires.ftc.teamcode.Modules.LiftConstants.MAX_POSITION;
-import static org.firstinspires.ftc.teamcode.Modules.LiftConstants.MIN_POSITION;
+import static org.firstinspires.ftc.teamcode.Modules.HangConstants.COEFFICIENTS;
+import static org.firstinspires.ftc.teamcode.Modules.HangConstants.MAX_POSITION;
+import static org.firstinspires.ftc.teamcode.Modules.HangConstants.MIN_POSITION;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 class HangConstants {
-    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.0, 0.0, 0.0, 0.0);
+    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.0, 0.0, 0.0);
+    public static double MAX_POSITION = 3450;
+    public static double MIN_POSITION = 10;
     public static int DOWN_POS = 0;
     public static int UP_POS = 200;
     public static double LEFT_ENGAGED = 0.4;//0.24 0.4
@@ -42,6 +41,8 @@ public class Hang {
         hang = linearOpMode.hardwareMap.get(DcMotorEx.class, "hangMotor");
     //    left = linearOpMode.hardwareMap.get(Servo.class, "left_lift_servo");
       //  right = linearOpMode.hardwareMap.get(Servo.class, "right_lift_servo");
+        hang.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hang.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         gamepad = linearOpMode.gamepad2;
 
@@ -52,18 +53,19 @@ public class Hang {
         UP_POS,
         DOWN_POS,
         ENGAGED,
-        NOT_ENGAGED
+        NOT_ENGAGED,
+        DEFAULT
 
     }
 
     Mode currentMode = Mode.NOT_ENGAGED;
-    double reference = 0;
+    double reference = MIN_POSITION;
     double lastError = 0;
     double integralSum = 0;
     double out;
 //0.5 - right
 //0.58
-  /*  public void PIDControl() {
+    public void PIDControl() {
         double position = hang.getCurrentPosition();
         double error = reference - position;
 
@@ -82,11 +84,29 @@ public class Hang {
         return reference;
     }
 
-    public void setReference(double reference) {
+    public void clampReference() {
         reference = Math.min(reference, MAX_POSITION);
         reference = Math.max(reference, MIN_POSITION);
+    }
+
+    public void setReference(double reference) {
+        integralSum = 0;
         this.reference = reference;
-    }*/
+        clampReference();
+    }
+
+    public void control() {
+        if (gamepad.left_stick_y < 0 && hang.getCurrentPosition() < MAX_POSITION) {
+           hang.setPower(-gamepad.left_stick_y);
+           setReference(hang.getCurrentPosition());
+        } else if (gamepad.left_stick_y > 0 && hang.getCurrentPosition() > MIN_POSITION) {
+            hang.setPower(-gamepad.left_stick_y);
+            setReference(hang.getCurrentPosition());
+        } else {
+            clampReference();
+            PIDControl();
+        }
+    }
 
     public void teleop() {
 

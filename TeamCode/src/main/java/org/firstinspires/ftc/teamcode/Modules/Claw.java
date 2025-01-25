@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 import static org.firstinspires.ftc.teamcode.Modules.ClawConstants.DROP;
 import static org.firstinspires.ftc.teamcode.Modules.ClawConstants.LIGHT;
 import static org.firstinspires.ftc.teamcode.Modules.ClawConstants.PICK;
+import static org.firstinspires.ftc.teamcode.Modules.ClawConstants.TRANSFER;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -69,5 +70,9 @@ public class Claw {
 
     public void close() {
         claw.setPosition(PICK);
+    }
+
+    public void transfer() {
+        claw.setPosition(TRANSFER);
     }
 }

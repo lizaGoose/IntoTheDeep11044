@@ -9,19 +9,21 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Modules.Lift;
+import org.firstinspires.ftc.teamcode.Modules.LiftError;
 
 @Config
 @TeleOp(group = "test")
 public class LiftTest extends OpMode {
-    private Lift hangLift;
+    private LiftError hangLift;
     private FtcDashboard dashboard;
     private MultipleTelemetry mulTelemetry;
+    private double lastReference = 0;
     public static double reference = 0;
     public static double power = 0.5;
 
     @Override
     public void init() {
-        hangLift = new Lift(this);
+        hangLift = new LiftError(this);
         dashboard = FtcDashboard.getInstance();
         mulTelemetry = new MultipleTelemetry(dashboard.getTelemetry(), telemetry);
     }
@@ -34,7 +36,10 @@ public class LiftTest extends OpMode {
             reference = hangLift.rightMotor.getCurrentPosition();
         }
         else {
-            hangLift.setReference(-reference);
+            if (lastReference != reference) {
+                lastReference = hangLift.getReference();
+                hangLift.setReference(reference);
+            }
             hangLift.PIDControl();
         }
 

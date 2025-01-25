@@ -8,7 +8,9 @@ import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.SET_POS_TO_Z
 import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.WAIT_UNTIL_SPECIMEN_PICKUP;
 import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.RELAX_SCORE_CLAW;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -68,6 +70,7 @@ public class StateMachine {
     public DigitalChannel frontSensor;
     public static double upToChamber = -380, upToChamber2 = -430;
     public double zeroPos = 0;
+    public FtcDashboard dashboard;
     //SampleDetectionCameraClass cam;
 
 
@@ -122,6 +125,8 @@ public class StateMachine {
         specimenPickedUp = new ElapsedTime();
         specimenToTransfer = new ElapsedTime();
         forgetPosTimer = new ElapsedTime();
+
+        dashboard = FtcDashboard.getInstance();
     }
 
     public void teleop() {
@@ -139,9 +144,9 @@ public class StateMachine {
         lift.teleop();
         diff.teleop(0);
         dt.teleOp();
-        hang.teleop();
+        hang.control();
 
-        lift.currentMode = LiftError.Mode.NULL_POSE;
+        lift.currentMode = LiftError.Mode.DEFAULT;
         if (gamepad2.left_bumper || gamepad1.right_stick_button) {
             extend.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             extend.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -505,7 +510,6 @@ public class StateMachine {
                 if (startTimerFromClawToClaw && fromClawToClawTimer.milliseconds() >= 300) {
                     state = State.FROM_CLAW_TO_CLAW;
                     startedMovingExtendBack = false;
-                    stoppedMovingExtendBack = false;
                 }
                 break;
             case FROM_CLAW_TO_CLAW:
@@ -663,12 +667,19 @@ public class StateMachine {
         linearOpMode.telemetry.addData("scorDiff_state", scorDiff.currentMode);
         linearOpMode.telemetry.addData("scorPerkid_state", scorPerkid.currentMode);
         linearOpMode.telemetry.addData("transfer_timer", fromClawToClawTimer);
-        linearOpMode.telemetry.addData("lift", lift.leftMotor.getCurrentPosition());
-        linearOpMode.telemetry.addData("lift", lift.pos);
+        linearOpMode.telemetry.addData("lift_left", lift.leftMotor.getCurrentPosition());
+        linearOpMode.telemetry.addData("lift_right", lift.rightMotor.getCurrentPosition());
+        linearOpMode.telemetry.addData("lift_ref", lift.getReference());
         linearOpMode.telemetry.addData("extend", extend.motor.getCurrentPosition());
         linearOpMode.telemetry.addData("StartTimer", startTimer);
         linearOpMode.telemetry.addData("hang", hang.hang.getCurrentPosition());
         linearOpMode.telemetry.addData("extend_voltage", extend.motor.getCurrent(CurrentUnit.AMPS));
         linearOpMode.telemetry.update();
+
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("left_motor_pos", lift.leftMotor.getCurrentPosition());
+        packet.put("right_motor_pos", lift.rightMotor.getCurrentPosition());
+        packet.put("reference", lift.getReference());
+        dashboard.sendTelemetryPacket(packet);
     }
 }

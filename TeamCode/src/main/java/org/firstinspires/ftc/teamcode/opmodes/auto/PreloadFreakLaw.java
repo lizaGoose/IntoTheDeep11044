@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AI
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.HOLD_POS;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL_OFFSET;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.RELAX_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.SPECIMEN_ADD_FORCE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_SCORE;
@@ -154,6 +155,12 @@ public class PreloadFreakLaw extends LinearOpMode {
                         scoringDiff.pickSpecimen();
                         scorClaw.open();
 
+                        // hand.setPosition(0.5);
+                        // perkid.transfer();
+                        // diff.transfer();
+                        // claw.open();
+                    })
+                    .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
                         hand.setPosition(0.5);
                         perkid.transfer();
                         diff.transfer();
@@ -359,6 +366,12 @@ public class PreloadFreakLaw extends LinearOpMode {
                         scoringDiff.aimSpecimen();
                         scorClaw.open();
 
+                        // hand.setPosition(0.5);
+                        // perkid.transfer();
+                        // diff.transfer();
+                        // claw.open();
+                    })
+                    .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
                         hand.setPosition(0.5);
                         perkid.transfer();
                         diff.transfer();
