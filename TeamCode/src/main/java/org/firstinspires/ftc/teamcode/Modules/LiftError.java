@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.COEFFICIENTS;
 import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.MAX_POSITION;
 import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.MIN_POSITION;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -13,10 +15,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 class LiftErrorConstants {
-    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.0, 0.0, 0.0, 0.0);
+    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.005, 0.0005, 0.0);
     public static double d = 0.00047;
 
-    public static int MAX_POSITION = 810;
+    public static int MAX_POSITION = 830;
     public static int MIN_POSITION = 0;
 }
 
@@ -33,23 +35,30 @@ public class LiftError {
         leftMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "leftLift");
         rightMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "rightLift");
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         gamepad = linearOpMode.gamepad2;
 
         timer = new ElapsedTime();
     }
 
     public enum Mode {
+        DEFAULT,
         P_REGULATOR,
         NULL_POSE
     }
 
-    Mode currentMode = Mode.NULL_POSE;
+    Mode currentMode = Mode.DEFAULT;
     double reference = 0;
     double lastError = 0;
     double integralSum = 0;
     double out;
 
-    /*public void PIDControl() {
+    public void PIDControl() {
         double position = leftMotor.getCurrentPosition();
         double error = reference - position;
 
@@ -63,7 +72,7 @@ public class LiftError {
         lastError = error;
 
         timer.reset();
-    }*/
+    }
 
     public double getReference() {
         return reference;
@@ -72,49 +81,60 @@ public class LiftError {
     public void setReference(double reference) {
         reference = Math.min(reference, MAX_POSITION);
         reference = Math.max(reference, MIN_POSITION);
+        integralSum = 0;
         this.reference = reference;
     }
 
     public void teleop() {
         double error = pos - leftMotor.getCurrentPosition();
         switch (currentMode) {
+            case DEFAULT:
+                if (gamepad.right_stick_y < 0 && leftMotor.getCurrentPosition() < MAX_POSITION) {
+                    leftMotor.setPower(-gamepad.right_stick_y);
+                    rightMotor.setPower(-gamepad.right_stick_y);
+                    setReference(leftMotor.getCurrentPosition());
+                } else if (gamepad.right_stick_y > 0 && leftMotor.getCurrentPosition() > MIN_POSITION) {
+                    leftMotor.setPower(-gamepad.right_stick_y);
+                    rightMotor.setPower(-gamepad.right_stick_y);
+                    setReference(leftMotor.getCurrentPosition());
+                } else {
+                    clampReference();
+                    PIDControl();
+                }
+                break;
             case NULL_POSE:
 
-                if (gamepad.right_stick_y != 0){
+                if (gamepad.right_stick_y != 0) {
                     leftMotor.setPower(-gamepad.right_stick_y);
                     rightMotor.setPower(-gamepad.right_stick_y);
                     pos = leftMotor.getCurrentPosition();
-                }
-                else if( -15 <= leftMotor.getCurrentPosition() && leftMotor.getCurrentPosition()  <= 15){
-                    if(-gamepad.right_stick_y < 0) {
+                } else if (-15 <= leftMotor.getCurrentPosition() && leftMotor.getCurrentPosition() <= 15) {
+                    if (-gamepad.right_stick_y < 0) {
                         leftMotor.setPower(0);
                         rightMotor.setPower(0);
-                    }
-                    else if(-gamepad.right_stick_y >= 0){
+                    } else if (-gamepad.right_stick_y >= 0) {
                         leftMotor.setPower(-gamepad.right_stick_y);
                         rightMotor.setPower(-gamepad.right_stick_y);
                     }
-                }
-                    else{
-                    leftMotor.setPower(-error*LiftErrorConstants.d);
-                    rightMotor.setPower(-error*LiftErrorConstants.d);
+                } else {
+                    leftMotor.setPower(-error * LiftErrorConstants.d);
+                    rightMotor.setPower(-error * LiftErrorConstants.d);
                 }
 
 
                 break;
             case P_REGULATOR:
-                if(gamepad.left_stick_y !=0){
+                if (gamepad.left_stick_y != 0) {
                     leftMotor.setPower(-gamepad.right_stick_y);
                     rightMotor.setPower(-gamepad.right_stick_y);
                     pos = rightMotor.getCurrentPosition();
-                }
-                else {
-                  //  double error = pos - rightMotor.getCurrentPosition();
+                } else {
+                    //  double error = pos - rightMotor.getCurrentPosition();
                     leftMotor.setPower(-error);
                     rightMotor.setPower(-error);
                 }
-                if (rightMotor.getCurrentPosition() >= 0){
-                    if(gamepad.left_stick_y >=0){
+                if (rightMotor.getCurrentPosition() >= 0) {
+                    if (gamepad.left_stick_y >= 0) {
 
                     }
                 }
@@ -122,5 +142,10 @@ public class LiftError {
 
 
         }
+    }
+
+    private void clampReference() {
+        reference = Math.min(reference, MAX_POSITION);
+        reference = Math.max(reference, MIN_POSITION);
     }
 }

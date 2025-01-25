@@ -13,6 +13,7 @@ public class AutoCommonConstants {
 
     public static double RELAX_CLAW = 145;//170;
     public static double INITIAL = 0.2;
+    public static double INITIAL_OFFSET = 0.02;
 
 
     public static double SPECIMEN_ADD_FORCE = 0.6;
