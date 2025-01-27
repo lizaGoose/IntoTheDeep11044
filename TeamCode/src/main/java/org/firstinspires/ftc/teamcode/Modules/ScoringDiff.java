@@ -25,7 +25,7 @@ class ScoringDiffConstants {
 
     public static double AIM_SPEC = 0.43; //0.39;
     public static double PICK_SPEC = 0.48; //0.44;
-    public static double GET_FROM_CLAW = 0.97;
+    public static double GET_FROM_CLAW = 1;
     public static double SCORE_SAMP = 0.7;
     public static double SCORE_SPEC = 0.99;
     public static double TRANSFER_SPEC = 0.75;

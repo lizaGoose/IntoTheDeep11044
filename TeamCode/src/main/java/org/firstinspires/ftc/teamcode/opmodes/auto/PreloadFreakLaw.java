@@ -48,6 +48,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_AT_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_AT_RIGHT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_EXTEND_HALF_CLOSE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_FOR_CLAW_RELEASE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_FOR_HUMAN_ADJUST;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_FOR_LEFT_ROTATION;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_FOR_MIDDLE_ROTATION;
@@ -122,6 +123,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                         perkid.liftSample();
                         hand.setPosition(0.5);
                         diff.aim();
+                        claw.close();
                     })
                     .addSpatialMarker(AIM_SPECIMEN_1, () -> {
                         scoringDiff.transferSpecimen();
@@ -164,7 +166,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                         hand.setPosition(0.5);
                         perkid.transfer();
                         diff.transfer();
-                        claw.open();
+                        claw.close();
                     })
                     // PICK UP LEFT
                     .waitForAt(1, WAIT_AT_LEFT + WAIT_PICK_UP + 650, ANGLE_TO_LEFT)
@@ -174,6 +176,9 @@ public class PreloadFreakLaw extends LinearOpMode {
                         double rotation = ANGLE_TO_LEFT + hand.getAngle() + 90 + DIFF_ROTATION_LEFT;
                         diff.aimAngle(rotation);
                         perkid.aim();
+                        claw.transfer();
+                    })
+                    .addTimeMarker(WAIT_AT_LEFT + 200, () -> {
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 400, () -> {
@@ -305,10 +310,15 @@ public class PreloadFreakLaw extends LinearOpMode {
                     .addSpatialMarker(2.8, () -> {
                         extend.setReference(0);
                     })
+                    /*
                     .addSpatialMarker(POINT_THIRD_RELEASE, () -> {
                         claw.open();
                     })
+                    */
                     .waitForAt(3, WAIT_FOR_HUMAN_ADJUST + 100, -90)
+                    .addTimeMarker(WAIT_FOR_CLAW_RELEASE, () -> {
+                        claw.open();
+                    })
                     .addTimeMarker(WAIT_FOR_HUMAN_ADJUST, () -> {
                         scoringPerkid.pickSpecimen();
                         scoringDiff.pickSpecimen();

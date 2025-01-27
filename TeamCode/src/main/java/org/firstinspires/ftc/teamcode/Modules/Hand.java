@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import static org.firstinspires.ftc.teamcode.Modules.HandConstants.FORWARD;
 import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RANGE;
 import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RANGE_END;
 import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RANGE_START;
@@ -19,12 +20,15 @@ import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
 @Config
 class HandConstants {
-    public static double RANGE_START = 0.17 - 0.15;
-    public static double RANGE_END = 0.17 + 0.15;
+    public static double RANGE_CENTER = 0.24;
+    public static double RANGE_SERVO = 0.24;
+    public static double RANGE_START = RANGE_CENTER - RANGE_SERVO;
+    public static double RANGE_END = RANGE_CENTER + RANGE_SERVO;
     public static double RANGE = 35;
 
-    public static double ROTATION_SPEED = 0.00;
+    public static double ROTATION_SPEED = 0.002;
     public static double RIGHT_SIDE_DROP_SAMPLE = 0;
+    public static double FORWARD = 0.5;
 }
 
 public class Hand {
@@ -49,7 +53,7 @@ public class Hand {
 
     public Hand(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
-        gamepad = linearOpMode.gamepad2;
+        gamepad = linearOpMode.gamepad1;
         hand = linearOpMode.hardwareMap.get(Servo.class, "horizontal_servo");
         hand.scaleRange(RANGE_START, RANGE_END);
 
@@ -61,15 +65,15 @@ public class Hand {
     public void teleop() {
         switch (currentMode) {
             case DRIVER_CONTROL:
-                rotation = rotation - Math.pow(gamepad.left_stick_x, 3) * timer.milliseconds() * ROTATION_SPEED;
+                rotation = rotation - Math.pow(gamepad.right_stick_x, 3) * timer.milliseconds() * ROTATION_SPEED;
                 rotation = Math.max(rotation, 0);
                 rotation = Math.min(rotation, 1);
                 hand.setPosition(rotation);
                 timer.reset();
                 break;
             case FORWARD:
-                rotation = 0.5;
-                hand.setPosition(0.5);
+                rotation = FORWARD;
+                hand.setPosition(FORWARD);
                 break;
             case RIGHT_SIDE_DROP_SAMPLE:
                 //rotation = 0.5;

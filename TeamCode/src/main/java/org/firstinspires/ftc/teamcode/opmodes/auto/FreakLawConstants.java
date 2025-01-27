@@ -54,6 +54,7 @@ public class FreakLawConstants {
     public static double SLOWDOWN_POINT_1 = 0.65;
     public static double SLOWDOWN_POINT_2 = 0.77;
 
+    public static int WAIT_FOR_CLAW_RELEASE = 50;
     public static int WAIT_FOR_HUMAN_ADJUST = 400;
 
     public static int WAIT_SPECIMEN_PICK_UP = 150;
