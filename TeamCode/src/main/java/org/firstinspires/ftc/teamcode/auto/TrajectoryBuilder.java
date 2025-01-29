@@ -88,7 +88,7 @@ public class TrajectoryBuilder {
         return this;
     }
 
-    public TrajectoryBuilder addTimeMarker(int millisecond, boolean relative, MarkerRunnable runnable) {
+    public TrajectoryBuilder addTimeMarker(double millisecond, boolean relative, MarkerRunnable runnable) {
         if (!relative) {
             return addTimeMarker(millisecond, runnable);
         }
@@ -114,6 +114,7 @@ public class TrajectoryBuilder {
     }
 
     public Trajectory build() {
+
         spatialMarkers.sort(Comparator.comparingDouble(spatialMarker -> spatialMarker.t));
         return new Trajectory(points.toArray(new Vector2d[0]), stops, spatialMarkers.stream().map(SpatialMarker::clone).collect(Collectors.toList()), turnMarkers, timeMarkers);
     }

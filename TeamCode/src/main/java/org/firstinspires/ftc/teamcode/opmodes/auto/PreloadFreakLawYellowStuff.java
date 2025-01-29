@@ -14,6 +14,8 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYello
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.ANGLE_TO_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.ANGLE_TO_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.ANGLE_TO_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.ANGLE_TO_YELLOW;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.ANGLE_TO_YELLOW_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.DELTA_1ST;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.DELTA_3RD;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.DELTA_4TH;
@@ -29,6 +31,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYello
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.EXTEND_TO_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.EXTEND_TO_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.EXTEND_TO_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.EXTEND_YELLOW_STUFF;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.HAND_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.HAND_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.HAND_RIGHT;
@@ -37,12 +40,16 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYello
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.POINT_PERKID_START_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.POINT_SPECIMEN_START_SCORE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.POINT_SPECIMEN_START_SCORE_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.POINT_START_EXTEND;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.POINT_START_TURN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.POINT_THIRD_RELEASE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.RIGHT_STOP_POINT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.SLOWDOWN_FORCE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.SLOWDOWN_POINT_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.SLOWDOWN_POINT_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.SLOWDOWN_POINT_2;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.SLOWDOWN_POINT_YELLOW;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_AT_BASKET;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_AT_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_AT_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_AT_RIGHT;
@@ -50,6 +57,8 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYello
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_FOR_HUMAN_ADJUST;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_FOR_LEFT_ROTATION;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_FOR_MIDDLE_ROTATION;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_FOR_YELLOW_PICK_UP;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_AT_YELLOW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_HOLD_POS_AT_RUNG;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_PICK_UP;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowStuff.WAIT_RELAX_CLAW;
@@ -97,6 +106,22 @@ public class PreloadFreakLawYellowStuff extends LinearOpMode {
     private static boolean relaxFlag = false;
     private FtcDashboard dashboard;
 
+    enum TransferState {
+        NULL,
+        BEFORE_AMP,
+        AMP,
+        AFTER_AMP
+    }
+
+    TransferState state = TransferState.NULL;
+
+    ElapsedTime transferTimer;
+
+    enum ExtendState {
+        PID,
+        POWER
+    }
+
     // Make this true somewhere to stop program
     private boolean DEBUG_END_FLAG = false;
 
@@ -112,6 +137,7 @@ public class PreloadFreakLawYellowStuff extends LinearOpMode {
         Trajectory trajSpecimenToRung3rd, trajRungToSpecimen3rd;
         Trajectory trajSpecimenToRung4th, trajRungToSpecimen4th;
         Trajectory trajSpecimenToRung5th, trajRungToSpecimen5th;
+        Trajectory trajRungToYellowBasket;
         try {
             trajToRungs = drive.buildTrajectory("traj10transposed.json")
                     .addTurnMarker(0, -90)
@@ -153,11 +179,6 @@ public class PreloadFreakLawYellowStuff extends LinearOpMode {
                         scoringPerkid.pickSpecimen();
                         scoringDiff.pickSpecimen();
                         scorClaw.open();
-
-                        // hand.setPosition(0.5);
-                        // perkid.transfer();
-                        // diff.transfer();
-                        // claw.open();
                     })
                     .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
                         hand.setPosition(0.5);
@@ -208,10 +229,6 @@ public class PreloadFreakLawYellowStuff extends LinearOpMode {
                     // PICK UP MIDDLE
                     .waitForAt(MIDDLE_STOP_POINT, WAIT_AT_MIDDLE + WAIT_PICK_UP + 650, ANGLE_TO_MIDDLE)
                     .addTimeMarker(0, () -> {
-//                         hand.setPosition(0.5);
-//                         perkid.transfer();
-//                         diff.transfer();
-//                         claw.open();
                         extend.setReference(EXTEND_TO_MIDDLE);
                         double rotation = ANGLE_TO_MIDDLE + hand.getAngle() + 90 + DIFF_ROTATION_MIDDLE;
                         diff.aimAngle(rotation);
@@ -254,10 +271,6 @@ public class PreloadFreakLawYellowStuff extends LinearOpMode {
                     })
                     .waitForAt(RIGHT_STOP_POINT, WAIT_AT_RIGHT + WAIT_PICK_UP + 650, ANGLE_TO_RIGHT)
                     .addTimeMarker(0, () -> {
-//                         hand.setPosition(0.5);
-//                         perkid.transfer();
-//                         diff.transfer();
-//                         claw.open();
                         double rotation = ANGLE_TO_RIGHT + hand.getAngle() + 90 + DIFF_ROTATION_RIGHT;
                         diff.aimAngle(rotation);
                     })
@@ -364,11 +377,6 @@ public class PreloadFreakLawYellowStuff extends LinearOpMode {
                         scoringPerkid.aimAtSpecimen();
                         scoringDiff.aimSpecimen();
                         scorClaw.open();
-
-                        // hand.setPosition(0.5);
-                        // perkid.transfer();
-                        // diff.transfer();
-                        // claw.open();
                     })
                     .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
                         hand.setPosition(0.5);
@@ -402,6 +410,55 @@ public class PreloadFreakLawYellowStuff extends LinearOpMode {
                     .addSpatialMarker(SLOWDOWN_POINT_2 + 0.02, () -> {
                         drive.setForce(1);
                     })
+                    .build();
+            trajRungToYellowBasket = drive.buildTrajectory("traj18.json")
+                    .addTurnMarker(0, (t) -> {
+                        if (t < POINT_START_TURN)
+                            return -90;
+                        else
+                            return ANGLE_TO_YELLOW_0;
+                    })
+                    .addSpatialMarker(0, () -> {
+                        drive.setForce(SPECIMEN_ADD_FORCE);
+
+                        relaxFlag = true;
+                        clock.reset();
+                    })
+                    .addSpatialMarker(INITIAL, () -> {
+                        scoringPerkid.aimAtSpecimen();
+                        scoringDiff.aimSpecimen();
+                        scorClaw.open();
+                        hand.setPosition(0.5);
+                    })
+                    .addSpatialMarker(POINT_START_EXTEND, () -> {
+                        extend.setReference(EXTEND_YELLOW_STUFF);
+                        diff.aim();
+                        perkid.aim();
+                        claw.open();
+                    })
+                    .addSpatialMarker(SLOWDOWN_POINT_YELLOW, () -> {
+                        drive.setForce(SLOWDOWN_FORCE);
+                    })
+                    .waitForAt(1, WAIT_AT_YELLOW, ANGLE_TO_YELLOW)
+                    .addTimeMarker(WAIT_FOR_YELLOW_PICK_UP, true, () -> {
+                       perkid.pickUp();
+                    })
+                    .addTimeMarker(100, true, () -> {
+                        diff.pickUp();
+                    })
+                    .addTimeMarker(100, true, () -> {
+                        claw.close();
+                    })
+                    .addTimeMarker(WAIT_PICK_UP, true, () -> {
+                        diff.transfer();
+                        perkid.transfer();
+                    })
+                    .addTimeMarker(200, true, () -> {
+                        state = TransferState.BEFORE_AMP;
+                        transferTimer.reset();
+                    })
+                    .addSpatialMarker(1.01, () -> drive.setForce(0.6))
+                    .waitForAt(2, WAIT_AT_BASKET, -180)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -441,7 +498,6 @@ public class PreloadFreakLawYellowStuff extends LinearOpMode {
             drive.update();
             extend.PIDControl();
         }
-        // -31.362
 
         clock.reset();
 
@@ -620,17 +676,76 @@ public class PreloadFreakLawYellowStuff extends LinearOpMode {
 
         clock.reset();
 
-        drive.followTrajectory(trajRungToSpecimen5th);
+
+        ExtendState extendState = ExtendState.PID;
+
+        transferTimer = new ElapsedTime();
+
+        drive.followTrajectory(trajRungToYellowBasket);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
+            switch (state) {
+                case NULL:
+                    break;
+                case BEFORE_AMP:
+                    if (transferTimer.milliseconds() <= 200) {
+                        scorClaw.open();
+                        claw.light();
+                        hand.setPosition(0.5);
+                        scoringDiff.transferSample();
+                        scoringPerkid.pickSpecimen();
+                        diff.transfer();
+                        perkid.transfer();
+                    } else if (transferTimer.milliseconds() <= 530)
+                        claw.close();
+                    else if (transferTimer.milliseconds() < 850) {
+                        extend.setDirectPower(-1);
+                        extendState = ExtendState.POWER;
+                        transferTimer.reset();
+                        state = TransferState.AMP;
+                    }
+                    break;
+                case AMP:
+                    if (extend.getAmps() < 8) {
+                        transferTimer.reset();
+                    } else {
+                        extend.setReference(extend.getPosition());
+                        state = TransferState.AFTER_AMP;
+                    }
+                    break;
+                case AFTER_AMP:
+                    if (transferTimer.milliseconds() < 100)
+                        scoringPerkid.transferSample();
+                    else if (transferTimer.milliseconds() < 150) {
+                        scorClaw.close();
+                        extendState = ExtendState.PID;
+                        extend.resetEncoder();
+                        extend.setZero();
+                    } else if (transferTimer.milliseconds() < 1000) {
+                        claw.open();
+                        scoringPerkid.scoreSample();
+                    } else {
+
+                    }
+                    break;
+            }
             if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
                 scorClaw.relax();
                 relaxFlag = false;
-                drive.setForce(1);
+                drive.setForce(0.6);
+            }
+
+            switch (extendState) {
+                case PID:
+                    extend.PIDControl();
+                    break;
+                case POWER:
+                    break;
             }
 
             drive.update();
-            extend.PIDControl();
+            telemetry.addData("state", state);
+            telemetry.update();
         }
     }
 

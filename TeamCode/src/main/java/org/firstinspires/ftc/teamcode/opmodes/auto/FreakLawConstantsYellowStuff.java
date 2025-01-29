@@ -71,4 +71,15 @@ public class FreakLawConstantsYellowStuff {
     public static double POINT_THIRD_RELEASE = 2.9999999;
 
     public static double DIST_SCOR_CLAW = 17;
+
+    public static double EXTEND_YELLOW_STUFF = 300;
+    public static double WAIT_AT_YELLOW = 3000;
+    public static double WAIT_FOR_YELLOW_PICK_UP = 1000;
+    public static double ANGLE_TO_YELLOW_0 = -140;
+    public static double ANGLE_TO_YELLOW = -180;
+    public static double SLOWDOWN_POINT_YELLOW = 0.77;
+    public static double POINT_START_EXTEND = 0.99;
+    public static double POINT_START_TURN = 0.4;
+
+    public static double WAIT_AT_BASKET = 100;
 }
