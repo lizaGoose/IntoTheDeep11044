@@ -137,7 +137,7 @@ public class SampleStateMachine {
         scorClaw.teleop();
         lift.teleop();
         diff.teleop(0);
-        dt.teleOp();
+        dt.teleOp(extend.getPosition() / extend.getMaxPosition());
         hang.control();
 
         lift.currentMode = LiftError.Mode.DEFAULT;

@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_PO
 import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.AIM_SPEC;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.DROP_SAMPLE_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.PICK_SPEC;
+import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.SCORE_SAMP;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.SCOR_SPEC;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringPerkidConstants.TRANSFER_SPEC;
 
@@ -19,18 +20,13 @@ import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 
 @Config
 class ScoringPerkidConstants {
-    /*  public static double TRANSITIVE_POS = 0.46;
-      public static double PICK_POS = 0.512;
-      public static double SAMP_POS = 0.1;
-      public static double SPEC_POS = 0.84;
-      public static double PICK_SPEC = 0.42;*/
     public static double PICK_SPEC = 0.38;
     public static double AIM_SPEC = 0.45;
     public static double DROP_SAMPLE_TO_HUMAN = 0.35;
     public static double TRANSFER_POS = 0.52;
-    public static double SCORE_SAMP = 0.05;
+    public static double SCORE_SAMP = 0;
     public static double TRANSFER_SPEC = 0.9;
-    public static double SCOR_SPEC = 0.97;//0.927;
+    public static double SCOR_SPEC = 0.92;
 }
 
 public class ScoringPerkid {
@@ -129,5 +125,10 @@ public class ScoringPerkid {
     public void dropSampleToHuman() {
         left.setPosition(DROP_SAMPLE_TO_HUMAN);
         right.setPosition(DROP_SAMPLE_TO_HUMAN);
+    }
+
+    public void scoreSample() {
+        left.setPosition(SCORE_SAMP);
+        right.setPosition(SCORE_SAMP);
     }
 }

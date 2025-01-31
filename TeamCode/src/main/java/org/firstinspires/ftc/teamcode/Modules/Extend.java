@@ -171,6 +171,10 @@ public class Extend {
         this.power = Math.min(1, Math.max(power, -1));
     }
 
+    public void setDirectPower(double power) {
+        motor.setPower(power);
+    }
+
     public double getPower() {
         return power;
     }
@@ -182,6 +186,10 @@ public class Extend {
 
     public double getPosition() {
         return motor.getCurrentPosition();
+    }
+
+    public double getMaxPosition() {
+        return MAX_POSITION;
     }
 
     public double getAmps() {

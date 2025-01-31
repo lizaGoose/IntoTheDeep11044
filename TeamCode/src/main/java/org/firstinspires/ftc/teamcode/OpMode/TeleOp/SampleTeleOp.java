@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.OpMode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Modules.SampleStateMachine;
-import org.firstinspires.ftc.teamcode.Modules.StateMachine;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class SampleTeleOp extends LinearOpMode {

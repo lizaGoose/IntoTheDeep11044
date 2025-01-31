@@ -8,8 +8,8 @@ public class FreakLawConstants {
     public static double DELTA_1ST = 3;
     public static double DELTA_2ND = 0;
     public static double DELTA_3RD = 5;
-    public static double DELTA_4TH = -10;
-    public static double DELTA_5TH = -3;
+    public static double DELTA_4TH = -9.8;
+    public static double DELTA_5TH = -2.6;
 
     public static int WAIT_AT_LEFT = 200;
     public static int EXTEND_TO_LEFT = 108; // + 15;

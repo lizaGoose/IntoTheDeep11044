@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import static org.firstinspires.ftc.teamcode.Modules.DriveTrainConstants.EXTEND_MOVE_PERCENTAGE;
 import static org.firstinspires.ftc.teamcode.Modules.DriveTrainConstants.POWER_WHILE_MOVING_BACK;
 import static org.firstinspires.ftc.teamcode.Modules.DriveTrainConstants.d;
 
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.drive.MecanumDriveRR;
 @Config
 class DriveTrainConstants {
     public static double POWER_WHILE_MOVING_BACK = 0.5;
+    public static double EXTEND_MOVE_PERCENTAGE = 0.5;
     public static double d = 2;
 }
 
@@ -52,6 +54,10 @@ public class DriveTrain {
     }
 
     public void teleOp() {
+        teleOp(0);
+    }
+
+    public void teleOp(double extendPercentage) {
         l = drive.leftFront.getPower();
         r = drive.rightFront.getPower();
         switch (currentMode) {
@@ -59,6 +65,7 @@ public class DriveTrain {
                 x = gamepad1.left_stick_x;
                 y = -gamepad1.left_stick_y;
                 heading = -gamepad1.right_trigger + gamepad1.left_trigger;
+                heading = heading * (1 - (1 - EXTEND_MOVE_PERCENTAGE) * extendPercentage);
                 drive.setWeightedDrivePower(new Pose2d(heading, x, y));
                 realHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 

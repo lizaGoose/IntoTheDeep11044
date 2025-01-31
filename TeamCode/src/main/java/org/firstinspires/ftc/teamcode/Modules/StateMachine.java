@@ -143,7 +143,7 @@ public class StateMachine {
         scorClaw.teleop();
         lift.teleop();
         diff.teleop(0);
-        dt.teleOp();
+        dt.teleOp(extend.getPosition() / extend.getMaxPosition());
         hang.control();
 
         lift.currentMode = LiftError.Mode.DEFAULT;
@@ -189,7 +189,7 @@ public class StateMachine {
 
 
                     perkid.currentMode = Perkid.Mode.TRANSFER;
-                    claw.currentMode = Claw.Mode.TRANSFER;
+                    claw.currentMode = Claw.Mode.PICK;
                     scorPerkid.currentMode = ScoringPerkid.Mode.PICK_SPEC;
                     scorDiff.currentMode = ScoringDiff.Mode.PICK_SPEC;
                     hand.currentMode = Hand.Mode.FORWARD;
@@ -525,7 +525,7 @@ public class StateMachine {
                     perkid.currentMode = Perkid.Mode.TRANSFER;
                 } else if (fromClawToClawTimer.milliseconds() > 800 && fromClawToClawTimer.milliseconds() <= 1300 && !startedMovingExtendBack) {
                     claw.currentMode = Claw.Mode.PICK;
-                    //  extend.setTransfer();
+                    //extend.setTransfer();
                 } else if (fromClawToClawTimer.milliseconds() > 1300 && fromClawToClawTimer.milliseconds() <= 1700 && !startedMovingExtendBack) {
                     extend.currentMode = Extend.Mode.POWER;
                     extend.setPower(-1);

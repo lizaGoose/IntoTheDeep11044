@@ -38,8 +38,8 @@ public class ExtendTest extends OpMode {
         rightServo.setPosition(position);
 
 
-        extend.setReference(reference);
-        extend.PIDControl();
+//        extend.setReference(reference);
+//        extend.PIDControl();
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("motor_pos", extend.motor.getCurrentPosition());
