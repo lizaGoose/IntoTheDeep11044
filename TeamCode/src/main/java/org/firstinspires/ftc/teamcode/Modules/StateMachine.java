@@ -101,7 +101,8 @@ public class StateMachine {
         EMPTY,
         RIGHT_SIDE_DROP_SAMPLE,
         RIGT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS,
-        SPECIMEN_TO_INITIAL
+        SPECIMEN_TO_INITIAL,
+        HANG
     }
 
     public State state = State.INITIAL;
@@ -163,6 +164,7 @@ public class StateMachine {
         dt.teleOp(extend.getPosition() / extend.getMaxPosition());
         hang.control();
         stickyGamepad1.update(gamepad1);
+        hang.discreteControl();
 
         lift.currentMode = LiftError.Mode.DEFAULT;
         if (gamepad2.left_bumper || gamepad1.right_stick_button) {
@@ -173,6 +175,11 @@ public class StateMachine {
             } else {
                 extend.setPower(0);
             }
+        }
+        if (gamepad2.right_stick_button) {
+            lift.currentMode = LiftError.Mode.PUSH_DOWN;
+        } else {
+            lift.currentMode = LiftError.Mode.DEFAULT;
         }
         if (state != State.PICK_UP_THE_BLOCK) {
             startForgetPosTimer = false;
@@ -190,12 +197,38 @@ public class StateMachine {
         } else {
             dt.currentMode = DriveTrain.Mode.DRIVER_CONTROL;
         }
-        /*if(gamepad2.left_bumper && extend.currentMode == Extend.Mode.DRIVER_CONTROL){
+      /*  if(gamepad2.left_bumper && extend.currentMode == Extend.Mode.DRIVER_CONTROL){
             extend.setPower(-1);
         }*/
         // lift.currentMode = LiftError.Mode.NULL_POSE;
 
         switch (state) {
+            case HANG:
+                break;
+            case EMPTY:
+                if (rightSideDropSampleTimer.milliseconds() > 850) {
+                    sampleIsScored = false;
+                    startTimer = false;
+                    startTimerFromClawToClaw = false;
+                    startGoFromScorSpec = false;
+                    startHumanDropPickSpec = false;
+                    extend.currentMode = Extend.Mode.DRIVER_CONTROL;
+
+
+                    perkid.currentMode = Perkid.Mode.TRANSFER;
+                    claw.currentMode = Claw.Mode.PICK;
+                    hand.currentMode = Hand.Mode.FORWARD;
+                    scorClaw.currentMode = ScorClaw.Mode.DROP;
+                    diff.currentMode = Differential.Mode.TRANSFER;
+
+                    //lift.pos = 0;
+
+
+                    if (gamepad1.triangle) {
+                        state = State.INITIAL;
+                    }
+                }
+                break;
             case INITIAL:
                 if (rightSideDropSampleTimer.milliseconds() > 850) {
                     sampleIsScored = false;
@@ -234,7 +267,7 @@ public class StateMachine {
                         fromTransferSpecimenToScore.reset();
                     }
 
-                    if (distInClaw.getDistance(DistanceUnit.MM) >= 17) {
+                    if (distInClaw.getDistance(DistanceUnit.MM) >= 17 || gamepad2.triangle || gamepad1.triangle) {
                         specimenPickedUp.reset();
                     }
                     if (specimenPickedUp.milliseconds() > WAIT_UNTIL_SPECIMEN_PICKUP) {
@@ -707,9 +740,6 @@ public class StateMachine {
                     }
                 }
                 break;
-            case EMPTY:
-                break;
-
         }
         linearOpMode.telemetry.addData("Heading", dt.realHeading);
         linearOpMode.telemetry.addData("distance", distInClaw.getDistance(DistanceUnit.MM));

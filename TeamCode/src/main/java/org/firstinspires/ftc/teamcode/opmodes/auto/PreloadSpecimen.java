@@ -23,7 +23,6 @@ import org.firstinspires.ftc.teamcode.Modules.ScorClaw;
 import org.firstinspires.ftc.teamcode.Modules.ScoringDiff;
 import org.firstinspires.ftc.teamcode.Modules.ScoringPerkid;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
-import org.firstinspires.ftc.teamcode.auto.TrajectoryRunner;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 
 import java.io.IOException;
@@ -56,7 +55,7 @@ public class PreloadSpecimen extends LinearOpMode {
                      .addSpatialMarker(AIM_SPECIMEN_0, () -> {
                          scoringPerkid.transferSpecimen();
                          scoringDiff.pickSpecimen();
-                         perkid.aim();
+                         perkid.aimAtSpike();
                          hand.setPosition(0.5);
                          diff.aim();
                      })

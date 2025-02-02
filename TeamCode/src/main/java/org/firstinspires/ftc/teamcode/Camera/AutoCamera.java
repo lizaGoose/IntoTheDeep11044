@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Modules.Extend;
+import org.firstinspires.ftc.teamcode.Modules.Hand;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 import org.opencv.core.RotatedRect;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -38,6 +39,7 @@ public class AutoCamera {
     //  public Diff diff;
     public int indexAngle;
     Extend extend;
+    Hand hand;
     public double xFromGamepad, yFromGamepad, xCoordMax = 499.293/25.4, yCoordMax = 544.599/25.4;
     public double xCoordSampleInches, yCoordSampleInches, maxPositionInchesY, ticksPerInchY, extendPos, handPos;
 
@@ -46,7 +48,8 @@ public class AutoCamera {
     public AutoCamera(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         hardwareMap = linearOpMode.hardwareMap;
-        //extend
+        extend = new Extend(linearOpMode);
+        hand = new Hand(linearOpMode);
         //diff = new Diff(linearOpMode);
        /* clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");*/
@@ -83,8 +86,11 @@ public class AutoCamera {
         handPos = xCoordSampleInches/10;
         return Arrays.asList(extendPos, handPos);
     }
-    public void goToElementPos(){
-
+    public void goToElementPosExtend(){
+        extend.setReference(AutonomousRecognition().get(0));
+    }
+    public void goToElementPosHand(){
+        hand.setPosition(AutonomousRecognition().get(1));
     }
 
     public void visionInUse() {

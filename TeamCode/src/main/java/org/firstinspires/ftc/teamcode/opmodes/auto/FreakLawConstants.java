@@ -11,9 +11,9 @@ public class FreakLawConstants {
     public static double DELTA_4TH = -9.8;
     public static double DELTA_5TH = -2.6;
 
-    public static int WAIT_AT_LEFT = 200;
-    public static int EXTEND_TO_LEFT = 108; // + 15;
-    public static double ANGLE_TO_LEFT = -150;
+    public static int WAIT_AT_LEFT = 230;
+    public static int EXTEND_TO_LEFT = 108;
+    public static double ANGLE_TO_LEFT = -149;
     public static double DIFF_ROTATION_LEFT = 20;
     public static double HAND_LEFT = 0.25;
 
@@ -22,9 +22,9 @@ public class FreakLawConstants {
     public static int WAIT_FOR_LEFT_ROTATION = 200;
 
     public static double MIDDLE_STOP_POINT = 1.5;
-    public static int WAIT_AT_MIDDLE = 200;
+    public static int WAIT_AT_MIDDLE = 250;
     public static int EXTEND_TO_MIDDLE = 118; // + 25;
-    public static double ANGLE_TO_MIDDLE = -150;
+    public static double ANGLE_TO_MIDDLE = -149;
     public static double DIFF_ROTATION_MIDDLE = 20;
     public static double HAND_MIDDLE = 0.25;
 // -13.056197012586907 58.0639854951321 traj13 point 1
@@ -38,7 +38,7 @@ public class FreakLawConstants {
     public static int EXTEND_TO_RIGHT = 138;
     public static double ANGLE_TO_RIGHT = -155;
     public static double DIFF_ROTATION_RIGHT = 20;
-    public static double HAND_RIGHT = 0.64;
+    public static double HAND_RIGHT = 0.5;
 
     public static int EXTEND_RIGHT_TO_HUMAN = 350;
     public static double ANGLE_RIGHT_TO_HUMAN = -235;
@@ -61,7 +61,7 @@ public class FreakLawConstants {
 
     public static int WAIT_HOLD_POS_AT_RUNG = 200;
 
-    public static double WAIT_RELAX_CLAW = 145;
+    public static double WAIT_RELAX_CLAW = 180;
 
     public static double POINT_PERKID_START_0 = 0.2;
     public static double POINT_PERKID_START_1 = 0.5;

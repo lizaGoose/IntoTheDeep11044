@@ -113,7 +113,7 @@ public class PreloadFreakLawFail extends LinearOpMode {
                     .addSpatialMarker(AIM_SPECIMEN_0, () -> {
                         scoringPerkid.transferSpecimen();
                         scoringDiff.pickSpecimen();
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         hand.setPosition(0.5);
                         diff.aim();
                     })
@@ -161,7 +161,7 @@ public class PreloadFreakLawFail extends LinearOpMode {
                         hand.setPosition(HAND_LEFT);
                         double rotation = ANGLE_TO_LEFT + hand.getAngle() + 90 + DIFF_ROTATION_LEFT;
                         diff.aimAngle(rotation);
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 400, () -> {
@@ -176,7 +176,7 @@ public class PreloadFreakLawFail extends LinearOpMode {
                     })
                     .addTimeMarker(WAIT_AT_LEFT + WAIT_PICK_UP + 600, () -> {
                         diff.aim();
-                        perkid.aim();
+                        perkid.aimAtSpike();
 
                     })
                     .addTurnMarker(1, (t) -> {
@@ -209,7 +209,7 @@ public class PreloadFreakLawFail extends LinearOpMode {
                         hand.setPosition(HAND_MIDDLE);
                         double rotation = ANGLE_TO_MIDDLE + hand.getAngle() + 90 + DIFF_ROTATION_MIDDLE;
                         diff.aimAngle(rotation);
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + 400, () -> {
@@ -224,7 +224,7 @@ public class PreloadFreakLawFail extends LinearOpMode {
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + WAIT_PICK_UP + 600, () -> {
                         diff.aim();
-                        perkid.aim();
+                        perkid.aimAtSpike();
 
                     })
                     // MIDDLE TO HUMAN
@@ -255,7 +255,7 @@ public class PreloadFreakLawFail extends LinearOpMode {
                         double rotation = ANGLE_TO_RIGHT + hand.getAngle() + 90 + DIFF_ROTATION_RIGHT;
                         extend.setReference(EXTEND_TO_RIGHT);
                         diff.aimAngle(rotation);
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_RIGHT + 400, () -> {
@@ -270,7 +270,7 @@ public class PreloadFreakLawFail extends LinearOpMode {
                     })
                     .addTimeMarker(WAIT_AT_RIGHT + WAIT_PICK_UP + 600, () -> {
                         diff.aim();
-                        perkid.aim();
+                        perkid.aimAtSpike();
 
                     })
                     // RIGHT TO HUMAN
@@ -307,7 +307,7 @@ public class PreloadFreakLawFail extends LinearOpMode {
                         scoringDiff.pickSpecimen();
                         scorClaw.close();
 
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         hand.setPosition(0.5);
                         diff.aim();
                     })

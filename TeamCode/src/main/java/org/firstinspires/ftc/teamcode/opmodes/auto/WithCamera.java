@@ -71,7 +71,7 @@ public class WithCamera extends LinearOpMode {
                     .addSpatialMarker(AIM_SPECIMEN_0, () -> {
                         scoringPerkid.transferSpecimen();
                         scoringDiff.pickSpecimen();
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         hand.setPosition(0.5);
                         diff.aim();
                     })

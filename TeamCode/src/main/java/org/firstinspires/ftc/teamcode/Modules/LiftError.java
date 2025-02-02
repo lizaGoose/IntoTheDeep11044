@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.COEFFICI
 import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.MAX_POSITION;
 import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.MIN_POSITION;
 import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.SPECIMEN_POS;
+import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.POWER_DOWN;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -23,6 +24,8 @@ class LiftErrorConstants {
 
     public static int MAX_POSITION = 830;
     public static int MIN_POSITION = 0;
+
+    public static double POWER_DOWN = -0.6;
 }
 
 public class LiftError {
@@ -53,7 +56,9 @@ public class LiftError {
         DEFAULT,
         P_REGULATOR,
         NULL_POSE,
-        SPECIMEN_SCORE
+        SPECIMEN_SCORE,
+        NULL_POSE,
+        PUSH_DOWN
     }
 
     Mode currentMode = Mode.DEFAULT;
@@ -147,6 +152,13 @@ public class LiftError {
                     }
                 }
                 break;
+            case PUSH_DOWN:
+                leftMotor.setPower(POWER_DOWN);
+                rightMotor.setPower(POWER_DOWN);
+                leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                break;
+
             case  SPECIMEN_SCORE:
                 setReference(SPECIMEN_POS);
                 PIDControl();

@@ -5,10 +5,10 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class FreakLawConstantsYellowClip {
 
-    public static double DELTA_1ST = 4;
+    public static double DELTA_1ST = 5;
     public static double DELTA_2ND = 0;
     public static double DELTA_3RD = 2.8;
-    public static double DELTA_4TH = -6;
+    public static double DELTA_4TH = -7;
     public static double DELTA_5TH = -3;
 
     public static int WAIT_AT_LEFT = 200;
@@ -61,13 +61,13 @@ public class FreakLawConstantsYellowClip {
 
     public static int WAIT_HOLD_POS_AT_RUNG = 200;
 
-    public static double WAIT_RELAX_CLAW = 180;
+    public static double WAIT_RELAX_CLAW = 200;
 
     public static double POINT_PERKID_START_0 = 0.2;
     public static double POINT_PERKID_START_1 = 0.5;
 
     public static double POINT_SPECIMEN_START_SCORE = 0.9;
-    public static double POINT_SPECIMEN_START_SCORE_0 = 0.912;
+    public static double POINT_SPECIMEN_START_SCORE_0 = 0.915;
 
     public static double POINT_THIRD_RELEASE = 2.9999999;
 

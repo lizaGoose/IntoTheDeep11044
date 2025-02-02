@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Camera.AutoCamera;
 import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
 import org.firstinspires.ftc.teamcode.Modules.Diff;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
@@ -36,10 +37,12 @@ public class AnglesToServos extends LinearOpMode {
     SampleDetectionCameraClass cam;
     public double xFromGamepad, yFromGamepad, xCoordMax = 499.293/25.4, yCoordMax = 544.599/25.4;
     public List<Double> ik;
+    AutoCamera camera;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
+        camera = new AutoCamera(this);
 
         timer = new ElapsedTime();
 
@@ -47,6 +50,8 @@ public class AnglesToServos extends LinearOpMode {
 
         double reference = 0;
         while (opModeIsActive()){
+            camera.goToElementPosExtend();
+            camera.goToElementPosHand();
             xFromGamepad = gamepad1.right_stick_x * xCoordMax;
             yFromGamepad = gamepad1.right_stick_y * yCoordMax;
             ik = ClawCalculation.inverseKinematics(10, xFromGamepad, yFromGamepad);

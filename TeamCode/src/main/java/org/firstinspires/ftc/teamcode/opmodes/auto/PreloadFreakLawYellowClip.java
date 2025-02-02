@@ -91,7 +91,7 @@ import org.firstinspires.ftc.teamcode.drive.Drive;
 
 import java.io.IOException;
 
-@Autonomous
+@Autonomous(name = "PreloadLebronLaw")
 public class PreloadFreakLawYellowClip extends LinearOpMode {
     private Drive drive;
     private ScoringPerkid scoringPerkid;
@@ -181,7 +181,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
                         hand.setPosition(HAND_LEFT);
                         double rotation = ANGLE_TO_LEFT + hand.getAngle() + 90 + DIFF_ROTATION_LEFT;
                         diff.aimAngle(rotation);
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         claw.transfer();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 200, () -> {
@@ -227,7 +227,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
                         hand.setPosition(HAND_MIDDLE);
                         double rotation = ANGLE_TO_MIDDLE + hand.getAngle() + 90 + DIFF_ROTATION_MIDDLE;
                         diff.aimAngle(rotation);
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + 400, () -> {
@@ -268,7 +268,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
                         double rotation = ANGLE_TO_RIGHT + hand.getAngle() + 90 + DIFF_ROTATION_RIGHT;
                         extend.setReference(EXTEND_TO_RIGHT);
                         diff.aimAngle(rotation);
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_RIGHT + 400, () -> {

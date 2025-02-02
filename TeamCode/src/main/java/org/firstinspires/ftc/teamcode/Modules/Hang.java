@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 import static org.firstinspires.ftc.teamcode.Modules.HangConstants.COEFFICIENTS;
 import static org.firstinspires.ftc.teamcode.Modules.HangConstants.MAX_POSITION;
 import static org.firstinspires.ftc.teamcode.Modules.HangConstants.MIN_POSITION;
+import static org.firstinspires.ftc.teamcode.Modules.HangConstants.SPEED;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -24,6 +25,7 @@ class HangConstants {
     public static double LEFT_NOT_ENGAGED = 0.24;
     public static double RIGHT_ENGAGED = 0.48;
     public static double RIGHT_NOT_ENGAGED = 0.58;
+    public static double SPEED = 100;
 }
 
 
@@ -39,8 +41,8 @@ public class Hang {
     public Hang(OpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         hang = linearOpMode.hardwareMap.get(DcMotorEx.class, "hangMotor");
-    //    left = linearOpMode.hardwareMap.get(Servo.class, "left_lift_servo");
-      //  right = linearOpMode.hardwareMap.get(Servo.class, "right_lift_servo");
+        //    left = linearOpMode.hardwareMap.get(Servo.class, "left_lift_servo");
+        //  right = linearOpMode.hardwareMap.get(Servo.class, "right_lift_servo");
         hang.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hang.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -63,7 +65,8 @@ public class Hang {
     double lastError = 0;
     double integralSum = 0;
     double out;
-//0.5 - right
+
+    //0.5 - right
 //0.58
     public void PIDControl() {
         double position = hang.getCurrentPosition();
@@ -97,10 +100,24 @@ public class Hang {
 
     public void control() {
         if (gamepad.left_stick_y < 0 && hang.getCurrentPosition() < MAX_POSITION) {
-           hang.setPower(-gamepad.left_stick_y);
-           setReference(hang.getCurrentPosition());
+            hang.setPower(-gamepad.left_stick_y);
+            setReference(hang.getCurrentPosition());
         } else if (gamepad.left_stick_y > 0 && hang.getCurrentPosition() > MIN_POSITION) {
             hang.setPower(-gamepad.left_stick_y);
+            setReference(hang.getCurrentPosition());
+        } else {
+            clampReference();
+            PIDControl();
+        }
+    }
+
+    public void discreteControl() {
+        double power = ((gamepad.dpad_up ? 1 : 0) - (gamepad.dpad_down ? 1 : 0));
+        if (power > 0 && hang.getCurrentPosition() < MAX_POSITION) {
+            hang.setPower(power);
+            setReference(hang.getCurrentPosition());
+        } else if (power < 0 && hang.getCurrentPosition() > MIN_POSITION) {
+            hang.setPower(power);
             setReference(hang.getCurrentPosition());
         } else {
             clampReference();
@@ -130,24 +147,20 @@ public class Hang {
                 right.setPosition(HangConstants.RIGHT_NOT_ENGAGED);*/
                 break;
         }
-        if(hang.getCurrentPosition() <= 10){
-            if(-(gamepad.left_stick_y) <= 0){
+        if (hang.getCurrentPosition() <= MIN_POSITION + 10) {
+            if (-( gamepad.left_stick_y ) <= 0) {
                 hang.setPower(0);
+            } else {
+                hang.setPower(-( gamepad.left_stick_y ));
             }
-            else {
-                hang.setPower(-(gamepad.left_stick_y));
-            }
-        }
-        else if(hang.getCurrentPosition() >= 3500){
-            if(-(gamepad.left_stick_y) >= 0){
+        } else if (hang.getCurrentPosition() >= MAX_POSITION + 50) {
+            if (-( gamepad.left_stick_y ) >= 0) {
                 hang.setPower(0);
+            } else {
+                hang.setPower(-( gamepad.left_stick_y ));
             }
-            else {
-                hang.setPower(-(gamepad.left_stick_y));
-            }
-        }
-        else {
-            hang.setPower(-(gamepad.left_stick_y));
+        } else {
+            hang.setPower(-( gamepad.left_stick_y ));
         }
     }
 }

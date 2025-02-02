@@ -8,7 +8,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.IN
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL_OFFSET;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.RELAX_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.SPECIMEN_ADD_FORCE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_SCORE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_START;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.ANGLE_LEFT_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.ANGLE_MIDDLE_TO_HUMAN;
@@ -38,7 +37,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POIN
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POINT_PERKID_START_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POINT_SPECIMEN_START_SCORE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POINT_SPECIMEN_START_SCORE_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POINT_THIRD_RELEASE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.RIGHT_STOP_POINT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_FORCE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_POINT_0;
@@ -175,7 +173,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                         hand.setPosition(HAND_LEFT);
                         double rotation = ANGLE_TO_LEFT + hand.getAngle() + 90 + DIFF_ROTATION_LEFT;
                         diff.aimAngle(rotation);
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         claw.transfer();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 200, () -> {
@@ -193,7 +191,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                     })
                     .addTimeMarker(WAIT_AT_LEFT + WAIT_PICK_UP + 600, () -> {
                         diff.aim();
-                        perkid.aim();
+                        perkid.aimAtSpike();
 
                     })
                     .addTurnMarker(1, (t) -> {
@@ -226,7 +224,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                         hand.setPosition(HAND_MIDDLE);
                         double rotation = ANGLE_TO_MIDDLE + hand.getAngle() + 90 + DIFF_ROTATION_MIDDLE;
                         diff.aimAngle(rotation);
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + 400, () -> {
@@ -241,7 +239,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                     })
                     .addTimeMarker(WAIT_AT_MIDDLE + WAIT_PICK_UP + 600, () -> {
                         diff.aim();
-                        perkid.aim();
+                        perkid.aimAtSpike();
 
                     })
                     // MIDDLE TO HUMAN
@@ -272,7 +270,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                         double rotation = ANGLE_TO_RIGHT + hand.getAngle() + 90 + DIFF_ROTATION_RIGHT;
                         extend.setReference(EXTEND_TO_RIGHT);
                         diff.aimAngle(rotation);
-                        perkid.aim();
+                        perkid.aimAtSpike();
                         claw.open();
                     })
                     .addTimeMarker(WAIT_AT_RIGHT + 400, () -> {
@@ -287,7 +285,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                     })
                     .addTimeMarker(WAIT_AT_RIGHT + WAIT_PICK_UP + 600, () -> {
                         diff.aim();
-                        perkid.aim();
+                        perkid.aimAtSpike();
 
                     })
                     // RIGHT TO HUMAN
