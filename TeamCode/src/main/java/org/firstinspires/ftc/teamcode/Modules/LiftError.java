@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.COEFFICIENTS;
 import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.MAX_POSITION;
 import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.MIN_POSITION;
+import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.SPECIMEN_POS;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -17,6 +18,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 class LiftErrorConstants {
     public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.005, 0.0005, 0.0);
     public static double d = 0.00047;
+
+    public static int SPECIMEN_POS = 400;
 
     public static int MAX_POSITION = 830;
     public static int MIN_POSITION = 0;
@@ -49,7 +52,8 @@ public class LiftError {
     public enum Mode {
         DEFAULT,
         P_REGULATOR,
-        NULL_POSE
+        NULL_POSE,
+        SPECIMEN_SCORE
     }
 
     Mode currentMode = Mode.DEFAULT;
@@ -139,8 +143,10 @@ public class LiftError {
                     }
                 }
                 break;
-
-
+            case  SPECIMEN_SCORE:
+                setReference(SPECIMEN_POS);
+                PIDControl();
+                break;
         }
     }
 

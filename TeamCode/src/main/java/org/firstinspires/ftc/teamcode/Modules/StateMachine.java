@@ -54,6 +54,7 @@ public class StateMachine {
     Differential diff;
     // SampleDetectionCameraClass cam;
     Hang hang;
+    ScorerExtend scorerExtend;
 
     ElapsedTime pickedUnpickedTimer, fromClawToClawTimer, dropSpecimenTimer, goToInitialFromScoreSample, humanDropPickSpecTimer, goFromScoreSpecTimer, fromTransferSpecimenToScore, forgetPosTimer, rightSideDropSampleTimer;
     private final ElapsedTime specimenPickedUp, specimenToTransfer;
@@ -110,6 +111,7 @@ public class StateMachine {
         hang = new Hang(linearOpMode);
         dt = new DriveTrain(linearOpMode);
         //cam = new SampleDetectionCameraClass(linearOpMode);
+        scorerExtend = new ScorerExtend(linearOpMode.hardwareMap);
 
         gamepad1 = linearOpMode.gamepad1;
         gamepad2 = linearOpMode.gamepad2;
@@ -172,7 +174,7 @@ public class StateMachine {
         } else {
             dt.currentMode = DriveTrain.Mode.DRIVER_CONTROL;
         }
-      /*  if(gamepad2.left_bumper && extend.currentMode == Extend.Mode.DRIVER_CONTROL){
+        /*if(gamepad2.left_bumper && extend.currentMode == Extend.Mode.DRIVER_CONTROL){
             extend.setPower(-1);
         }*/
         // lift.currentMode = LiftError.Mode.NULL_POSE;
@@ -195,6 +197,7 @@ public class StateMachine {
                     hand.currentMode = Hand.Mode.FORWARD;
                     scorClaw.currentMode = ScorClaw.Mode.DROP;
                     diff.currentMode = Differential.Mode.TRANSFER;
+                    scorerExtend.retract();
 
                     //lift.pos = 0;
 
@@ -221,7 +224,7 @@ public class StateMachine {
                 scorClaw.currentMode = ScorClaw.Mode.PICK;
                 // lift.pos = -200;
 
-                if (!( gamepad1.left_stick_y <= -0.1 )) {
+                if (!(gamepad1.left_stick_y <= -0.1)) {
                     specimenToTransfer.reset();
                 }
 
@@ -244,8 +247,10 @@ public class StateMachine {
 
                 if (fromTransferSpecimenToScore.milliseconds() > 500) {
                     scorDiff.currentMode = ScoringDiff.Mode.TRANSFER_SPEC;
+                    scorerExtend.retract();
                 } else {
                     scorDiff.currentMode = ScoringDiff.Mode.PICK_SPEC;
+                    scorerExtend.extend();
                 }
 
                 hand.currentMode = Hand.Mode.DRIVER_CONTROL;
@@ -280,7 +285,7 @@ public class StateMachine {
 
                 if (gamepad2.right_bumper || gamepad1.circle) {
                     scorClaw.currentMode = ScorClaw.Mode.DROP;
-                } else if (( fromTransferSpecimenToScore.milliseconds() > RELAX_SCORE_CLAW ) && ( !gamepad1.cross )) {
+                } else if ((fromTransferSpecimenToScore.milliseconds() > RELAX_SCORE_CLAW) && (!gamepad1.cross)) {
                     scorClaw.currentMode = ScorClaw.Mode.RELAX;
                 }
                 // lift.pos = upToChamber2;
@@ -297,7 +302,6 @@ public class StateMachine {
                 }
 
                 if (gamepad1.square) {
-
                     state = State.PICK_UP_THE_BLOCK_SCORSPEC;
                     pickedUnpickedTimer.reset();
                 }
