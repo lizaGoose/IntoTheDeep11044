@@ -53,6 +53,16 @@ public class Drive {
 
     private ElapsedTime clock;
 
+    private static Drive instance;
+
+    public static Drive getInstance(HardwareMap hardwareMap, Pose2d startPose) {
+        if (instance == null) {
+            instance = new Drive(hardwareMap, startPose);
+        }
+
+        return instance;
+    }
+
     public Drive(HardwareMap hardwareMap, Pose2d startPose) {
         // Motors
         leftFrontDrive = hardwareMap.get(DcMotorEx.class, "leftFront");
