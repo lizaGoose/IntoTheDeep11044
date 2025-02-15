@@ -56,7 +56,10 @@ public class DriveModule {
         }
     }
 
-    void followTrajectory(Trajectory trajectory) {
+    public void followTrajectory(Trajectory trajectory) {
+        if (drive.isBusy()) {
+            return;
+        }
         drive.followTrajectory(trajectory);
         currentMode = Mode.FOLLOWING_TRAJECTORY;
     }

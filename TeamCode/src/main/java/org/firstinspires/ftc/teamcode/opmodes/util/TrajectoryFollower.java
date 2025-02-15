@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.math.BezierCurve;
 import java.io.IOException;
 import java.util.ArrayList;
 
-@Autonomous
+@Autonomous(group = "util")
 @Config
 public class TrajectoryFollower extends LinearOpMode {
     public static String AUTONOMOUS_NAME = "traj5.json";

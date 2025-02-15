@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.file.FilesystemUtil;
 
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Config
+@TeleOp(group = "util")
 public class TrajectoryBackup extends LinearOpMode {
     public static String FILENAME = "";
     @Override

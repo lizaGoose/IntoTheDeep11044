@@ -20,13 +20,13 @@ import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 
 @Config
 class ScoringPerkidConstants {
-    public static double PICK_SPEC = 0.38;
+    public static double PICK_SPEC = 0.39;
     public static double AIM_SPEC = 0.45;
     public static double DROP_SAMPLE_TO_HUMAN = 0.35;
     public static double TRANSFER_POS = 0.52;
     public static double SCORE_SAMP = 0;
-    public static double TRANSFER_SPEC = 0.9;
-    public static double SCOR_SPEC = 0.92;
+    public static double TRANSFER_SPEC = 0.81;
+    public static double SCOR_SPEC = 0.81;
 }
 
 public class ScoringPerkid {

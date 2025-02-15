@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.AFTER_SCORE_SPEC;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.AIM_SPEC;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.GET_FROM_CLAW;
 import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.LEBRON;
@@ -25,13 +26,14 @@ class ScoringDiffConstants {
     public static double PICK_SPEC = 0.51;
     public static double SCORE_SPEC = 1;*/
 
-    public static double AIM_SPEC = 0.43; //0.39;
-    public static double PICK_SPEC = 0.48; //0.44;
+    public static double AIM_SPEC = 0.86; //0.39;
+    public static double PICK_SPEC = 0.83; //0.44;
     public static double GET_FROM_CLAW = 1;
     public static double SCORE_SAMP = 0.76;
     public static double LEBRON = 0.95;
-    public static double SCORE_SPEC = 0.99;
-    public static double TRANSFER_SPEC = 0.75;
+    public static double SCORE_SPEC = 0.92;
+    public static double AFTER_SCORE_SPEC = 0.6;
+    public static double TRANSFER_SPEC = 0.92;
     public static double MOVE_SPECIMENS = 0.9;
 }
 
@@ -48,6 +50,7 @@ public class ScoringDiff {
         PICK_POSITION,
         PICK_SPEC,
         SCORE_SPEC,
+        AFTER_SCORE_SPEC,
         GET_FROM_CLAW,
         TRANSFER_SPEC,
         RELAX,
@@ -97,10 +100,9 @@ public class ScoringDiff {
             case AIM_POS:
                 diff.setPosition(AIM_SPEC);
                 break;
-        /*    case SCORE_SPEC:
-                diff.setPosition(ScoringDiffConstants.SCORE_SPEC);
-                break;*/
-
+            case AFTER_SCORE_SPEC:
+                diff.setPosition(AFTER_SCORE_SPEC);
+                break;
         }
     }
 

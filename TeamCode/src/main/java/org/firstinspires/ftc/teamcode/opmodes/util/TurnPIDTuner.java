@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Modules.Extend;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 
 @Config
-@Autonomous
+@Autonomous(group = "util")
 public class TurnPIDTuner extends LinearOpMode {
     public static double ANGLE = 0;
     @Override

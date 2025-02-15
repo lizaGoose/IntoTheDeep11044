@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.drive.Drive;
 
 import java.io.IOException;
 
-@Autonomous
+@Autonomous(group = "util")
 @Config
 public class PointPIDTuner extends OpMode {
     private Drive drive;

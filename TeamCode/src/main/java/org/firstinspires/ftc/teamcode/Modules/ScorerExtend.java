@@ -10,13 +10,13 @@ public class ScorerExtend {
     public final ServoImplEx servo;
 
     @Config
-    public static class Constants {
-        public static double RETRACTED = 0;
-        public static double EXTENDED = 1;
+    public static class ScorerLinkageConstants {
+        public static double RETRACTED = 0.9;
+        public static double EXTENDED = 0.245;
     }
 
     public ScorerExtend(HardwareMap hardwareMap) {
-        servo = (ServoImplEx) hardwareMap.get(Servo.class, "servo_extend");
+        servo = (ServoImplEx) hardwareMap.get(Servo.class, "Linkage");
     }
 
     public double getPosition() {
@@ -24,11 +24,11 @@ public class ScorerExtend {
     }
 
     public void extend() {
-        servo.setPosition(Constants.EXTENDED);
+        servo.setPosition(ScorerLinkageConstants.EXTENDED);
     }
 
     public void retract() {
-        servo.setPosition(Constants.RETRACTED);
+        servo.setPosition(ScorerLinkageConstants.RETRACTED);
     }
 
     public void setPwmDisable() {

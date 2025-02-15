@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @Config
-@TeleOp(group = "Trajectory")
+@TeleOp(group = "util")
 public class TrajectoryEditor extends LinearOpMode {
     public static String CUSTOM_FILE_NAME = null;
     public static double X = 0, Y = 0;

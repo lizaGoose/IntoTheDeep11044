@@ -18,7 +18,7 @@ import java.util.List;
 
 
 @Config
-@TeleOp
+@TeleOp(group = "util")
 public class TrajectoryTranspose extends LinearOpMode {
     public static String FILENAME = "";
     @Override

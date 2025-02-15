@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.dashboard.FieldDrawer;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 
 @Config
-@TeleOp
+@TeleOp(group = "util")
 public class VectorDrive extends LinearOpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     public static double X = 0;
