@@ -27,10 +27,13 @@ import java.util.Objects;
 
 @Config
 public class Drive {
-    private final DcMotorEx leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive;
-    private final IMU imu;
+    private DcMotorEx leftFrontDrive;
+    private DcMotorEx leftBackDrive;
+    private DcMotorEx rightFrontDrive;
+    private DcMotorEx rightBackDrive;
+    private IMU imu;
 
-    private final TwoWheelTrackingLocalizer localizer;
+    private TwoWheelTrackingLocalizer localizer;
 
     private final TrajectoryRunner runner;
 
@@ -53,11 +56,13 @@ public class Drive {
 
     private ElapsedTime clock;
 
-    private static Drive instance;
+    private static Drive instance = null;
 
     public static Drive getInstance(HardwareMap hardwareMap, Pose2d startPose) {
         if (instance == null) {
             instance = new Drive(hardwareMap, startPose);
+        } else {
+            instance.resetHardware(hardwareMap);
         }
 
         return instance;
@@ -95,6 +100,32 @@ public class Drive {
         reference = startPose;
 
         runner = new TrajectoryRunner();
+    }
+
+    private void resetHardware(HardwareMap hardwareMap) {
+        leftFrontDrive = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftBackDrive = hardwareMap.get(DcMotorEx.class, "leftRear");
+        rightFrontDrive = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rightBackDrive = hardwareMap.get(DcMotorEx.class, "rightRear");
+
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        imu.initialize(parameters);
+        imu.resetYaw();
+
+        Pose2d lastPose = localizer.getLastPose();
+        // Localizer
+        localizer = new TwoWheelTrackingLocalizer(hardwareMap, this);
+        localizer.setPoseEstimate(lastPose);
     }
 
     public Drive(HardwareMap hardwareMap) {

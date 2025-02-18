@@ -55,6 +55,8 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
     private final Drive drive;
 
+    private Pose2d lastPose;
+
     public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, Drive drive) {
         super(Arrays.asList(
             new Pose2d(PARALLEL_X, PARALLEL_Y, 0),
@@ -104,5 +106,16 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
                 encoderTicksToInches(parallelEncoder.getRawVelocity()),
                 encoderTicksToInches(perpendicularEncoder.getRawVelocity())
         );
+    }
+
+    @NonNull
+    @Override
+    public Pose2d getPoseEstimate() {
+        lastPose = super.getPoseEstimate();
+        return lastPose;
+    }
+
+    public Pose2d getLastPose() {
+        return lastPose;
     }
 }

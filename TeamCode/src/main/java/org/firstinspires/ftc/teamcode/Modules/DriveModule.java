@@ -35,7 +35,7 @@ public class DriveModule {
     Mode currentMode = Mode.DRIVER_CONTROL;
 
     public DriveModule(HardwareMap hardwareMap) {
-       drive = Drive.getInstance(hardwareMap, new Pose2d());
+       drive = new Drive(hardwareMap);
     }
 
     public void update(Gamepad gamepad1) {
