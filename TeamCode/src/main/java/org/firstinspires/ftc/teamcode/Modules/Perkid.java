@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.Camera.CameraTest;
 
@@ -42,7 +43,7 @@ public class Perkid {
     Gamepad gamepad1;
     DcMotor extend;
     CameraTest cam;
-    Servo left, right;
+    ServoImplEx left, right;
 
     enum Mode {
         SCORE_POSITION,
@@ -54,7 +55,8 @@ public class Perkid {
         LOOK,
         PICK_UP,
         TRANSFER_FROM_SUBMERSABLE,
-        RIGHT_SIDE_DROP_SAMPLE
+        RIGHT_SIDE_DROP_SAMPLE,
+        RELAX
     }
 
     Mode currentMode = Mode.SCORE_POSITION;
@@ -62,8 +64,8 @@ public class Perkid {
     public Perkid(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
-        left = linearOpMode.hardwareMap.get(Servo.class, "left_vertical_servo");
-        right = linearOpMode.hardwareMap.get(Servo.class, "right_vertical_servo");
+        left = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "left_vertical_servo");
+        right = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "right_vertical_servo");
         right.setDirection(Servo.Direction.REVERSE);
         cam = new CameraTest();
     }
@@ -109,6 +111,10 @@ public class Perkid {
             case RIGHT_SIDE_DROP_SAMPLE:
                 left.setPosition(PerkidConstants.RIGHT_SIDE_DROP_SAMPLE);
                 right.setPosition(PerkidConstants.RIGHT_SIDE_DROP_SAMPLE);
+                break;
+            case RELAX:
+                left.setPwmDisable();
+                right.setPwmDisable();
                 break;
         }
     }

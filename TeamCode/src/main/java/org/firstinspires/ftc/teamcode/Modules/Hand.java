@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Camera.CameraTest;
@@ -35,7 +36,7 @@ public class Hand {
     LinearOpMode linearOpMode;
     Gamepad gamepad;
     CameraTest cam;
-    Servo hand;
+    ServoImplEx hand;
     AnalogInput axonEnc;
     ElapsedTime timer;
     double rotation = 0.5;
@@ -46,7 +47,8 @@ public class Hand {
         DRIVER_CONTROL,
         FORWARD,
         VISION_CONTROL,
-        RIGHT_SIDE_DROP_SAMPLE
+        RIGHT_SIDE_DROP_SAMPLE,
+        RELAX
     }
 
     Mode currentMode = Mode.DRIVER_CONTROL;
@@ -54,7 +56,7 @@ public class Hand {
     public Hand(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         gamepad = linearOpMode.gamepad1;
-        hand = linearOpMode.hardwareMap.get(Servo.class, "horizontal_servo");
+        hand = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "horizontal_servo");
         hand.scaleRange(RANGE_START, RANGE_END);
 
         cam = new CameraTest();
@@ -79,7 +81,9 @@ public class Hand {
                 //rotation = 0.5;
                 hand.setPosition(RIGHT_SIDE_DROP_SAMPLE);
                 break;
-
+            case RELAX:
+                hand.setPwmDisable();
+                break;
         }
     }
 

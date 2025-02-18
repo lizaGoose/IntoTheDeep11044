@@ -17,6 +17,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
@@ -48,7 +49,7 @@ public class Differential {
     LinearOpMode linearOpMode;
     Gamepad gamepad1, gamepad2;
     public double rotationOfDiff = 0;
-    Servo right, left;
+    ServoImplEx right, left;
     public static double wait = 0.5;
     private double lastCamera = 0;
     public static double angle_config = 0.0;
@@ -71,7 +72,8 @@ public class Differential {
         ROTATION_FROM_DPAD,
         VISION_HUYNYA,
         RIGHT_SIDE_DROP_SAMPLE,
-        TRANSFER_ROT
+        TRANSFER_ROT,
+        RELAX
     }
 
     public Mode currentMode = Mode.TRANSFER;
@@ -80,8 +82,8 @@ public class Differential {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
         gamepad2 = linearOpMode.gamepad2;
-        left = linearOpMode.hardwareMap.get(Servo.class, "left_diff_servo");
-        right = linearOpMode.hardwareMap.get(Servo.class, "right_diff_servo");
+        left = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "left_diff_servo");
+        right = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "right_diff_servo");
         left.setDirection(Servo.Direction.REVERSE);
 
         timer = new ElapsedTime();
@@ -234,6 +236,10 @@ public class Differential {
                 left.setPosition(RIGHT_SIDE_DROP_SAMPLE + rotation);
                 right.setPosition(RIGHT_SIDE_DROP_SAMPLE - rotation);
                 timer.reset();
+                break;
+            case RELAX:
+                left.setPwmDisable();
+                right.setPwmDisable();
                 break;
         }
     }
