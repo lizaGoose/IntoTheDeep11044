@@ -32,7 +32,7 @@ class PerkidConstants {
     public static double LOOK_POS = 0.5;*/
     public static double TRANSFER_POS = 0.705;
     public static double LOOK_POS = 0.48;
-    public static double AIM_AT_SPIKE = 0.51;
+    public static double AIM_AT_SPIKE = 0.55;
     public static double TRANSFER_FROM_SUBMERSABLE = 0.53;
     //0.37
     public static double PICK_UP = 0.37;

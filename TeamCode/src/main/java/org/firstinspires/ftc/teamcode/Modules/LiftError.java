@@ -57,7 +57,6 @@ public class LiftError {
         P_REGULATOR,
         NULL_POSE,
         SPECIMEN_SCORE,
-        NULL_POSE,
         PUSH_DOWN
     }
 
@@ -159,10 +158,6 @@ public class LiftError {
                 leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 break;
 
-            case  SPECIMEN_SCORE:
-                setReference(SPECIMEN_POS);
-                PIDControl();
-                break;
         }
     }
 

@@ -57,7 +57,7 @@ public class SampleDetectionCameraClass {
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                cam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+                cam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_RIGHT);
             }
 
             @Override
@@ -102,11 +102,11 @@ public class SampleDetectionCameraClass {
 
         Angle = pip.Angle;
 
-        x = pip.xSample;
-        y = pip.ySample;
+    //    x = pip.xSample;
+      //  y = pip.ySample;
         clawError = Math.round(90 - Angle);
-        xActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(0);
-        yActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(1);
+    //    xActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(0);
+      //  yActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(1);
         extendingError = Math.round(y);
         handError = Math.round(x);
 
@@ -153,7 +153,7 @@ public class SampleDetectionCameraClass {
 
     public void operatorControlBlue() {
         if (linearOpMode.gamepad1.square) {
-            pip.YELLOW_MASK_THRESHOLD = 110;
+            pip.YELLOW_MASK_THRESHOLD = 95;
             pip.BLUE_MASK_THRESHOLD = 57;
             pip.RED_MASK_THRESHOLD = 198;
         }
@@ -162,17 +162,25 @@ public class SampleDetectionCameraClass {
             pip.BLUE_MASK_THRESHOLD = 138;
             pip.RED_MASK_THRESHOLD = 70;
         }
+        x = pip.xSample;
+        y = pip.ySample;
+        xActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(0);
+        yActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(1);
     }
     public void operatorControlRed() {
         if (linearOpMode.gamepad1.square) {
-            pip.YELLOW_MASK_THRESHOLD = 110;
+            pip.YELLOW_MASK_THRESHOLD = 95;
             pip.BLUE_MASK_THRESHOLD = 57;
             pip.RED_MASK_THRESHOLD = 198;
         }
         if (linearOpMode.gamepad1.circle){
             pip.YELLOW_MASK_THRESHOLD = 55;
             pip.BLUE_MASK_THRESHOLD = 70;
-            pip.RED_MASK_THRESHOLD = 155;
+            pip.RED_MASK_THRESHOLD = 170;
         }
+        x = pip.xSample;
+        y = pip.ySample;
+        xActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(0);
+        yActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(1);
     }
 }

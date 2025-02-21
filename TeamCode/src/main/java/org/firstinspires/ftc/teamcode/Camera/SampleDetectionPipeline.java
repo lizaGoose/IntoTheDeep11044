@@ -46,10 +46,10 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
     /*
      * Threshold values
      */
-    public static int YELLOW_MASK_THRESHOLD = 110;
+    public static int YELLOW_MASK_THRESHOLD = 95;
     public static int BLUE_MASK_THRESHOLD = 57;
     public static int RED_MASK_THRESHOLD = 198;
-
+    public static double areaSize = 900;
     /*
      * Elements for noise reduction
      */
@@ -222,7 +222,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         MatOfPoint2f contour2f = new MatOfPoint2f(points);
 
         // Fit a rotated rectangle to the contour and draw it
-        if (Imgproc.contourArea(contour2f) >= 20000) {
+        if (Imgproc.contourArea(contour2f) >= areaSize) {
             rotatedRectFitToContour = Imgproc.minAreaRect(contour2f);
         }
         drawRotatedRect(rotatedRectFitToContour, input, color);
@@ -275,7 +275,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
             }
             //Я вот это чуть чуть поменял
             //кросава
-            xSample = analyzedStone.xS - 320/*(InchPerPixel / 640 )/* matrixKoeff*/;
+            xSample = analyzedStone.xS-380/*(InchPerPixel / 640 )/* matrixKoeff*/;
             ySample = analyzedStone.yS/*(InchPerPixel / 640 )/* matrixKoeff*/;
             Angle = -( analyzedStone.angle - 90 );
                 /*
@@ -301,9 +301,9 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
                         rect.center.x - 50,  // x anchor point
                         rect.center.y + 25), // y anchor point
                 Imgproc.FONT_HERSHEY_PLAIN, // Font
-                1, // Font size
+                5, // Font size
                 colorScalar, // Font color
-                1); // Font thickness
+                2); // Font thickness
     }
 
     static void drawRotatedRect(RotatedRect rect, Mat drawOn, String color) {

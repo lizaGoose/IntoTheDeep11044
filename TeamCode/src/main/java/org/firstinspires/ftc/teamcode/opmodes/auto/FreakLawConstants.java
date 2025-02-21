@@ -26,7 +26,7 @@ public class FreakLawConstants {
     public static int EXTEND_TO_MIDDLE = 118; // + 25;
     public static double ANGLE_TO_MIDDLE = -149;
     public static double DIFF_ROTATION_MIDDLE = 20;
-    public static double HAND_MIDDLE = 0.25;
+    public static double HAND_MIDDLE = 0.325;
 // -13.056197012586907 58.0639854951321 traj13 point 1
     public static int EXTEND_MIDDLE_TO_HUMAN = 350;
     public static double ANGLE_MIDDLE_TO_HUMAN = -235;

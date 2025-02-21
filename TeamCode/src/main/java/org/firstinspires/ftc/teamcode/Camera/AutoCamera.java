@@ -40,9 +40,8 @@ public class AutoCamera {
     public int indexAngle;
     Extend extend;
     Hand hand;
-    public double xFromGamepad, yFromGamepad, xCoordMax = 499.293/25.4, yCoordMax = 544.599/25.4;
-    public double xCoordSampleInches, yCoordSampleInches, maxPositionInchesY, ticksPerInchY, extendPos, handPos;
-
+    public double xFromGamepad, yFromGamepad, xCoordMax = 499.293, yCoordMax = 544.599;
+    public double xCoordSampleInches, yCoordSampleInches, maxPositionInchesY, ticksPerInchY = 259/16, extendPos, handPos;
 
 
     public AutoCamera(LinearOpMode linearOpMode) {
@@ -67,7 +66,7 @@ public class AutoCamera {
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                cam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+                cam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_RIGHT);
             }
 
             @Override
@@ -88,6 +87,7 @@ public class AutoCamera {
     }
     public void goToElementPosExtend(){
         extend.setReference(AutonomousRecognition().get(0));
+        extend.PIDControl();
     }
     public void goToElementPosHand(){
         hand.setPosition(AutonomousRecognition().get(1));
@@ -101,8 +101,8 @@ public class AutoCamera {
 
         Angle = pip.Angle;
 
-        x = pip.xSample;
-        y = pip.ySample;
+   //     x = pip.xSample;
+     //   y = pip.ySample;
         clawError = Math.round(90 - Angle);
         xActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(0);
         yActual = ClawCalculation.camToRealWorldCoordinates(180, 4.2, 6.2, x, y, pip.InchPerPixel).get(1);
@@ -114,7 +114,7 @@ public class AutoCamera {
 
     public void operatorControlBlue() {
         if (linearOpMode.gamepad1.square) {
-            pip.YELLOW_MASK_THRESHOLD = 110;
+            pip.YELLOW_MASK_THRESHOLD = 95;
             pip.BLUE_MASK_THRESHOLD = 57;
             pip.RED_MASK_THRESHOLD = 198;
         }
@@ -123,17 +123,21 @@ public class AutoCamera {
             pip.BLUE_MASK_THRESHOLD = 138;
             pip.RED_MASK_THRESHOLD = 70;
         }
+        x = pip.xSample;
+        y = pip.ySample;
     }
     public void operatorControlRed() {
         if (linearOpMode.gamepad1.square) {
-            pip.YELLOW_MASK_THRESHOLD = 110;
+            pip.YELLOW_MASK_THRESHOLD = 95;
             pip.BLUE_MASK_THRESHOLD = 57;
             pip.RED_MASK_THRESHOLD = 198;
         }
         if (linearOpMode.gamepad1.circle){
             pip.YELLOW_MASK_THRESHOLD = 55;
             pip.BLUE_MASK_THRESHOLD = 70;
-            pip.RED_MASK_THRESHOLD = 155;
+            pip.RED_MASK_THRESHOLD = 170;
         }
+        x = pip.xSample;
+        y = pip.ySample;
     }
 }
