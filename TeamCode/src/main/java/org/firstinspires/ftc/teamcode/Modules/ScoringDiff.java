@@ -32,7 +32,7 @@ class ScoringDiffConstants {
     public static double SCORE_SAMP = 0.76;
     public static double LEBRON = 0.95;
     public static double SCORE_SPEC = 0.92;
-    public static double AFTER_SCORE_SPEC = 0.6;
+    public static double AFTER_SCORE_SPEC = 0.83;
     public static double TRANSFER_SPEC = 0.92;
     public static double MOVE_SPECIMENS = 0.9;
 }
@@ -40,7 +40,6 @@ class ScoringDiffConstants {
 public class ScoringDiff {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
-    DcMotor extend;
     CameraTest cam;
     ServoImplEx diff;
 
@@ -116,6 +115,10 @@ public class ScoringDiff {
 
     public void scoreSpecimen() {
         diff.setPosition(SCORE_SPEC);
+    }
+
+    public void liftAfterScoreSpecimen() {
+        diff.setPosition(AFTER_SCORE_SPEC);
     }
 
     public void pickSpecimen() {
