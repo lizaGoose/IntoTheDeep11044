@@ -11,8 +11,8 @@ public class ScorerExtend {
 
     @Config
     public static class ScorerLinkageConstants {
-        public static double RETRACTED = 0.9;
-        public static double EXTENDED = 0.245;
+        public static double RETRACTED = 0.07;
+        public static double EXTENDED = 0.95;
     }
 
     public ScorerExtend(HardwareMap hardwareMap) {

@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 import static org.firstinspires.ftc.teamcode.Modules.SensorsConstants.EXTEND_AMPS;
-import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.OFFSET_CLAW_CLOSE;
-import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.PICKED_UNPICKED_PICK_BLOCK;
-import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.REGISTER_MOVEMENT_AFTER;
-import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.SET_POS_TO_ZERO_SAMPLE;
-import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.WAIT_UNTIL_SPECIMEN_PICKUP;
-import static org.firstinspires.ftc.teamcode.Modules.TimerConstants.RELAX_SCORE_CLAW;
+import static org.firstinspires.ftc.teamcode.Modules.TeleOpConstants.OFFSET_CLAW_CLOSE;
+import static org.firstinspires.ftc.teamcode.Modules.TeleOpConstants.PICKED_UNPICKED_PICK_BLOCK;
+import static org.firstinspires.ftc.teamcode.Modules.TeleOpConstants.SET_POS_TO_ZERO_SAMPLE;
+import static org.firstinspires.ftc.teamcode.Modules.TeleOpConstants.WAIT_UNTIL_SPECIMEN_PICKUP;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -21,7 +19,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
 
 @Config
 class SampleSensorsConstants {

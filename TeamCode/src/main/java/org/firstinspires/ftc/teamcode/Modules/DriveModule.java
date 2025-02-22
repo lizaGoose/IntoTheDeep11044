@@ -38,14 +38,24 @@ public class DriveModule {
        drive = new Drive(hardwareMap);
     }
 
+    public DriveModule(HardwareMap hardwareMap, Pose2d startPose) {
+        drive = new Drive(hardwareMap, startPose);
+    }
+
     public void update(Gamepad gamepad1) {
+        update(gamepad1, 0);
+    }
+
+    public void update(Gamepad gamepad1, double extendPercentage) {
         boolean dryRun = false;
         switch (currentMode) {
             case DRIVER_CONTROL:
+                double heading = gamepad1.right_trigger - gamepad1.left_trigger;
+                heading = heading * (1 - (1 - EXTEND_MOVE_PERCENTAGE) * extendPercentage);
                 drive.setPowerByPose(new Pose2d(
                         -gamepad1.left_stick_y,
                         -gamepad1.left_stick_x,
-                        gamepad1.right_trigger - gamepad1.left_trigger
+                        heading
                 ));
                 dryRun = true;
             case FOLLOWING_TRAJECTORY:

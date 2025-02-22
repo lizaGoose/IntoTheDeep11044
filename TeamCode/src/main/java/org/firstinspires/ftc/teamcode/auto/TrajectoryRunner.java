@@ -96,15 +96,21 @@ public class TrajectoryRunner {
     }
 
     public Pose2d update(Pose2d poseEstimate, Pose2d velocityEstimate) {
+        TelemetryPacket packet = new TelemetryPacket();
+        Canvas fieldOverlay = packet.fieldOverlay();
+
         if (currentTrajectory == null) {
+            draw(fieldOverlay, poseEstimate, poseEstimate.vec(), new Vector2d(), new Vector2d());
+
+            dashboard.sendTelemetryPacket(packet);
+            clock.reset();
+
             return new Pose2d(0, 0, 0);
         }
 
         Pose2d result = new Pose2d(0, 0, 0);
         t = currentCurve.getClosestTtoPoint(poseEstimate.vec());
 
-        TelemetryPacket packet = new TelemetryPacket();
-        Canvas fieldOverlay = packet.fieldOverlay();
 
         if (!stopPoints.isEmpty() && ( t + curveIndex >= stopPoints.get(0).t ||
                 ( Math.abs(( t + curveIndex ) - stopPoints.get(0).t) <= stopThreshold ) )) {
@@ -294,19 +300,22 @@ public class TrajectoryRunner {
 
         FieldDrawer.drawRobot(fieldOverlay, poseEstimate);
         FieldDrawer.drawPoseHistory(fieldOverlay, poseHistory);
-        for (Vector2d vector : turnHistory) {
-            FieldDrawer.drawPoint(fieldOverlay, vector, 1, "yellow");
+        if (turnHistory != null) {
+            for (Vector2d vector : turnHistory) {
+                FieldDrawer.drawPoint(fieldOverlay, vector, 1, "yellow");
+            }
         }
         FieldDrawer.drawVectorFromRobot(fieldOverlay, poseEstimate.vec(), centripetalForce);
         FieldDrawer.drawVectorFromRobot(fieldOverlay, poseEstimate.vec(), pathing_power);
-
-        for (int i = 0; i < currentTrajectory.size(); i++) {
-            FieldDrawer.drawBezierCurve(
-                    fieldOverlay,
-                    currentTrajectory.get(i),
-                    1,
-                    "green"
-            );
+        if (currentTrajectory != null) {
+            for (int i = 0; i < currentTrajectory.size(); i++) {
+                FieldDrawer.drawBezierCurve(
+                        fieldOverlay,
+                        currentTrajectory.get(i),
+                        1,
+                        "green"
+                );
+            }
         }
     }
 

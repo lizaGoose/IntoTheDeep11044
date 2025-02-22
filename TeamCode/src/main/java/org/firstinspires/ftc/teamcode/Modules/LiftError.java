@@ -17,10 +17,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 class LiftErrorConstants {
-    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.005, 0.0005, 0.0);
+    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.005, 0.00001, 0.0);
     public static double d = 0.00047;
 
-    public static int SPECIMEN_POS = 500;
+    public static int SPECIMEN_POS = 440;
 
     public static int MAX_POSITION = 830;
     public static int MIN_POSITION = 0;

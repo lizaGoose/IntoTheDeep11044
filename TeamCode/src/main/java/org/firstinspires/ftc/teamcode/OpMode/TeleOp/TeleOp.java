@@ -9,13 +9,10 @@ public class TeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        //DriveTrain dt = new DriveTrain(this);
         StateMachine modules = new StateMachine(this);
 
         waitForStart();
-        //modules.resetTimers();
         while (opModeIsActive()){
-            //dt.teleOp();
             modules.teleop();
         }
     }

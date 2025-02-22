@@ -114,6 +114,9 @@ public class FieldDrawer {
     }
 
     public static void drawPoseHistory(Canvas c, List<Pose2d> poseHistory) {
+        if (poseHistory == null) {
+            return;
+        }
         double[] xPoints = new double[poseHistory.size()];
         double[] yPoints = new double[poseHistory.size()];
         for (int i = 0; i < poseHistory.size(); i++) {
