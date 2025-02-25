@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Modules.Diff;
+import org.firstinspires.ftc.teamcode.Modules.Differential;
 import org.opencv.core.RotatedRect;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -35,14 +35,14 @@ public class SampleServoMathematicClass {
     SampleDetectionPipelinePNP pip;
     public ColorSensor clawColorSensor;
     public DistanceSensor distanceSensor;
-    public Diff diff;
+    public Differential diff;
     public int indexAngle;
 
     public  SampleServoMathematicClass(LinearOpMode linearOpMode){
         this.linearOpMode = linearOpMode;
         hardwareMap = linearOpMode.hardwareMap;
 
-        diff = new Diff(linearOpMode);
+        diff = new Differential(linearOpMode);
         clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");
         int cameraMonitorViewId = hardwareMap.appContext
