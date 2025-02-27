@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.DriveTrainConstants.EXTEND_MOVE_PERCENTAGE;
+import static org.firstinspires.ftc.teamcode.modules.DriveTrainConstants.EXTEND_MOVE_PERCENTAGE;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -9,13 +9,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.Drive;
-
-@Config
-class DriveModuleConstants {
-    public static double POWER_WHILE_MOVING_BACK = 0.5;
-    public static double EXTEND_MOVE_PERCENTAGE = 0.5;
-    public static double d = 2;
-}
 
 public class DriveModule {
     public Drive drive;
@@ -64,5 +57,13 @@ public class DriveModule {
         }
         drive.followTrajectory(trajectory);
         currentMode = Mode.FOLLOWING_TRAJECTORY;
+    }
+
+    @Config
+    static
+    class DriveModuleConstants {
+        public static double POWER_WHILE_MOVING_BACK = 0.5;
+        public static double EXTEND_MOVE_PERCENTAGE = 0.5;
+        public static double d = 2;
     }
 }

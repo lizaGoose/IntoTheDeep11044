@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.Camera;
+package org.firstinspires.ftc.teamcode.camera;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.openftc.easyopencv.OpenCvPipeline;
 

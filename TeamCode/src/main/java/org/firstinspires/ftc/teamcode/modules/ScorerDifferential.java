@@ -1,43 +1,24 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.AFTER_SCORE_SPEC;
-import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.AIM_SPEC;
-import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.GET_FROM_CLAW;
-import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.LEBRON;
-import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.MOVE_SPECIMENS;
-import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.PICK_SPEC;
-import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.SCORE_SAMP;
-import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.SCORE_SPEC;
-import static org.firstinspires.ftc.teamcode.Modules.ScoringDiffConstants.TRANSFER_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.AFTER_SCORE_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.AIM_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.GET_FROM_CLAW;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.LEBRON;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.MOVE_SPECIMENS;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.PICK_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.SCORE_SAMP;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.SCORE_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.TRANSFER_SPEC;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-import org.firstinspires.ftc.teamcode.Camera.CameraTest;
+import org.firstinspires.ftc.teamcode.camera.CameraTest;
 
-@Config
-class ScoringDiffConstants {
-    /*public static double PICK_POS = 0.96;
-    public static double SCOR_POS = 0.5;
-    public static double PICK_SPEC = 0.51;
-    public static double SCORE_SPEC = 1;*/
-
-    public static double AIM_SPEC = 0.86; //0.39;
-    public static double PICK_SPEC = 0.83; //0.44;
-    public static double GET_FROM_CLAW = 0.7;
-    public static double SCORE_SAMP = 0.76;
-    public static double LEBRON = 0.95;
-    public static double SCORE_SPEC = 0.92;
-    public static double AFTER_SCORE_SPEC = 0.83;
-    public static double TRANSFER_SPEC = 0.92;
-    public static double MOVE_SPECIMENS = 0.9;
-}
-
-public class ScoringDiff {
+public class ScorerDifferential {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
     CameraTest cam;
@@ -59,7 +40,7 @@ public class ScoringDiff {
 
     Mode currentMode = Mode.PICK_SPEC;
 
-    public ScoringDiff(LinearOpMode linearOpMode) {
+    public ScorerDifferential(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad2;
         diff = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "scoring_diff");
@@ -76,19 +57,19 @@ public class ScoringDiff {
                 diff.setPosition(ScoringDiffConstants.PICK_POS);
                 break;*/
             case PICK_SPEC:
-                diff.setPosition(ScoringDiffConstants.PICK_SPEC);
+                diff.setPosition(ScorerDiffConstants.PICK_SPEC);
                 break;
             case GET_FROM_CLAW:
                 diff.setPosition(GET_FROM_CLAW);
                 break;
             case SCORE_SAMP:
-                diff.setPosition(ScoringDiffConstants.SCORE_SAMP);
+                diff.setPosition(ScorerDiffConstants.SCORE_SAMP);
                 break;
             case SCORE_SPEC:
-                diff.setPosition(ScoringDiffConstants.SCORE_SPEC);
+                diff.setPosition(ScorerDiffConstants.SCORE_SPEC);
                 break;
             case TRANSFER_SPEC:
-                diff.setPosition(ScoringDiffConstants.TRANSFER_SPEC);
+                diff.setPosition(ScorerDiffConstants.TRANSFER_SPEC);
                 break;
             case RELAX:
                 diff.setPwmDisable();
@@ -143,5 +124,19 @@ public class ScoringDiff {
 
     public void slamDunkSample() {
         diff.setPosition(LEBRON);
+    }
+
+    @Config
+    static
+    class ScorerDiffConstants {
+        public static double AIM_SPEC = 0.86;
+        public static double PICK_SPEC = 0.83;
+        public static double GET_FROM_CLAW = 0.7;
+        public static double SCORE_SAMP = 0.76;
+        public static double LEBRON = 0.95;
+        public static double SCORE_SPEC = 0.92;
+        public static double AFTER_SCORE_SPEC = 0.83;
+        public static double TRANSFER_SPEC = 0.92;
+        public static double MOVE_SPECIMENS = 0.9;
     }
 }

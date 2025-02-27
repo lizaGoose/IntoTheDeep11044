@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.HangConstants.COEFFICIENTS;
-import static org.firstinspires.ftc.teamcode.Modules.HangConstants.MAX_POSITION;
-import static org.firstinspires.ftc.teamcode.Modules.HangConstants.MIN_POSITION;
-import static org.firstinspires.ftc.teamcode.Modules.HangConstants.SPEED;
+import static org.firstinspires.ftc.teamcode.modules.Hang.HangConstants.COEFFICIENTS;
+import static org.firstinspires.ftc.teamcode.modules.Hang.HangConstants.MAX_POSITION;
+import static org.firstinspires.ftc.teamcode.modules.Hang.HangConstants.MIN_POSITION;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -13,20 +12,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-@Config
-class HangConstants {
-    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.0, 0.0, 0.0);
-    public static double MAX_POSITION = 3450;
-    public static double MIN_POSITION = 10;
-    public static int DOWN_POS = 0;
-    public static int UP_POS = 200;
-    public static double LEFT_ENGAGED = 0.4;//0.24 0.4
-    public static double LEFT_NOT_ENGAGED = 0.24;
-    public static double RIGHT_ENGAGED = 0.48;
-    public static double RIGHT_NOT_ENGAGED = 0.58;
-    public static double SPEED = 100;
-}
 
 
 public class Hang {
@@ -72,9 +57,9 @@ public class Hang {
         double position = hang.getCurrentPosition();
         double error = reference - position;
 
-        double derivative = ( error - lastError ) / timer.seconds();
+        double derivative = (error - lastError) / timer.seconds();
         integralSum += error * timer.seconds();
-        out = ( COEFFICIENTS.p * error ) + ( COEFFICIENTS.i * integralSum ) + ( COEFFICIENTS.d * derivative ) + COEFFICIENTS.f;
+        out = (COEFFICIENTS.p * error) + (COEFFICIENTS.i * integralSum) + (COEFFICIENTS.d * derivative) + COEFFICIENTS.f;
 
         hang.setPower(out);
 
@@ -148,19 +133,34 @@ public class Hang {
                 break;
         }
         if (hang.getCurrentPosition() <= MIN_POSITION + 10) {
-            if (-( gamepad.left_stick_y ) <= 0) {
+            if (-(gamepad.left_stick_y) <= 0) {
                 hang.setPower(0);
             } else {
-                hang.setPower(-( gamepad.left_stick_y ));
+                hang.setPower(-(gamepad.left_stick_y));
             }
         } else if (hang.getCurrentPosition() >= MAX_POSITION + 50) {
-            if (-( gamepad.left_stick_y ) >= 0) {
+            if (-(gamepad.left_stick_y) >= 0) {
                 hang.setPower(0);
             } else {
-                hang.setPower(-( gamepad.left_stick_y ));
+                hang.setPower(-(gamepad.left_stick_y));
             }
         } else {
-            hang.setPower(-( gamepad.left_stick_y ));
+            hang.setPower(-(gamepad.left_stick_y));
         }
+    }
+
+    @Config
+    static
+    class HangConstants {
+        public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.0, 0.0, 0.0);
+        public static double MAX_POSITION = 3450;
+        public static double MIN_POSITION = 10;
+        public static int DOWN_POS = 0;
+        public static int UP_POS = 200;
+        public static double LEFT_ENGAGED = 0.4;//0.24 0.4
+        public static double LEFT_NOT_ENGAGED = 0.24;
+        public static double RIGHT_ENGAGED = 0.48;
+        public static double RIGHT_NOT_ENGAGED = 0.58;
+        public static double SPEED = 100;
     }
 }

@@ -10,15 +10,15 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Modules.Claw;
-import org.firstinspires.ftc.teamcode.Modules.Differential;
-import org.firstinspires.ftc.teamcode.Modules.DriveModule;
-import org.firstinspires.ftc.teamcode.Modules.Extend;
-import org.firstinspires.ftc.teamcode.Modules.Hand;
-import org.firstinspires.ftc.teamcode.Modules.Perkid;
-import org.firstinspires.ftc.teamcode.Modules.ScorClaw;
-import org.firstinspires.ftc.teamcode.Modules.ScoringDiff;
-import org.firstinspires.ftc.teamcode.Modules.ScoringPerkid;
+import org.firstinspires.ftc.teamcode.modules.Claw;
+import org.firstinspires.ftc.teamcode.modules.Differential;
+import org.firstinspires.ftc.teamcode.modules.DriveModule;
+import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Hand;
+import org.firstinspires.ftc.teamcode.modules.Perkid;
+import org.firstinspires.ftc.teamcode.modules.ScorerClaw;
+import org.firstinspires.ftc.teamcode.modules.ScorerDifferential;
+import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
 
@@ -31,9 +31,9 @@ public class DriveModuleTest extends LinearOpMode {
     public static int button = 0;
 
     private DriveModule driveModule;
-    private ScoringDiff scoringDiff;
-    private ScoringPerkid scoringPerkid;
-    private ScorClaw scorClaw;
+    private ScorerDifferential scorerDifferential;
+    private ScorerPerkid scorerPerkid;
+    private ScorerClaw scorerClaw;
     private Perkid perkid;
     private Hand hand;
     private Claw claw;
@@ -51,9 +51,9 @@ public class DriveModuleTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DriveModule driveModule = new DriveModule(hardwareMap);
-        scoringDiff = new ScoringDiff(this);
+        scorerDifferential = new ScorerDifferential(this);
         Extend extend = new Extend(this);
-        scorClaw = new ScorClaw(this);
+        scorerClaw = new ScorerClaw(this);
         perkid = new Perkid(this);
         TrajectoryBuilder builder;
         try {
@@ -77,13 +77,13 @@ public class DriveModuleTest extends LinearOpMode {
 
     public void buildOneCycle(TrajectoryBuilder builder, double t) {
         builder.addSpatialMarker(0, () -> {
-                    scoringDiff.liftSpecimenFromWall();
+                    scorerDifferential.liftSpecimenFromWall();
                 })
                 .addTurnMarker(0, -90)
                 .addSpatialMarker(POINT_PERKID_START_0, () -> {
-                    scoringPerkid.transferSpecimen();
-                    scoringDiff.pickSpecimen();
-                    scorClaw.close();
+                    scorerPerkid.transferSpecimen();
+                    scorerDifferential.pickSpecimen();
+                    scorerClaw.close();
 
                     perkid.liftSample();
                     hand.setPosition(0.5);
@@ -91,14 +91,14 @@ public class DriveModuleTest extends LinearOpMode {
                     diff.aim();
                 })
                 .addSpatialMarker(POINT_PERKID_START_1, () -> {
-                    scoringDiff.transferSpecimen();
+                    scorerDifferential.transferSpecimen();
                 })
                 .addSpatialMarker(SLOWDOWN_POINT_1, () -> {
                     driveModule.drive.setForce(SLOWDOWN_FORCE);
                 })
                 .addSpatialMarker(POINT_SPECIMEN_START_SCORE_0, () -> {
-                    scoringPerkid.scoreSpecimen();
-                    scoringDiff.scoreSpecimen();
+                    scorerPerkid.scoreSpecimen();
+                    scorerDifferential.scoreSpecimen();
                 })
                 .waitForAt(1, 200, -90);
     }

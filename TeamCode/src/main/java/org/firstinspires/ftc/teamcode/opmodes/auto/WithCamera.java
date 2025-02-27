@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.HOLD_POS;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.RELAX_CLAW;
@@ -14,15 +14,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Camera.AutoCamera;
-import org.firstinspires.ftc.teamcode.Modules.Claw;
-import org.firstinspires.ftc.teamcode.Modules.Differential;
-import org.firstinspires.ftc.teamcode.Modules.Extend;
-import org.firstinspires.ftc.teamcode.Modules.Hand;
-import org.firstinspires.ftc.teamcode.Modules.Perkid;
-import org.firstinspires.ftc.teamcode.Modules.ScorClaw;
-import org.firstinspires.ftc.teamcode.Modules.ScoringDiff;
-import org.firstinspires.ftc.teamcode.Modules.ScoringPerkid;
+import org.firstinspires.ftc.teamcode.camera.AutoCamera;
+import org.firstinspires.ftc.teamcode.modules.Claw;
+import org.firstinspires.ftc.teamcode.modules.Differential;
+import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Hand;
+import org.firstinspires.ftc.teamcode.modules.Perkid;
+import org.firstinspires.ftc.teamcode.modules.ScorerClaw;
+import org.firstinspires.ftc.teamcode.modules.ScorerDifferential;
+import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.Drive;
 
@@ -45,9 +45,9 @@ class WithCameraConstants {
 @Autonomous
 public class WithCamera extends LinearOpMode {
     private Drive drive;
-    private ScoringPerkid scoringPerkid;
-    private ScoringDiff scoringDiff;
-    private ScorClaw scorClaw;
+    private ScorerPerkid scorerPerkid;
+    private ScorerDifferential scorerDifferential;
+    private ScorerClaw scorerClaw;
 
     private Perkid perkid;
     private Hand hand;
@@ -68,15 +68,15 @@ public class WithCamera extends LinearOpMode {
         Trajectory trajectoryToRungs, trajectoryPark;
         try {
             trajectoryToRungs = drive.buildTrajectory("traj10.json")
-                    .addSpatialMarker(AIM_SPECIMEN_0, () -> {
-                        scoringPerkid.transferSpecimen();
-                        scoringDiff.pickSpecimen();
+                    .addSpatialMarker(POINT_MOVE_PERKID_0, () -> {
+                        scorerPerkid.transferSpecimen();
+                        scorerDifferential.pickSpecimen();
                         perkid.aimAtSpike();
                         hand.setPosition(0.5);
                         diff.aim();
                     })
-                    .addSpatialMarker(AIM_SPECIMEN_1, () -> {
-                        scoringDiff.transferSpecimen();
+                    .addSpatialMarker(POINT_MOVE_PERKID_1, () -> {
+                        scorerDifferential.transferSpecimen();
                     })
                     .waitForAt(1, HOLD_POS)
                     .build();
@@ -88,9 +88,9 @@ public class WithCamera extends LinearOpMode {
                         clock.reset();
                     })
                     .addSpatialMarker(INITIAL, () -> {
-                        scoringPerkid.pickSpecimen();
-                        scoringDiff.pickSpecimen();
-                        scorClaw.open();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
+                        scorerClaw.open();
 
                         hand.setPosition(0.5);
                         perkid.transfer();
@@ -109,7 +109,7 @@ public class WithCamera extends LinearOpMode {
 
         drive.setPoseEstimate(new Pose2d(trajectoryToRungs.get(0).point0, 0));
 
-        scorClaw.close();
+        scorerClaw.close();
 
         waitForStart();
 
@@ -135,7 +135,7 @@ public class WithCamera extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive()) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 drive.setForce(0.5);
             }
             telemetry.addData("cam", cam.Angle);
@@ -146,8 +146,8 @@ public class WithCamera extends LinearOpMode {
     }
 
     private void hangSpecimen() {
-        scoringPerkid.scoreSpecimen();
-        scoringDiff.scoreSpecimen();
+        scorerPerkid.scoreSpecimen();
+        scorerDifferential.scoreSpecimen();
 
         clock.reset();
 
@@ -159,9 +159,9 @@ public class WithCamera extends LinearOpMode {
     private void initRobot() {
         drive = new Drive(hardwareMap);
 
-        scoringPerkid = new ScoringPerkid(this);
-        scoringDiff = new ScoringDiff(this);
-        scorClaw = new ScorClaw(this);
+        scorerPerkid = new ScorerPerkid(this);
+        scorerDifferential = new ScorerDifferential(this);
+        scorerClaw = new ScorerClaw(this);
 
         perkid = new Perkid(this);
         hand = new Hand(this);

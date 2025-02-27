@@ -1,57 +1,30 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
 
-
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.AIM_AT_SPIKE;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.PICK_UP;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.RIGHT_SIDE_DROP_SAMPLE;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.STRAIGHT_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_FROM_SUBMERSABLE;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.TRANSFER_POS;
-import static org.firstinspires.ftc.teamcode.Modules.PerkidConstants.VERTICAL_POS;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.AIM_AT_SPIKE;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.PICK_UP;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.RIGHT_SIDE_DROP_SAMPLE;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.STRAIGHT_POS;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRANSFER_FROM_SUBMERSABLE;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRANSFER_POS;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.VERTICAL_POS;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-import org.firstinspires.ftc.teamcode.Camera.CameraTest;
-
-@Config
-class PerkidConstants {
-   /* public static double MAX_POS = 0.77;
-    */
-    public static double VERTICAL_POS = 0.63;
-    public static double STRAIGHT_POS = 0.39;
-    /*
-    public static double TRANSFER_POS = 0.71;
-    public static double AIM_POS = 0.37;
-    public static double TAKE_POS = 0.27;
-    public static double LOOK_POS = 0.5;*/
-    public static double TRANSFER_POS = 0.705;
-    public static double LOOK_POS = 0.48;
-    public static double AIM_AT_SPIKE = 0.55;
-    public static double TRANSFER_FROM_SUBMERSABLE = 0.53;
-    //0.37
-    public static double PICK_UP = 0.37;
-    public static double RIGHT_SIDE_DROP_SAMPLE = 0.67;
-}
+import org.firstinspires.ftc.teamcode.camera.CameraTest;
 
 public class Perkid {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
-    DcMotor extend;
     CameraTest cam;
     ServoImplEx left, right;
 
     enum Mode {
         SCORE_POSITION,
-        PICK_POSITION,
-        AIM_POSITION,
-        UP_POSITION,
-
         TRANSFER,
         LOOK,
         PICK_UP,
@@ -73,26 +46,6 @@ public class Perkid {
 
     public void teleop() {
         switch (currentMode) {
-        /*    case SCORE_POSITION:
-                left.setPosition(TRANSFER_POS);
-                right.setPosition(TRANSFER_POS);
-                break;
-            case PICK_POSITION:
-                left.setPosition(TAKE_POS);
-                right.setPosition(TAKE_POS);
-                break;
-            case AIM_POSITION:
-                left.setPosition(AIM_POS);
-                right.setPosition(AIM_POS);
-                break;
-            case UP_POSITION:
-                left.setPosition(STRAIGHT_POS);
-                right.setPosition(STRAIGHT_POS);
-                break;
-            case LOOK:
-                left.setPosition(LOOK_POS);
-                right.setPosition(LOOK_POS);
-                break;*/
             case TRANSFER:
                 left.setPosition(PerkidConstants.TRANSFER_POS);
                 right.setPosition(PerkidConstants.TRANSFER_POS);
@@ -145,6 +98,11 @@ public class Perkid {
         right.setPosition(RIGHT_SIDE_DROP_SAMPLE);
     }
 
+    public void relax() {
+        left.setPwmDisable();
+        right.setPwmDisable();
+    }
+
     public void setAngle(double angle) {
         double position = angleToPosition(angle);
 
@@ -158,5 +116,20 @@ public class Perkid {
         position = (VERTICAL_POS - STRAIGHT_POS) * 2 * position + 2 * STRAIGHT_POS - VERTICAL_POS;
 
         return position;
+    }
+
+    @Config
+    static
+    class PerkidConstants {
+        public static double VERTICAL_POS = 0.63;
+        public static double STRAIGHT_POS = 0.39;
+
+        public static double TRANSFER_POS = 0.705;
+        public static double LOOK_POS = 0.48;
+        public static double AIM_AT_SPIKE = 0.55;
+        public static double TRANSFER_FROM_SUBMERSABLE = 0.53;
+
+        public static double PICK_UP = 0.37;
+        public static double RIGHT_SIDE_DROP_SAMPLE = 0.67;
     }
 }

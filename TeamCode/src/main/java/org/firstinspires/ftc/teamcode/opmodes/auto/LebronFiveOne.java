@@ -1,69 +1,68 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.HOLD_POS;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL_OFFSET;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.RELAX_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.SPECIMEN_ADD_FORCE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_START;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.ANGLE_LEFT_TO_HUMAN;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.ANGLE_MIDDLE_TO_HUMAN;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.ANGLE_TO_BASKET;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.ANGLE_TO_LEFT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.ANGLE_TO_MIDDLE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.ANGLE_TO_RIGHT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.DELTA_1ST;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.DELTA_2ND;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.DELTA_3RD;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.DELTA_4TH;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.DELTA_5TH;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.DIFF_ROTATION_LEFT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.DIFF_ROTATION_MIDDLE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.DIFF_ROTATION_RIGHT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.DIST_SCOR_CLAW;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.EXTEND_CLOSED;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.EXTEND_LEFT_TO_HUMAN;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.EXTEND_MIDDLE_TO_HUMAN;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.EXTEND_TEMP_CLOSED;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.EXTEND_TO_LEFT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.EXTEND_TO_MIDDLE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.EXTEND_TO_RIGHT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.FORCE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.HAND_LEFT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.HAND_MIDDLE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.HAND_RIGHT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.LIFT_SCORE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.MIDDLE_STOP_POINT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.POINT_BASKET_SLOWDOWN;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.POINT_PERKID_START_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.POINT_PERKID_START_1;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.POINT_PERKID_TO_SCORE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.POINT_SPECIMEN_START_SCORE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.POINT_SPECIMEN_START_SCORE_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.POINT_START_RAISING_LIFT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.RIGHT_STOP_POINT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.SLOWDOWN_FORCE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.SLOWDOWN_POINT_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.SLOWDOWN_POINT_1;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.SLOWDOWN_POINT_2;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_AT_BASKET;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_AT_LEFT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_AT_MIDDLE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_AT_RIGHT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_DROP_SAMPLE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_EXTEND_HALF_CLOSE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_FOR_CLAW_RELEASE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_FOR_HUMAN_ADJUST;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_FOR_LEFT_ROTATION;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_FOR_MIDDLE_ROTATION;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_FOR_SLOWDOWN;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_HOLD_POS_AT_RUNG;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_PICK_UP;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_RELAX_CLAW;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstantsYellowClip.WAIT_SPECIMEN_PICK_UP;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_POINT_RUNG;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_LEFT_TO_HUMAN;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_MIDDLE_TO_HUMAN;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_BASKET;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_LEFT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_MIDDLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_1ST;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_2ND;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_3RD;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_4TH;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_5TH;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DIFF_ROTATION_LEFT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DIFF_ROTATION_MIDDLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DIFF_ROTATION_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DIST_SCOR_CLAW;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.EXTEND_CLOSED;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.EXTEND_LEFT_TO_HUMAN;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.EXTEND_MIDDLE_TO_HUMAN;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.EXTEND_TEMP_CLOSED;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.EXTEND_TO_LEFT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.EXTEND_TO_MIDDLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.EXTEND_TO_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.FORCE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.HAND_LEFT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.HAND_MIDDLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.HAND_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.LIFT_SCORE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.MIDDLE_STOP_POINT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_BASKET_SLOWDOWN;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_START_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_START_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_TO_SCORE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_SPECIMEN_START_SCORE_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_START_RAISING_LIFT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.RIGHT_STOP_POINT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_FORCE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_2;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AT_BASKET;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AT_LEFT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AT_MIDDLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AT_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_DROP_SAMPLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_EXTEND_HALF_CLOSE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_CLAW_RELEASE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_HUMAN_ADJUST;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_LEFT_ROTATION;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_MIDDLE_ROTATION;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_SLOWDOWN;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_HOLD_POS_AT_RUNG;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_PICK_UP;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_RELAX_CLAW;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_SPECIMEN_PICK_UP;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -76,34 +75,36 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Modules.Claw;
-import org.firstinspires.ftc.teamcode.Modules.Differential;
-import org.firstinspires.ftc.teamcode.Modules.Extend;
-import org.firstinspires.ftc.teamcode.Modules.Hand;
-import org.firstinspires.ftc.teamcode.Modules.LiftError;
-import org.firstinspires.ftc.teamcode.Modules.Perkid;
-import org.firstinspires.ftc.teamcode.Modules.ScorClaw;
-import org.firstinspires.ftc.teamcode.Modules.ScoringDiff;
-import org.firstinspires.ftc.teamcode.Modules.ScoringPerkid;
+import org.firstinspires.ftc.teamcode.modules.Claw;
+import org.firstinspires.ftc.teamcode.modules.Differential;
+import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Hand;
+import org.firstinspires.ftc.teamcode.modules.Lift;
+import org.firstinspires.ftc.teamcode.modules.Perkid;
+import org.firstinspires.ftc.teamcode.modules.ScorerClaw;
+import org.firstinspires.ftc.teamcode.modules.ScorerLinkage;
+import org.firstinspires.ftc.teamcode.modules.ScorerDifferential;
+import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.auto.Drive;
 
 import java.io.IOException;
 
-@Autonomous(name = "PreloadLebronLaw")
-public class PreloadFreakLawYellowClip extends LinearOpMode {
+@Autonomous(name = "Lebron 5+1")
+public class LebronFiveOne extends LinearOpMode {
     private Drive drive;
-    private ScoringPerkid scoringPerkid;
-    private ScoringDiff scoringDiff;
-    private ScorClaw scorClaw;
+    private ScorerPerkid scorerPerkid;
+    private ScorerDifferential scorerDifferential;
+    private ScorerClaw scorerClaw;
 
     private Perkid perkid;
     private Hand hand;
     private Differential diff;
     private Claw claw;
     private Extend extend;
-    private LiftError lift;
+    private Lift lift;
+    private ScorerLinkage scorerLinkage;
     private DistanceSensor distInClaw;
     private DigitalChannel frontSensor;
     private static boolean relaxFlag = false;
@@ -128,23 +129,14 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
         try {
             trajToRungs = drive.buildTrajectory("traj10transposed.json")
                     .addTurnMarker(0, -90)
-                    .addSpatialMarker(AIM_SPECIMEN_0, () -> {
-                        scoringPerkid.transferSpecimen();
-                        scoringDiff.pickSpecimen();
-                        perkid.liftSample();
-                        hand.setPosition(0.5);
-                        diff.aim();
-                        claw.close();
+                    .addSpatialMarker(POINT_MOVE_PERKID_0, () -> {
+                        scorerPerkid.scoreSpecimen();
+                        scorerDifferential.scoreSpecimen();
+                        lift.setSpecimen();
+                        scorerLinkage.extend();
                     })
-                    .addSpatialMarker(AIM_SPECIMEN_1, () -> {
-                        scoringDiff.transferSpecimen();
-                    })
-                    .addSpatialMarker(SLOWDOWN_POINT_1, () -> {
-                        drive.setForce(SLOWDOWN_FORCE);
-                    })
-                    .addSpatialMarker(POINT_SPECIMEN_START_SCORE, () -> {
-                        scoringPerkid.scoreSpecimen();
-                        scoringDiff.scoreSpecimen();
+                    .addSpatialMarker(SLOWDOWN_POINT_RUNG, () -> {
+                        drive.setForce(FreakLawConstants.SLOWDOWN_FORCE);
                     })
                     .waitForAt(1, HOLD_POS, -90)
                     .plusPoint(2, new Vector2d(0, DELTA_1ST))
@@ -164,9 +156,9 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
                         clock.reset();
                     })
                     .addSpatialMarker(INITIAL, () -> {
-                        scoringPerkid.pickSpecimen();
-                        scoringDiff.pickSpecimen();
-                        scorClaw.open();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
+                        scorerClaw.open();
                     })
                     .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
                         hand.setPosition(0.5);
@@ -289,16 +281,16 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
                     // RIGHT TO HUMAN
                     .addTurnMarker(2, -90)
                     .addSpatialMarker(2.01, () -> {
-                        scorClaw.open();
+                        scorerClaw.open();
                     })
                     .addSpatialMarker(2.1, () -> {
                         extend.setReference(EXTEND_TEMP_CLOSED);
                         hand.dropOverRightSide();
                         perkid.dropOverRightSide();
                         diff.dropOverRightSide();
-                        scoringPerkid.pickSpecimen();
-                        scoringDiff.pickSpecimen();
-                        scorClaw.open();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
+                        scorerClaw.open();
                     })
                     .addSpatialMarker(2 + SLOWDOWN_POINT_0, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
@@ -318,13 +310,13 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
                     .build();
             buildSpecimenToRung = drive.buildTrajectory("traj13transposed.json")
                     .addSpatialMarker(0, () -> {
-                        scoringDiff.liftSpecimenFromWall();
+                        scorerDifferential.liftSpecimenFromWall();
                     })
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(POINT_PERKID_START_0, () -> {
-                        scoringPerkid.transferSpecimen();
-                        scoringDiff.pickSpecimen();
-                        scorClaw.close();
+                        scorerPerkid.transferSpecimen();
+                        scorerDifferential.pickSpecimen();
+                        scorerClaw.close();
 
                         perkid.liftSample();
                         hand.setPosition(0.5);
@@ -335,11 +327,11 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .addSpatialMarker(POINT_PERKID_START_1, () -> {
-                        scoringDiff.transferSpecimen();
+                        scorerDifferential.transferSpecimen();
                     })
                     .addSpatialMarker(POINT_SPECIMEN_START_SCORE_0, () -> {
-                        scoringPerkid.scoreSpecimen();
-                        scoringDiff.scoreSpecimen();
+                        scorerPerkid.scoreSpecimen();
+                        scorerDifferential.scoreSpecimen();
                     })
                     .waitForAt(1, WAIT_HOLD_POS_AT_RUNG, -90);
             trajSpecimenToRung = buildSpecimenToRung
@@ -367,9 +359,9 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
                         clock.reset();
                     })
                     .addSpatialMarker(INITIAL, () -> {
-                        scoringPerkid.pickSpecimen();
-                        scoringDiff.pickSpecimen();
-                        scorClaw.open();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
+                        scorerClaw.open();
                     })
                     .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
                         hand.setPosition(0.5);
@@ -400,8 +392,8 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
             trajSampleToBasket = drive.buildTrajectory("traj19.json")
                     .addTurnMarker(0, -180)
                     .addSpatialMarker(POINT_PERKID_TO_SCORE, () -> {
-                        scoringPerkid.scoreSample();
-                        scoringDiff.scoreSample();
+                        scorerPerkid.scoreSample();
+                        scorerDifferential.scoreSample();
                     })
                     .addSpatialMarker(POINT_START_RAISING_LIFT, () -> {
                         lift.setReference(LIFT_SCORE);
@@ -411,17 +403,17 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
                     })
                     .waitForAt(1, WAIT_AT_BASKET, -180)
                     .addTimeMarker(WAIT_DROP_SAMPLE - 100, () -> {
-                        scoringDiff.slamDunkSample();
+                        scorerDifferential.slamDunkSample();
                     })
                     .addTimeMarker(WAIT_DROP_SAMPLE, () -> {
-                        scorClaw.open();
+                        scorerClaw.open();
                     })
                     .addTimeMarker(WAIT_FOR_SLOWDOWN, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .waitForAt(2, 400, ANGLE_TO_BASKET)
                     .addTimeMarker(0, () -> {
-                        scoringPerkid.pickSpecimen();
+                        scorerPerkid.pickSpecimen();
                         lift.setReference(0);
                     })
                     .build();
@@ -432,7 +424,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
         drive.setPoseEstimate(new Pose2d(trajToRungs.get(0).point0, Math.toRadians(270)));
         drive.setForce(FORCE);
 
-        scorClaw.close();
+        scorerClaw.close();
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("extend_reference", extend.getReference());
@@ -472,7 +464,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 drive.setForce(FORCE);
                 relaxFlag = false;
             }
@@ -496,7 +488,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
             }
         }
 
-        scorClaw.close();
+        scorerClaw.close();
 
         drive.setForce(FORCE);
 
@@ -520,7 +512,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 relaxFlag = false;
             }
 
@@ -538,7 +530,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
             }
         }
 
-        scorClaw.close();
+        scorerClaw.close();
 
         drive.setForce(FORCE);
 
@@ -562,7 +554,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 relaxFlag = false;
             }
 
@@ -580,7 +572,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
             }
         }
 
-        scorClaw.close();
+        scorerClaw.close();
 
         drive.setForce(FORCE);
 
@@ -604,7 +596,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 relaxFlag = false;
             }
 
@@ -622,7 +614,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
             }
         }
 
-        scorClaw.close();
+        scorerClaw.close();
 
         drive.setForce(FORCE);
 
@@ -646,7 +638,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 relaxFlag = false;
                 drive.setForce(FORCE);
             }
@@ -665,7 +657,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
             }
         }
 
-        scorClaw.close();
+        scorerClaw.close();
 
         drive.setForce(1);
 
@@ -681,9 +673,9 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
     private void initRobot() {
         drive = new Drive(hardwareMap);
 
-        scoringPerkid = new ScoringPerkid(this);
-        scoringDiff = new ScoringDiff(this);
-        scorClaw = new ScorClaw(this);
+        scorerPerkid = new ScorerPerkid(this);
+        scorerDifferential = new ScorerDifferential(this);
+        scorerClaw = new ScorerClaw(this);
 
         perkid = new Perkid(this);
         hand = new Hand(this);
@@ -691,7 +683,7 @@ public class PreloadFreakLawYellowClip extends LinearOpMode {
         claw = new Claw(this);
 
         extend = new Extend(this);
-        lift = new LiftError(this);
+        lift = new Lift(this);
         distInClaw = hardwareMap.get(DistanceSensor.class, "ScorClawDist");
         frontSensor = hardwareMap.get(DigitalChannel.class, "DistanceFront");
 

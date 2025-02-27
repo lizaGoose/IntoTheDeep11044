@@ -1,36 +1,22 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.HandConstants.FORWARD;
-import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RANGE;
-import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RANGE_END;
-import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RANGE_START;
-import static org.firstinspires.ftc.teamcode.Modules.HandConstants.RIGHT_SIDE_DROP_SAMPLE;
-import static org.firstinspires.ftc.teamcode.Modules.HandConstants.ROTATION_SPEED;
+import static org.firstinspires.ftc.teamcode.modules.Hand.HandConstants.FORWARD;
+import static org.firstinspires.ftc.teamcode.modules.Hand.HandConstants.RANGE;
+import static org.firstinspires.ftc.teamcode.modules.Hand.HandConstants.RANGE_END;
+import static org.firstinspires.ftc.teamcode.modules.Hand.HandConstants.RANGE_START;
+import static org.firstinspires.ftc.teamcode.modules.Hand.HandConstants.RIGHT_SIDE_DROP_SAMPLE;
+import static org.firstinspires.ftc.teamcode.modules.Hand.HandConstants.ROTATION_SPEED;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Camera.CameraTest;
+import org.firstinspires.ftc.teamcode.camera.CameraTest;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
-
-@Config
-class HandConstants {
-    public static double RANGE_CENTER = 0.24;
-    public static double RANGE_SERVO = 0.24;
-    public static double RANGE_START = RANGE_CENTER - RANGE_SERVO;
-    public static double RANGE_END = RANGE_CENTER + RANGE_SERVO;
-    public static double RANGE = 35;
-
-    public static double ROTATION_SPEED = 0.002;
-    public static double RIGHT_SIDE_DROP_SAMPLE = 0;
-    public static double FORWARD = 0.5;
-}
 
 public class Hand {
     LinearOpMode linearOpMode;
@@ -99,6 +85,10 @@ public class Hand {
         hand.setPosition(RIGHT_SIDE_DROP_SAMPLE);
     }
 
+    public void relax() {
+        hand.setPwmDisable();
+    }
+
     public double getAngle() {
         double position = hand.getPosition();
 
@@ -113,5 +103,19 @@ public class Hand {
 
     public void resetTimer() {
         timer.reset();
+    }
+
+    @Config
+    static
+    class HandConstants {
+        public static double RANGE_CENTER = 0.24;
+        public static double RANGE_SERVO = 0.24;
+        public static double RANGE_START = RANGE_CENTER - RANGE_SERVO;
+        public static double RANGE_END = RANGE_CENTER + RANGE_SERVO;
+        public static double RANGE = 35;
+
+        public static double ROTATION_SPEED = 0.002;
+        public static double RIGHT_SIDE_DROP_SAMPLE = 0;
+        public static double FORWARD = 0.5;
     }
 }

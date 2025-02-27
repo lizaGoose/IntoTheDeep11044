@@ -4,17 +4,15 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Modules.Lift;
-import org.firstinspires.ftc.teamcode.Modules.LiftError;
+import org.firstinspires.ftc.teamcode.modules.Lift;
 
 @Config
 @TeleOp(group = "test")
 public class LiftTest extends OpMode {
-    private LiftError hangLift;
+    private Lift hangLift;
     private FtcDashboard dashboard;
     private MultipleTelemetry mulTelemetry;
     private double lastReference = 0;
@@ -23,7 +21,7 @@ public class LiftTest extends OpMode {
 
     @Override
     public void init() {
-        hangLift = new LiftError(this);
+        hangLift = new Lift(this);
         dashboard = FtcDashboard.getInstance();
         mulTelemetry = new MultipleTelemetry(dashboard.getTelemetry(), telemetry);
     }

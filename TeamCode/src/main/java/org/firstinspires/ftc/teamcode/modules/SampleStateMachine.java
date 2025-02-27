@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.SensorsConstants.EXTEND_AMPS;
-import static org.firstinspires.ftc.teamcode.Modules.TeleOpConstants.OFFSET_CLAW_CLOSE;
-import static org.firstinspires.ftc.teamcode.Modules.TeleOpConstants.PICKED_UNPICKED_PICK_BLOCK;
-import static org.firstinspires.ftc.teamcode.Modules.TeleOpConstants.SET_POS_TO_ZERO_SAMPLE;
-import static org.firstinspires.ftc.teamcode.Modules.TeleOpConstants.WAIT_UNTIL_SPECIMEN_PICKUP;
+import static org.firstinspires.ftc.teamcode.modules.SensorsConstants.EXTEND_AMPS;
+import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.OFFSET_CLAW_CLOSE;
+import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.PICKED_UNPICKED_PICK_BLOCK;
+import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.SET_POS_TO_ZERO_SAMPLE;
+import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.WAIT_UNTIL_SPECIMEN_PICKUP;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -43,10 +43,10 @@ public class SampleStateMachine {
     Extend extend;
     Claw claw;
     Perkid perkid;
-    ScoringPerkid scorPerkid;
-    ScoringDiff scorDiff;
+    ScorerPerkid scorPerkid;
+    ScorerDifferential scorDiff;
     Hand hand;
-    ScorClaw scorClaw;
+    ScorerClaw scorerClaw;
     Gamepad gamepad1, gamepad2;
     Differential diff;
     // SampleDetectionCameraClass cam;
@@ -55,7 +55,7 @@ public class SampleStateMachine {
     ElapsedTime pickedUnpickedTimer, fromClawToClawTimer, dropSpecimenTimer, goToInitialFromScoreSample, humanDropPickSpecTimer, goFromScoreSpecTimer, fromTransferSpecimenToScore, forgetPosTimer, rightSideDropSampleTimer;
     private final ElapsedTime specimenPickedUp, specimenToTransfer;
     public DistanceSensor distanceSensor, distInClaw;
-    LiftError lift;
+    Lift lift;
     // TODO: too many booleans
     boolean sampleIsScored, startTimer, startTimerFromClawToClaw, startGoFromScorSpec, startFromClawToClaw, startForgetPosTimer, stopForgetPosTimer, startHumanDropPickSpec;
     boolean startPickUpBlock;
@@ -92,12 +92,12 @@ public class SampleStateMachine {
         extend = new Extend(linearOpMode);
         claw = new Claw(linearOpMode);
         perkid = new Perkid(linearOpMode);
-        scorPerkid = new ScoringPerkid(linearOpMode);
-        scorDiff = new ScoringDiff(linearOpMode);
+        scorPerkid = new ScorerPerkid(linearOpMode);
+        scorDiff = new ScorerDifferential(linearOpMode);
         hand = new Hand(linearOpMode);
-        scorClaw = new ScorClaw(linearOpMode);
+        scorerClaw = new ScorerClaw(linearOpMode);
         diff = new Differential(linearOpMode);
-        lift = new LiftError(linearOpMode);
+        lift = new Lift(linearOpMode);
         hang = new Hang(linearOpMode);
         dt = new DriveTrain(linearOpMode);
         //cam = new SampleDetectionCameraClass(linearOpMode);
@@ -131,13 +131,13 @@ public class SampleStateMachine {
         scorPerkid.teleop();
         scorDiff.teleop();
         hand.teleop();
-        scorClaw.teleop();
+        scorerClaw.teleop();
         lift.teleop();
         diff.teleop(0);
         dt.teleOp(extend.getPosition() / extend.getMaxPosition());
         hang.control();
 
-        lift.currentMode = LiftError.Mode.DEFAULT;
+        lift.currentMode = Lift.Mode.DEFAULT;
         if (gamepad2.left_bumper || gamepad1.right_stick_button) {
             extend.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             extend.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -152,8 +152,8 @@ public class SampleStateMachine {
             stopForgetPosTimer = false;
         }
         if (hang.hang.getCurrentPosition() >= 500) {
-            scorPerkid.currentMode = ScoringPerkid.Mode.TRANSFER;
-            scorDiff.currentMode = ScoringDiff.Mode.GET_FROM_CLAW;
+            scorPerkid.currentMode = ScorerPerkid.Mode.TRANSFER;
+            scorDiff.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
             extend.setHang();
             state = State.EMPTY;
         }
@@ -187,10 +187,10 @@ public class SampleStateMachine {
 
                     perkid.currentMode = Perkid.Mode.TRANSFER;
                     claw.currentMode = Claw.Mode.TRANSFER;
-                    scorPerkid.currentMode = ScoringPerkid.Mode.PICK_SPEC;
-                    scorDiff.currentMode = ScoringDiff.Mode.PICK_SPEC;
+                    scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
+                    scorDiff.currentMode = ScorerDifferential.Mode.PICK_SPEC;
                     hand.currentMode = Hand.Mode.FORWARD;
-                    scorClaw.currentMode = ScorClaw.Mode.DROP;
+                    scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                     diff.currentMode = Differential.Mode.TRANSFER;
 
                     //lift.pos = 0;
@@ -208,7 +208,7 @@ public class SampleStateMachine {
                         specimenPickedUp.reset();
                     }
                     if (specimenPickedUp.milliseconds() > WAIT_UNTIL_SPECIMEN_PICKUP) {
-                        scorDiff.currentMode = ScoringDiff.Mode.AIM_POS;
+                        scorDiff.currentMode = ScorerDifferential.Mode.AIM_POS;
 
                     }
                 }
@@ -221,9 +221,9 @@ public class SampleStateMachine {
                 lift.setReference(0);
                 //diff.currentMode = Differential.Mode.VISION_HUYNYA;
                 diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
-                scorPerkid.currentMode = ScoringPerkid.Mode.TRANSFER;
-                scorClaw.currentMode = ScorClaw.Mode.DROP;
-                scorDiff.currentMode = ScoringDiff.Mode.GET_FROM_CLAW;
+                scorPerkid.currentMode = ScorerPerkid.Mode.TRANSFER;
+                scorerClaw.currentMode = ScorerClaw.Mode.DROP;
+                scorDiff.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
                 hand.currentMode = Hand.Mode.DRIVER_CONTROL;
                 claw.currentMode = Claw.Mode.DROP;
                 // lift.pos = 0;
@@ -287,9 +287,9 @@ public class SampleStateMachine {
                         pickedUnpickedTimer.reset();
                     }
                 }
-                scorPerkid.currentMode = ScoringPerkid.Mode.PICK_SPEC;
-                scorDiff.currentMode = ScoringDiff.Mode.PICK_SPEC;
-                scorClaw.currentMode = ScorClaw.Mode.DROP;
+                scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
+                scorDiff.currentMode = ScorerDifferential.Mode.PICK_SPEC;
+                scorerClaw.currentMode = ScorerClaw.Mode.DROP;
 
                 if (gamepad1.circle) {
                     rightSideDropSampleTimer.reset();
@@ -314,7 +314,7 @@ public class SampleStateMachine {
 
                 perkid.currentMode = Perkid.Mode.PICK_UP;
                 diff.currentMode = Differential.Mode.PICK_UP;
-                scorDiff.currentMode = ScoringDiff.Mode.GET_FROM_CLAW;
+                scorDiff.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
 
 
                 if (pickedUnpickedTimer.milliseconds() > 400) {
@@ -355,11 +355,11 @@ public class SampleStateMachine {
                 startFromClawToClaw = false;
                 startTimerFromClawToClaw = false;
                 if (fromClawToClawTimer.milliseconds() <= 500 && !startedMovingExtendBack) {
-                    scorClaw.currentMode = ScorClaw.Mode.DROP;
+                    scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                     claw.currentMode = Claw.Mode.LIGHT;
                     hand.currentMode = Hand.Mode.FORWARD;
-                    scorDiff.currentMode = ScoringDiff.Mode.GET_FROM_CLAW;
-                    scorPerkid.currentMode = ScoringPerkid.Mode.PICK_SPEC;
+                    scorDiff.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
+                    scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
                     diff.currentMode = Differential.Mode.TRANSFER;
                     perkid.currentMode = Perkid.Mode.TRANSFER;
                 } else if (fromClawToClawTimer.milliseconds() >500 && fromClawToClawTimer.milliseconds() <= 800 && !startedMovingExtendBack) {
@@ -380,11 +380,11 @@ public class SampleStateMachine {
                 if (fromClawToClawTimer.milliseconds() > 0 && fromClawToClawTimer.milliseconds() <= 100 + OFFSET_CLAW_CLOSE
                         && startedMovingExtendBack
                         && stoppedMovingExtendBack) {
-                    scorPerkid.currentMode = ScoringPerkid.Mode.TRANSFER;
+                    scorPerkid.currentMode = ScorerPerkid.Mode.TRANSFER;
                 } else if (fromClawToClawTimer.milliseconds() > 50 + OFFSET_CLAW_CLOSE && fromClawToClawTimer.milliseconds() <= 150 + OFFSET_CLAW_CLOSE
                         && startedMovingExtendBack
                         && stoppedMovingExtendBack) {
-                    scorClaw.currentMode = ScorClaw.Mode.PICK;
+                    scorerClaw.currentMode = ScorerClaw.Mode.PICK;
                     extend.currentMode = Extend.Mode.PURE_PID;
                     extend.resetEncoder();
                     extend.setZero();
@@ -416,16 +416,16 @@ public class SampleStateMachine {
                 extend.currentMode = Extend.Mode.DRIVER_CONTROL;
                 perkid.currentMode = Perkid.Mode.TRANSFER;
                 claw.currentMode = Claw.Mode.TRANSFER;
-                scorPerkid.currentMode = ScoringPerkid.Mode.PICK_SPEC;
-                scorDiff.currentMode = ScoringDiff.Mode.PICK_SPEC;
+                scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
+                scorDiff.currentMode = ScorerDifferential.Mode.PICK_SPEC;
                 hand.currentMode = Hand.Mode.FORWARD;
                 diff.currentMode = Differential.Mode.TRANSFER;
                 //    lift.currentMode = LiftError.Mode.NULL_POSE;
 
                 if (dropSpecimenTimer.milliseconds() <= 400) {
-                    scorClaw.currentMode = ScorClaw.Mode.PICK;
+                    scorerClaw.currentMode = ScorerClaw.Mode.PICK;
                 } else {
-                    scorClaw.currentMode = ScorClaw.Mode.DROP;
+                    scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                 }
                 if (gamepad2.triangle || gamepad1.triangle) {
                     state = State.INITIAL;
@@ -456,8 +456,8 @@ public class SampleStateMachine {
                 break;
             case SCORE_SAMPLE:
                 startedMovingExtendBack = false;
-                scorPerkid.currentMode = ScoringPerkid.Mode.SCORE_SAMP;
-                scorDiff.currentMode = ScoringDiff.Mode.SCORE_SAMP;
+                scorPerkid.currentMode = ScorerPerkid.Mode.SCORE_SAMP;
+                scorDiff.currentMode = ScorerDifferential.Mode.SCORE_SAMP;
                 // lift.pos = 1330;
                 if (gamepad2.right_bumper || gamepad1.circle) {
                     sampleIsScored = true;
@@ -484,7 +484,7 @@ public class SampleStateMachine {
                     state = State.LOOK_FOR_BLOCK;
                 }*/
                 if (sampleIsScored) {
-                    scorClaw.currentMode = ScorClaw.Mode.DROP;
+                    scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                     diff.rotation = 0;
                     if (Math.abs(gamepad1.left_stick_y) >= 0.4) {
                         goToInitialFromScoreSample.reset();

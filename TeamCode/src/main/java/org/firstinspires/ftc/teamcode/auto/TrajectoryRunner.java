@@ -38,7 +38,7 @@ public class TrajectoryRunner {
 
     public static double kP = 0.25;
     public static double kCentripetal = 0.035;
-    public static double FORCE = 0.5;
+    public static double FORCE = 0.65;
     private double force = FORCE; // TODO: REMOVE
     public static double VELOCITY_THRESHOLD = 0.001;
     public static double NEXT_POINT_THRESHOLD = 0.1;

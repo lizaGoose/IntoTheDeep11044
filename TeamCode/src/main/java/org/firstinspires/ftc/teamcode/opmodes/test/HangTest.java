@@ -7,8 +7,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Modules.Hang;
-import org.firstinspires.ftc.teamcode.Modules.LiftError;
+import org.firstinspires.ftc.teamcode.modules.Hang;
 
 @Config
 @TeleOp(group = "test")

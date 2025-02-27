@@ -1,16 +1,16 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.PICK_UP;
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.ROTATION_SPEED;
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.DISCRETE_ROTATION;
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.HORIZONTAL_DOWN;
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.RIGHT_SIDE_DROP_SAMPLE;
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.RIGHT_SIDE_DROP_SAMPLE_ROTATION;
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.SCORE_SAMP;
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.TRANSFER;
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.FORWARD;
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.DOWN;
-import static org.firstinspires.ftc.teamcode.Modules.DifferentialConstants.TRANSFER_ROTATION;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.PICK_UP;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.ROTATION_SPEED;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.DISCRETE_ROTATION;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.HORIZONTAL_DOWN;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.RIGHT_SIDE_DROP_SAMPLE;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.RIGHT_SIDE_DROP_SAMPLE_ROTATION;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.SCORE_SAMP;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.TRANSFER;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.FORWARD;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.DOWN;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.TRANSFER_ROTATION;
 
 
 import com.acmerobotics.dashboard.config.Config;
@@ -22,27 +22,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-@Config
-class DifferentialConstants {
-    public static double HORIZONTAL_DOWN = 0.44;
-    public static double PICK_UP = 0.53;
-    public static double PICK_UP_ANGLE = -45;
-    public static double TRANSFER = 0.98;
-    public static double TRANSFER_ROTATION = 0;
-    public static double SCORE_SAMP = 0.68;
-
-    public static double DISCRETE_ROTATION = 0.15;
-
-    public static double ROTATION_SPEED = 0.35;
-    public static double FORWARD = 0.79;
-    public static double DOWN = 0.375;
-    public static double RIGHT_SIDE_DROP_SAMPLE = 0.975;
-    public static double RIGHT_SIDE_DROP_SAMPLE_ROTATION = 0.3;
-}
 
 @Config
 public class Differential {
@@ -119,23 +100,23 @@ public class Differential {
                 }
                 leftButonState = gamepad2.left_bumper;
 
-                if (!( gamepad2.left_bumper ) && !( gamepad2.right_bumper )) {
+                if (!(gamepad2.left_bumper) && !(gamepad2.right_bumper)) {
                     rotationOfDiff = 0;
                 }
                 //rotationOfDiff =  -gamepad2.right_trigger + gamepad2.left_trigger;
 
-                rotation = rotation - Math.pow(( rotationOfDiff ) / 2, 3) * timer.milliseconds() * ROTATION_SPEED;
+                rotation = rotation - Math.pow((rotationOfDiff) / 2, 3) * timer.milliseconds() * ROTATION_SPEED;
                 rotation = Math.max(rotation, -0.5);
                 rotation = Math.min(rotation, 0.5);
                 left.setPosition(HORIZONTAL_DOWN + rotation);
                 right.setPosition(HORIZONTAL_DOWN - rotation);
                 timer.reset();
-                if (( leftButonState == buttonState2 && gamepad2.right_bumper ) || ( buttonState3 == leftButonState && gamepad2.left_bumper )) {
+                if ((leftButonState == buttonState2 && gamepad2.right_bumper) || (buttonState3 == leftButonState && gamepad2.left_bumper)) {
                     rotationOfDiff = 0;//adb connect 192.168.43.1:5555
                 }
                 break;
             case PICK_UP:
-                rotation = rotation - Math.pow(( -gamepad2.right_trigger + gamepad2.left_trigger ) / 2, 3) * timer.milliseconds() * ROTATION_SPEED;
+                rotation = rotation - Math.pow((-gamepad2.right_trigger + gamepad2.left_trigger) / 2, 3) * timer.milliseconds() * ROTATION_SPEED;
                 rotation = Math.max(rotation, -0.5);
                 rotation = Math.min(rotation, 0.5);
                 left.setPosition(PICK_UP + rotation);
@@ -144,7 +125,7 @@ public class Differential {
 
                 break;
             case STRAIGHT_DOWN:
-                rotation = rotation - Math.pow(( -gamepad2.right_trigger + gamepad2.left_trigger ) / 2, 3) * timer.milliseconds() * ROTATION_SPEED;
+                rotation = rotation - Math.pow((-gamepad2.right_trigger + gamepad2.left_trigger) / 2, 3) * timer.milliseconds() * ROTATION_SPEED;
                 rotation = Math.max(rotation, -0.5);
                 rotation = Math.min(rotation, 0.5);
                 left.setPosition(HORIZONTAL_DOWN + rotation);
@@ -245,7 +226,7 @@ public class Differential {
     }
 
     public void aimAngle(double rotation) {
-        double angle = 90 * ( ( HORIZONTAL_DOWN - DOWN ) / ( FORWARD - DOWN ) - 1 );
+        double angle = 90 * ((HORIZONTAL_DOWN - DOWN) / (FORWARD - DOWN) - 1);
         setAngleRotation(angle, rotation);
     }
 
@@ -259,7 +240,7 @@ public class Differential {
     }
 
     public void pickUpAngle(double rotation) {
-        double angle = 90 * ( ( PICK_UP - DOWN ) / ( FORWARD - DOWN ) - 1 );
+        double angle = 90 * ((PICK_UP - DOWN) / (FORWARD - DOWN) - 1);
         setAngleRotation(angle, rotation);
     }
 
@@ -278,7 +259,7 @@ public class Differential {
     }
 
     public void transferAngle() {
-        double angle = 90 * ( ( TRANSFER - DOWN ) / ( FORWARD - DOWN ) - 1 );
+        double angle = 90 * ((TRANSFER - DOWN) / (FORWARD - DOWN) - 1);
         setAngleRotation(angle, TRANSFER_ROTATION);
     }
 
@@ -304,12 +285,31 @@ public class Differential {
     }
 
     public List<Double> angleRotationToPosition(double angle, double rotation) {
-        double leftDiff = ( ( angle + rotation ) / 90 + 1 ) / 2;
-        double rightDiff = ( ( angle - rotation ) / 90 + 1 ) / 2;
+        double leftDiff = ((angle + rotation) / 90 + 1) / 2;
+        double rightDiff = ((angle - rotation) / 90 + 1) / 2;
 
-        leftDiff = ( FORWARD - DOWN ) * 2 * leftDiff + DOWN;
-        rightDiff = ( FORWARD - DOWN ) * 2 * rightDiff + DOWN;
+        leftDiff = (FORWARD - DOWN) * 2 * leftDiff + DOWN;
+        rightDiff = (FORWARD - DOWN) * 2 * rightDiff + DOWN;
 
         return Arrays.asList(leftDiff, rightDiff);
+    }
+
+    @Config
+    static
+    class DifferentialConstants {
+        public static double HORIZONTAL_DOWN = 0.44;
+        public static double PICK_UP = 0.53;
+        public static double PICK_UP_ANGLE = -45;
+        public static double TRANSFER = 0.98;
+        public static double TRANSFER_ROTATION = 0;
+        public static double SCORE_SAMP = 0.68;
+
+        public static double DISCRETE_ROTATION = 0.15;
+
+        public static double ROTATION_SPEED = 0.35;
+        public static double FORWARD = 0.79;
+        public static double DOWN = 0.375;
+        public static double RIGHT_SIDE_DROP_SAMPLE = 0.975;
+        public static double RIGHT_SIDE_DROP_SAMPLE_ROTATION = 0.3;
     }
 }

@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.Tests;
+package org.firstinspires.ftc.teamcode.opmodes.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Camera.AutoCamera;
-import org.firstinspires.ftc.teamcode.Modules.Extend;
+import org.firstinspires.ftc.teamcode.camera.AutoCamera;
+import org.firstinspires.ftc.teamcode.modules.Extend;
 
 @TeleOp
 public class TestKinematics extends LinearOpMode {

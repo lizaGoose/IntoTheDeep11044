@@ -1,10 +1,7 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
-
-import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.AUTO_PICK;
-import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.DROP;
-import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.PICK;
-import static org.firstinspires.ftc.teamcode.Modules.ScorClawConstants.VERY_DROP;
+import static org.firstinspires.ftc.teamcode.modules.ScorerClaw.ScorerClawConstants.DROP;
+import static org.firstinspires.ftc.teamcode.modules.ScorerClaw.ScorerClawConstants.PICK;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,36 +9,36 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-@Config
-class ScorClawConstants {
-    public static double AUTO_PICK = 0.99;
-    public static double PICK = 1;
-    public static double DROP = 0.49;
-    public static double VERY_DROP = 0.38;
-}
 
-public class ScorClaw {
+public class ScorerClaw {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
     ServoImplEx claw;
-//open: 0.51
-    //close: 0.76
+
+    @Config
+    public static class ScorerClawConstants {
+        public static double PICK = 1;
+        public static double DROP = 0.49;
+    }
+
     enum Mode {
         PICK,
         DROP,
         RELAX
     }
-    ScorClaw.Mode currentMode = Mode.PICK;
 
-    public ScorClaw(LinearOpMode linearOpMode){
+    ScorerClaw.Mode currentMode = Mode.PICK;
+
+    public ScorerClaw(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad2;
         claw = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "scoring_claw");
     }
-    public void teleop(){
+
+    public void teleop() {
         switch (currentMode) {
             case PICK:
-                claw.setPosition(ScorClawConstants.PICK);
+                claw.setPosition(PICK);
                 break;
             case DROP:
                 claw.setPosition(DROP);

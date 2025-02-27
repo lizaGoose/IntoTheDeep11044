@@ -8,8 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Modules.Extend;
-import org.firstinspires.ftc.teamcode.Modules.Lift;
+import org.firstinspires.ftc.teamcode.modules.Extend;
 
 @Config
 @TeleOp(group = "test")

@@ -4,8 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Modules.Differential;
-import org.firstinspires.ftc.teamcode.Modules.Perkid;
+import org.firstinspires.ftc.teamcode.modules.Perkid;
 
 @Config
 @TeleOp(group = "test")

@@ -1,15 +1,13 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.AUTO_COEFFICIENTS;
-import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.COEFFICIENTS;
-import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.HANG;
-import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.MAX_POSITION;
-import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.MIN_POSITION;
-import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.TICKS_PER_TAP;
-import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.TRANSFER;
-import static org.firstinspires.ftc.teamcode.Modules.ExtendConstants.TRANSFER_CLOSER;
+import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.AUTO_COEFFICIENTS;
+import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.COEFFICIENTS;
+import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.HANG;
+import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.MAX_POSITION;
+import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.MIN_POSITION;
+import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.TRANSFER;
+import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.TRANSFER_CLOSER;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,19 +17,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-
-@Config
-class ExtendConstants {
-    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(-0.018, 0.0, -0.000004, 0.015);
-    public static PIDFCoefficients AUTO_COEFFICIENTS = new PIDFCoefficients(-0.012, 0, -0.0005, 0);
-    public static double TICKS_PER_TAP = 30;
-
-    public static int MAX_POSITION = 260;
-    public static int MIN_POSITION = 0;
-    public static int TRANSFER = 51;
-    public static int TRANSFER_CLOSER = 45;
-    public static int HANG = 150;
-}
 
 public class Extend {
     OpMode linearOpMode;
@@ -210,5 +195,19 @@ public class Extend {
 
     public void setHang() {
         reference = HANG;
+    }
+
+    @Config
+    static
+    class ExtendConstants {
+        public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(-0.018, 0.0, -0.000004, 0.015);
+        public static PIDFCoefficients AUTO_COEFFICIENTS = new PIDFCoefficients(-0.012, 0, -0.0005, 0);
+        public static double TICKS_PER_TAP = 30;
+
+        public static int MAX_POSITION = 260;
+        public static int MIN_POSITION = 0;
+        public static int TRANSFER = 51;
+        public static int TRANSFER_CLOSER = 45;
+        public static int HANG = 150;
     }
 }

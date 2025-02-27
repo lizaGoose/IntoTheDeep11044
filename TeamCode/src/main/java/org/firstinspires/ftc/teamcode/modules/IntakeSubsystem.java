@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
 import java.util.List;
 
-public class SmartIntakeController {
+public class IntakeSubsystem {
     private final Servo verticalServoLeft, verticalServoRight;
     private final Servo horizontalServo, differentialServoLeft, differentialServoRight;
     private final DcMotorEx extendMotor;
@@ -17,7 +17,7 @@ public class SmartIntakeController {
     // 20 : 16 ratio
 
 
-    public SmartIntakeController(HardwareMap hardwareMap) {
+    public IntakeSubsystem(HardwareMap hardwareMap) {
         verticalServoLeft = hardwareMap.get(Servo.class, "verticalServoLeft");
         verticalServoRight = hardwareMap.get(Servo.class, "verticalServoRight");
         verticalServoRight.setDirection(Servo.Direction.REVERSE);

@@ -51,7 +51,7 @@ public class FreakLawConstants {
 
     public static double SLOWDOWN_FORCE = 0.15;
     public static double SLOWDOWN_POINT_0 = 0.55;
-    public static double SLOWDOWN_POINT_1 = 0.65;
+    public static double SLOWDOWN_POINT_RUNG = 0.65;
     public static double SLOWDOWN_POINT_2 = 0.77;
 
     public static int WAIT_FOR_CLAW_RELEASE = 50;

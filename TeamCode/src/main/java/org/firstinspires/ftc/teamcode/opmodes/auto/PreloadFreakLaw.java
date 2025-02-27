@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.AIM_SPECIMEN_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.HOLD_POS;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL_OFFSET;
@@ -40,7 +40,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.POIN
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.RIGHT_STOP_POINT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_FORCE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_POINT_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_POINT_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_POINT_RUNG;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_POINT_2;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_AT_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.WAIT_AT_MIDDLE;
@@ -66,14 +66,14 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Modules.Claw;
-import org.firstinspires.ftc.teamcode.Modules.Differential;
-import org.firstinspires.ftc.teamcode.Modules.Extend;
-import org.firstinspires.ftc.teamcode.Modules.Hand;
-import org.firstinspires.ftc.teamcode.Modules.Perkid;
-import org.firstinspires.ftc.teamcode.Modules.ScorClaw;
-import org.firstinspires.ftc.teamcode.Modules.ScoringDiff;
-import org.firstinspires.ftc.teamcode.Modules.ScoringPerkid;
+import org.firstinspires.ftc.teamcode.modules.Claw;
+import org.firstinspires.ftc.teamcode.modules.Differential;
+import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Hand;
+import org.firstinspires.ftc.teamcode.modules.Perkid;
+import org.firstinspires.ftc.teamcode.modules.ScorerClaw;
+import org.firstinspires.ftc.teamcode.modules.ScorerDifferential;
+import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.auto.Drive;
@@ -83,9 +83,9 @@ import java.io.IOException;
 @Autonomous
 public class PreloadFreakLaw extends LinearOpMode {
     private Drive drive;
-    private ScoringPerkid scoringPerkid;
-    private ScoringDiff scoringDiff;
-    private ScorClaw scorClaw;
+    private ScorerPerkid scorerPerkid;
+    private ScorerDifferential scorerDifferential;
+    private ScorerClaw scorerClaw;
 
     private Perkid perkid;
     private Hand hand;
@@ -115,23 +115,23 @@ public class PreloadFreakLaw extends LinearOpMode {
         try {
             trajToRungs = drive.buildTrajectory("traj10transposed.json")
                     .addTurnMarker(0, -90)
-                    .addSpatialMarker(AIM_SPECIMEN_0, () -> {
-                        scoringPerkid.transferSpecimen();
-                        scoringDiff.pickSpecimen();
+                    .addSpatialMarker(POINT_MOVE_PERKID_0, () -> {
+                        scorerPerkid.transferSpecimen();
+                        scorerDifferential.pickSpecimen();
                         perkid.liftSample();
                         hand.setPosition(0.5);
                         diff.aim();
                         claw.close();
                     })
-                    .addSpatialMarker(AIM_SPECIMEN_1, () -> {
-                        scoringDiff.transferSpecimen();
+                    .addSpatialMarker(POINT_MOVE_PERKID_1, () -> {
+                        scorerDifferential.transferSpecimen();
                     })
-                    .addSpatialMarker(SLOWDOWN_POINT_1, () -> {
+                    .addSpatialMarker(SLOWDOWN_POINT_RUNG, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .addSpatialMarker(POINT_SPECIMEN_START_SCORE, () -> {
-                        scoringPerkid.scoreSpecimen();
-                        scoringDiff.scoreSpecimen();
+                        scorerPerkid.scoreSpecimen();
+                        scorerDifferential.scoreSpecimen();
                     })
                     .waitForAt(1, HOLD_POS, -90)
                     .plusPoint(2, new Vector2d(0, DELTA_1ST))
@@ -151,9 +151,9 @@ public class PreloadFreakLaw extends LinearOpMode {
                         clock.reset();
                     })
                     .addSpatialMarker(INITIAL, () -> {
-                        scoringPerkid.pickSpecimen();
-                        scoringDiff.pickSpecimen();
-                        scorClaw.open();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
+                        scorerClaw.open();
 
                         // hand.setPosition(0.5);
                         // perkid.transfer();
@@ -291,16 +291,16 @@ public class PreloadFreakLaw extends LinearOpMode {
                     // RIGHT TO HUMAN
                     .addTurnMarker(2, -90)
                     .addSpatialMarker(2.01, () -> {
-                        scorClaw.open();
+                        scorerClaw.open();
                     })
                     .addSpatialMarker(2.1, () -> {
                         extend.setReference(EXTEND_TEMP_CLOSED);
                         hand.dropOverRightSide();
                         perkid.dropOverRightSide();
                         diff.dropOverRightSide();
-                        scoringPerkid.aimAtSpecimen();
-                        scoringDiff.aimSpecimen();
-                        scorClaw.open();
+                        scorerPerkid.aimAtSpecimen();
+                        scorerDifferential.aimSpecimen();
+                        scorerClaw.open();
                     })
                     .addSpatialMarker(2 + SLOWDOWN_POINT_0, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
@@ -318,34 +318,34 @@ public class PreloadFreakLaw extends LinearOpMode {
                         claw.open();
                     })
                     .addTimeMarker(WAIT_FOR_HUMAN_ADJUST, () -> {
-                        scoringPerkid.pickSpecimen();
-                        scoringDiff.pickSpecimen();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
                     })
                     .build();
             buildSpecimenToRung = drive.buildTrajectory("traj13transposed.json")
                     .addSpatialMarker(0, () -> {
-                        scoringDiff.liftSpecimenFromWall();
+                        scorerDifferential.liftSpecimenFromWall();
                     })
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(POINT_PERKID_START_0, () -> {
-                        scoringPerkid.transferSpecimen();
-                        scoringDiff.pickSpecimen();
-                        scorClaw.close();
+                        scorerPerkid.transferSpecimen();
+                        scorerDifferential.pickSpecimen();
+                        scorerClaw.close();
 
                         perkid.liftSample();
                         hand.setPosition(0.5);
                         claw.close();
                         diff.aim();
                     })
-                    .addSpatialMarker(SLOWDOWN_POINT_1, () -> {
+                    .addSpatialMarker(SLOWDOWN_POINT_RUNG, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .addSpatialMarker(POINT_PERKID_START_1, () -> {
-                        scoringDiff.transferSpecimen();
+                        scorerDifferential.transferSpecimen();
                     })
                     .addSpatialMarker(POINT_SPECIMEN_START_SCORE_0, () -> {
-                        scoringPerkid.scoreSpecimen();
-                        scoringDiff.scoreSpecimen();
+                        scorerPerkid.scoreSpecimen();
+                        scorerDifferential.scoreSpecimen();
                     })
                     .waitForAt(1, WAIT_HOLD_POS_AT_RUNG, -90);
             trajSpecimenToRung = buildSpecimenToRung.build();
@@ -370,9 +370,9 @@ public class PreloadFreakLaw extends LinearOpMode {
                         clock.reset();
                     })
                     .addSpatialMarker(INITIAL, () -> {
-                        scoringPerkid.aimAtSpecimen();
-                        scoringDiff.aimSpecimen();
-                        scorClaw.open();
+                        scorerPerkid.aimAtSpecimen();
+                        scorerDifferential.aimSpecimen();
+                        scorerClaw.open();
 
                         // hand.setPosition(0.5);
                         // perkid.transfer();
@@ -390,8 +390,8 @@ public class PreloadFreakLaw extends LinearOpMode {
                     })
                     .waitForAt(1, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_HUMAN_ADJUST, () -> {
-                        scoringPerkid.pickSpecimen();
-                        scoringDiff.pickSpecimen();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
                     });
             trajRungToSpecimen = buildRungToSpecimen.build();
             trajRungToSpecimen3rd = buildRungToSpecimen
@@ -419,7 +419,7 @@ public class PreloadFreakLaw extends LinearOpMode {
         drive.setPoseEstimate(new Pose2d(trajToRungs.get(0).point0, Math.toRadians(270)));
         drive.resetForce();
 
-        scorClaw.close();
+        scorerClaw.close();
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("extend_reference", extend.getReference());
@@ -459,7 +459,7 @@ public class PreloadFreakLaw extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 drive.resetForce();
                 relaxFlag = false;
             }
@@ -483,7 +483,7 @@ public class PreloadFreakLaw extends LinearOpMode {
             }
         }
 
-        scorClaw.close();
+        scorerClaw.close();
 
         drive.setForce(0.6);
 
@@ -507,7 +507,7 @@ public class PreloadFreakLaw extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 relaxFlag = false;
             }
 
@@ -525,7 +525,7 @@ public class PreloadFreakLaw extends LinearOpMode {
             }
         }
 
-        scorClaw.close();
+        scorerClaw.close();
 
         drive.setForce(0.6);
 
@@ -549,7 +549,7 @@ public class PreloadFreakLaw extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 relaxFlag = false;
             }
 
@@ -567,7 +567,7 @@ public class PreloadFreakLaw extends LinearOpMode {
             }
         }
 
-        scorClaw.close();
+        scorerClaw.close();
 
         drive.setForce(0.6);
 
@@ -591,7 +591,7 @@ public class PreloadFreakLaw extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 relaxFlag = false;
             }
 
@@ -609,7 +609,7 @@ public class PreloadFreakLaw extends LinearOpMode {
             }
         }
 
-        scorClaw.close();
+        scorerClaw.close();
 
         drive.setForce(0.6);
 
@@ -633,7 +633,7 @@ public class PreloadFreakLaw extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorClaw.relax();
+                scorerClaw.relax();
                 relaxFlag = false;
                 drive.setForce(1);
             }
@@ -646,9 +646,9 @@ public class PreloadFreakLaw extends LinearOpMode {
     private void initRobot() {
         drive = new Drive(hardwareMap);
 
-        scoringPerkid = new ScoringPerkid(this);
-        scoringDiff = new ScoringDiff(this);
-        scorClaw = new ScorClaw(this);
+        scorerPerkid = new ScorerPerkid(this);
+        scorerDifferential = new ScorerDifferential(this);
+        scorerClaw = new ScorerClaw(this);
 
         perkid = new Perkid(this);
         hand = new Hand(this);

@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.COEFFICIENTS;
-import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.MAX_POSITION;
-import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.MIN_POSITION;
-import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.SPECIMEN_POS;
-import static org.firstinspires.ftc.teamcode.Modules.LiftErrorConstants.POWER_DOWN;
+import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.COEFFICIENTS;
+import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.MAX_POSITION;
+import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.MIN_POSITION;
+import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.SPECIMEN_POS;
+import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.POWER_DOWN;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -15,20 +15,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Config
-class LiftErrorConstants {
-    public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.005, 0.00001, 0.0);
-    public static double d = 0.00047;
-
-    public static int SPECIMEN_POS = 440;
-
-    public static int MAX_POSITION = 830;
-    public static int MIN_POSITION = 0;
-
-    public static double POWER_DOWN = -0.6;
-}
-
-public class LiftError {
+public class Lift {
     public final DcMotorEx leftMotor, rightMotor;
     private final ElapsedTime timer;
     OpMode linearOpMode;
@@ -36,7 +23,7 @@ public class LiftError {
     public double pos;
 
 
-    public LiftError(OpMode linearOpMode) {
+    public Lift(OpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         leftMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "leftLift");
         rightMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "rightLift");
@@ -70,9 +57,9 @@ public class LiftError {
         double position = leftMotor.getCurrentPosition();
         double error = reference - position;
 
-        double derivative = ( error - lastError ) / timer.seconds();
+        double derivative = (error - lastError) / timer.seconds();
         integralSum += error * timer.seconds();
-        out = ( COEFFICIENTS.p * error ) + ( COEFFICIENTS.i * integralSum ) + ( COEFFICIENTS.d * derivative ) + COEFFICIENTS.f;
+        out = (COEFFICIENTS.p * error) + (COEFFICIENTS.i * integralSum) + (COEFFICIENTS.d * derivative) + COEFFICIENTS.f;
 
         leftMotor.setPower(out);
         rightMotor.setPower(out);
@@ -84,6 +71,10 @@ public class LiftError {
 
     public double getReference() {
         return reference;
+    }
+
+    public double getPosition() {
+        return leftMotor.getCurrentPosition();
     }
 
     public void setReference(double reference) {
@@ -129,8 +120,8 @@ public class LiftError {
                         rightMotor.setPower(-gamepad.right_stick_y);
                     }
                 } else {
-                    leftMotor.setPower(-error * LiftErrorConstants.d);
-                    rightMotor.setPower(-error * LiftErrorConstants.d);
+                    leftMotor.setPower(-error * LiftConstants.d);
+                    rightMotor.setPower(-error * LiftConstants.d);
                 }
 
 
@@ -164,5 +155,19 @@ public class LiftError {
     private void clampReference() {
         reference = Math.min(reference, MAX_POSITION);
         reference = Math.max(reference, MIN_POSITION);
+    }
+
+    @Config
+    static
+    class LiftConstants {
+        public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.005, 0.00001, 0.0);
+        public static double d = 0.00047;
+
+        public static int SPECIMEN_POS = 440;
+
+        public static int MAX_POSITION = 830;
+        public static int MIN_POSITION = 0;
+
+        public static double POWER_DOWN = -0.6;
     }
 }

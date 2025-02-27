@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
-public class FreakLawConstantsYellowClip {
+public class LebronFiveOneConstants {
 
     public static double DELTA_1ST = 5;
     public static double DELTA_2ND = 0;
