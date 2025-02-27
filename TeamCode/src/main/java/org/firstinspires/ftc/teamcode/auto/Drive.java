@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive;
+package org.firstinspires.ftc.teamcode.auto;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -15,9 +15,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.auto.Trajectory;
-import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
-import org.firstinspires.ftc.teamcode.auto.TrajectoryRunner;
+import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.file.FilesystemUtil;
 
 import java.io.IOException;
@@ -374,16 +372,19 @@ public class Drive {
 
     public void update(boolean dryRun) {
         updateLocalizer();
-        Pose2d res = runner.update(getPoseEstimate(), getVelocityEstimate());
+        Pose2d[] res = runner.update(getPoseEstimate(), getVelocityEstimate());
         if (!dryRun) {
-            setPowerByPoseField(res);
+            setPowerByPoseField(res[0]);
         }
     }
 
     public void update() {
         updateLocalizer();
-        Pose2d res = runner.update(getPoseEstimate(), getVelocityEstimate());
-        setPowerByPoseField(res);
+        Pose2d[] res = runner.update(getPoseEstimate(), getVelocityEstimate());
+        setPowerByPoseField(res[0]);
+        if (res[1] != null) {
+            setPoseEstimate(res[1]);
+        }
     }
 
     public Pose2d getReference() {

@@ -87,7 +87,7 @@ import org.firstinspires.ftc.teamcode.Modules.ScoringDiff;
 import org.firstinspires.ftc.teamcode.Modules.ScoringPerkid;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
-import org.firstinspires.ftc.teamcode.drive.Drive;
+import org.firstinspires.ftc.teamcode.auto.Drive;
 
 import java.io.IOException;
 

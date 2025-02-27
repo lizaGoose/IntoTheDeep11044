@@ -72,11 +72,12 @@ import org.firstinspires.ftc.teamcode.Modules.Extend;
 import org.firstinspires.ftc.teamcode.Modules.Hand;
 import org.firstinspires.ftc.teamcode.Modules.Perkid;
 import org.firstinspires.ftc.teamcode.Modules.ScorClaw;
+import org.firstinspires.ftc.teamcode.Modules.ScorerExtend;
 import org.firstinspires.ftc.teamcode.Modules.ScoringDiff;
 import org.firstinspires.ftc.teamcode.Modules.ScoringPerkid;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
-import org.firstinspires.ftc.teamcode.drive.Drive;
+import org.firstinspires.ftc.teamcode.auto.Drive;
 
 import java.io.IOException;
 
@@ -94,6 +95,7 @@ public class FreakLawFiveZero extends LinearOpMode {
     private Extend extend;
     private DistanceSensor distInClaw;
     private DigitalChannel frontSensor;
+
     private static boolean relaxFlag = false;
     private FtcDashboard dashboard;
 

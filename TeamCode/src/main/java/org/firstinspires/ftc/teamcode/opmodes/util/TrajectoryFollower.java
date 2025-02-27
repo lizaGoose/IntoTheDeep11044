@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.dashboard.FieldDrawer;
-import org.firstinspires.ftc.teamcode.drive.Drive;
+import org.firstinspires.ftc.teamcode.auto.Drive;
 import org.firstinspires.ftc.teamcode.file.FilesystemUtil;
 import org.firstinspires.ftc.teamcode.math.BezierCurve;
 
