@@ -41,6 +41,8 @@ public class TrajectoryRunner {
     public static double FORCE = 0.5;
     private double force = FORCE; // TODO: REMOVE
     public static double VELOCITY_THRESHOLD = 0.001;
+    public static double NEXT_POINT_THRESHOLD = 0.1;
+    private double fake_t = 0;
 
     public boolean uselessFlag = false;
 
@@ -95,9 +97,11 @@ public class TrajectoryRunner {
         timeMarkerTimer = new ElapsedTime();
     }
 
-    public Pose2d update(Pose2d poseEstimate, Pose2d velocityEstimate) {
+    public Pose2d[] update(Pose2d poseEstimate, Pose2d velocityEstimate) {
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
+
+        Pose2d newPose = null;
 
         if (currentTrajectory == null) {
             draw(fieldOverlay, poseEstimate, poseEstimate.vec(), new Vector2d(), new Vector2d());
@@ -105,12 +109,11 @@ public class TrajectoryRunner {
             dashboard.sendTelemetryPacket(packet);
             clock.reset();
 
-            return new Pose2d(0, 0, 0);
+            return new Pose2d[]{new Pose2d(0, 0, 0), null};
         }
 
         Pose2d result = new Pose2d(0, 0, 0);
         t = currentCurve.getClosestTtoPoint(poseEstimate.vec());
-
 
         if (!stopPoints.isEmpty() && ( t + curveIndex >= stopPoints.get(0).t ||
                 ( Math.abs(( t + curveIndex ) - stopPoints.get(0).t) <= stopThreshold ) )) {
@@ -168,11 +171,11 @@ public class TrajectoryRunner {
             packet.put("y_derivative", derivativeY);
             packet.put("heading_derivative", headingDerivative);
 
-            //draw(fieldOverlay, poseEstimate, reference, new Vector2d(), reference);
+//            draw(fieldOverlay, poseEstimate, reference, new Vector2d(), reference);
 
             result = new Pose2d(powerX, powerY, headingPower);
 
-            // draw(fieldOverlay, poseEstimate, reference, new Vector2d(), result.vec());
+//             draw(fieldOverlay, poseEstimate, reference, new Vector2d(), result.vec());
 
             if (stopPoints.get(0).milliseconds >= stopPointTime) {
                 stopPointTime += clock.milliseconds();
@@ -182,35 +185,34 @@ public class TrajectoryRunner {
                 timeMarkerTimer.reset();
                 stopPointTime = 0;
             }
-
         } else {
+//            if (velocityEstimate.vec().norm() < VELOCITY_THRESHOLD && 1 - t <= NEXT_POINT_THRESHOLD) {
+//                if (curveIndex != currentTrajectory.size() - 1) {
+//                    curveIndex += 1;
+//                    t = 0;
+//                    newPose = new Pose2d(currentTrajectory.get(curveIndex).getPointAt(t), poseEstimate.getHeading());
+//                } else {
+//                    t = 1.0;
+//                    newPose = new Pose2d(currentTrajectory.get(curveIndex).getPointAt(t), poseEstimate.getHeading());
+//                }
+//            }
+
             timeMarkerTimer.reset();
             integralSumHeading = 0;
 
             Vector2d reference = currentCurve.getPointAt(t);
             Vector2d error = reference.minus(poseEstimate.vec());
-            //.div(reference.minus(poseEstimate.vec()).norm())
 
             Vector2d derivative = currentCurve.getFirstDerivativeAt(t);
             Vector2d normDeriv = derivative.div(derivative.norm());
 
             double curvature = currentCurve.getCurvatureAt(t);
-            //double curvatureDeriv = (Math.abs(curvature) - Math.abs(lastCurvature)) / clock.seconds();
             double accel = curvatureToForce(curvature);
-            /*
-            if (curvatureDeriv > curvatureDerivLimit && Math.abs(curvature) > curvatureLimit) {
-                turnHistory.add(poseEstimate.vec());
-                accel = kTurnAccel;
-            }
-             */
 
             Vector2d centripetalForce = normDeriv.rotated(Math.toRadians(90)).times(
                     kCentripetal * Math.pow(velocityEstimate.vec().norm(), 2) * curvature
             );
 
-            // double angle = Math.asin(error.norm());
-
-            // Vector2d pathing_power = normDer.rotated(angle);
             Vector2d pathing_power = normDeriv.plus(error.times(kP));
 
             double headingPower = 0;
@@ -238,7 +240,6 @@ public class TrajectoryRunner {
             packet.put("error_norm", error.norm());
             packet.put("pathing_power_norm", pathing_power.norm());
 
-
             packet.put("reference_heading", headingReference);
             packet.put("heading_power", headingPower);
             packet.put("corrected_heading", lastHeadingError);
@@ -248,15 +249,12 @@ public class TrajectoryRunner {
             packet.put("curve", true);
         }
 
-
-
         if (!markers.isEmpty() && t + curveIndex >= markers.get(0).t) {
             markers.get(0).getRunnable().onMarkerReached();
             markers.remove(0);
         }
 
         poseHistory.add(poseEstimate);
-
 
         packet.put("x", poseEstimate.getX());
         packet.put("y", poseEstimate.getY());
@@ -273,25 +271,27 @@ public class TrajectoryRunner {
 
         packet.put("curves", currentTrajectory.size());
 
-        if (1 - t <= 1e-4 && curveIndex != currentTrajectory.size() - 1) {
-            if ((markers.isEmpty() || (int) Math.floor(markers.get(0).t) > curveIndex) &&
-                    (stopPoints.isEmpty() || (int) Math.floor(stopPoints.get(0).t) > curveIndex)) {
-                curveIndex += 1;
-                currentCurve = currentTrajectory.get(curveIndex);
-                t = 0;
+        if (newPose == null) {
+            if (1 - t <= 1e-4 && curveIndex != currentTrajectory.size() - 1) {
+                if ((markers.isEmpty() || (int) Math.floor(markers.get(0).t) > curveIndex) &&
+                        (stopPoints.isEmpty() || (int) Math.floor(stopPoints.get(0).t) > curveIndex)) {
+                    curveIndex += 1;
+                    currentCurve = currentTrajectory.get(curveIndex);
+                    t = 0;
+                }
             }
-        }
 
-        if ((Math.abs(t + curveIndex - currentTrajectory.size()) <= 1e-2 && stopPoints.isEmpty()) ||
-            stopPoints.isEmpty()) {
-            packet.put("END_OF_TRAJ", true);
-            currentTrajectory = null;
+            if ((Math.abs(t + curveIndex - currentTrajectory.size()) <= 1e-2 && stopPoints.isEmpty()) ||
+                    stopPoints.isEmpty()) {
+                packet.put("END_OF_TRAJ", true);
+                currentTrajectory = null;
+            }
         }
 
         dashboard.sendTelemetryPacket(packet);
         clock.reset();
 
-        return result;
+        return new Pose2d[]{result, newPose};
     }
 
     private void draw(Canvas fieldOverlay, Pose2d poseEstimate, Vector2d reference,

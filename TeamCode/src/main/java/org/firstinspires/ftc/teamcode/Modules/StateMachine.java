@@ -1,17 +1,15 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 import static org.firstinspires.ftc.teamcode.Modules.SensorsConstants.EXTEND_AMPS;
-import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.ANGLE_0;
-import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.ANGLE_1;
-import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.ANGLE_2;
-import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.ANGLE_END;
-import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.ANGLE_START;
+import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.AMOUNT_TO_SCORE;
+import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.DELTA;
 import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.POINT_MOVE_PERKID_TO_PICK;
 import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.POINT_PERKID_START;
 import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.POINT_SPECIMEN_START_SCORE;
 import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.POINT_TO_INITIAL;
 import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.SLOWDOWN_FORCE;
 import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.SLOWDOWN_POINT_1;
+import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.SLOWDOWN_POINT_2;
 import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.WAIT_AT_RUNG;
 import static org.firstinspires.ftc.teamcode.Modules.StateMachine.TeleOpAutomaticScoreConstants.WAIT_END;
 import static org.firstinspires.ftc.teamcode.Modules.TeleOpConstants.OFFSET_CLAW_CLOSE;
@@ -29,6 +27,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -39,7 +38,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Camera.SampleDetectionCameraClass;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.hardware.StickyKeys;
@@ -81,16 +79,16 @@ public class StateMachine {
     ScorClaw scorClaw;
     Gamepad gamepad1, gamepad2;
     Differential diff;
-    SampleDetectionCameraClass cam;
+//    SampleDetectionCameraClass cam;
     Hang hang;
     ScorerExtend scorerExtend;
+    LiftError lift;
 
-    ElapsedTime pickedUnpickedTimer, fromClawToClawTimer, dropSpecimenTimer, goToInitialFromScoreSample, humanDropPickSpecTimer, goFromScoreSpecTimer, fromTransferSpecimenToScore, forgetPosTimer, rightSideDropSampleTimer;
+    private final ElapsedTime pickedUnpickedTimer, fromClawToClawTimer, dropSpecimenTimer, goToInitialFromScoreSample, humanDropPickSpecTimer, fromTransferSpecimenToScore, forgetPosTimer, rightSideDropSampleTimer;
     private final ElapsedTime specimenPickedUp, specimenToTransfer;
     private final ElapsedTime perekidTimer;
     private final ElapsedTime initialTimer;
     public DistanceSensor distanceSensor, distInClaw;
-    LiftError lift;
     // TODO: too many booleans
     boolean sampleIsScored, startTimer, startTimerFromClawToClaw, startFromClawToClaw, startForgetPosTimer, stopForgetPosTimer, startHumanDropPickSpec;
     boolean startPickUpBlock;
@@ -107,6 +105,15 @@ public class StateMachine {
     //SampleDetectionCameraClass cam;
 
     private Trajectory trajScore7, trajToSpecimen;
+    private Trajectory[] fullCycle = new Trajectory[8];
+    private int amountAutoscored = 0;
+
+    public enum AutoScoreState {
+        SCORING,
+        INACTIVE
+    }
+
+    public AutoScoreState autoScoreState = AutoScoreState.INACTIVE;
 
 
     public enum State {
@@ -124,7 +131,7 @@ public class StateMachine {
         LOOK_FOR_BLOCK_SCORSPEC,
         EMPTY,
         RIGHT_SIDE_DROP_SAMPLE,
-        RIGT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS,
+        RIGHT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS,
         SPECIMEN_TO_INITIAL,
         START
     }
@@ -147,7 +154,7 @@ public class StateMachine {
         hang = new Hang(linearOpMode);
         driveModule = new DriveModule(linearOpMode.hardwareMap, new Pose2d(POSE_X, POSE_Y, Math.toRadians(270)));
         driveModule.drive.setForce(1);
-        cam = new SampleDetectionCameraClass(linearOpMode);
+//        cam = new SampleDetectionCameraClass(linearOpMode);
         scorerExtend = new ScorerExtend(linearOpMode.hardwareMap);
 
         gamepad1 = linearOpMode.gamepad1;
@@ -158,18 +165,14 @@ public class StateMachine {
         TrajectoryBuilder builder;
 
         try {
-            /*
-            builder = driveModule.drive.buildTrajectory("trajSEVEN.json");
-            for (int i = 0; i < 14; i += 2) {
-                buildOneCycle(builder, i);
+            builder = driveModule.drive.buildTrajectory("teleop_full_cycle.json");
+            buildOneCycle(builder, 0);
+            for (int i = 0; i < 8; ++i) {
+                fullCycle[i] = builder
+                        .plusPoint(3, new Vector2d(DELTA * i, 0))
+                        .plusPoint(4, new Vector2d(DELTA * i, 0))
+                        .build();
             }
-            trajScore7 = builder.build();
-            */
-            builder = driveModule.drive.buildTrajectory("teleop_hum_to_spec.json");
-            buildHumanToSpec(builder, 0);
-            trajToSpecimen = builder
-                    .waitForAt(1, WAIT_END, -90)
-                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -192,7 +195,7 @@ public class StateMachine {
     }
 
     public void teleop() {
-        distanceSensor = linearOpMode.hardwareMap.get(DistanceSensor.class, "Color");
+//        distanceSensor = linearOpMode.hardwareMap.get(DistanceSensor.class, "Color");
         distInClaw = linearOpMode.hardwareMap.get(DistanceSensor.class, "ScorClawDist");
         frontSensor = linearOpMode.hardwareMap.get(DigitalChannel.class, "DistanceFront");
         //cam.visionInUse();
@@ -265,6 +268,22 @@ public class StateMachine {
                     scorerExtend.retract();
                     lift.setReference(0);
 
+                    if (autoScoreState == AutoScoreState.SCORING && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
+                        amountAutoscored += 1;
+                        if (amountAutoscored < AMOUNT_TO_SCORE) {
+                            state = State.PICK_SPEC;
+                            driveModule.followTrajectory(fullCycle[amountAutoscored]);
+                        } else {
+                            autoScoreState = AutoScoreState.INACTIVE;
+                            amountAutoscored = 0;
+                        }
+                    }
+
+                    if (stickyGamepad1.cross && driveModule.currentMode == DriveModule.Mode.FOLLOWING_TRAJECTORY) {
+                        driveModule.drive.discardTrajectory();
+                        amountAutoscored = 0;
+                        autoScoreState = AutoScoreState.INACTIVE;
+                    }
 
                     if (gamepad2.square || stickyGamepad1.square) {
                         state = State.LOOK_FOR_BLOCK;
@@ -286,7 +305,26 @@ public class StateMachine {
 
             case PICK_SPEC:
                 scorClaw.currentMode = ScorClaw.Mode.PICK;
+                scoringDiff.currentMode = ScoringDiff.Mode.AIM_POS;
                 scorerExtend.retract();
+
+                if (autoScoreState == AutoScoreState.SCORING && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
+                    amountAutoscored += 1;
+                    if (amountAutoscored < AMOUNT_TO_SCORE) {
+                        state = State.PICK_SPEC;
+                        driveModule.followTrajectory(fullCycle[amountAutoscored]);
+                    } else {
+                        autoScoreState = AutoScoreState.INACTIVE;
+                        amountAutoscored = 0;
+                    }
+                }
+
+                if (stickyGamepad1.cross && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL
+                        && autoScoreState == AutoScoreState.INACTIVE) {
+                    driveModule.drive.setPoseEstimate(new Pose2d(fullCycle[0].get(0).point0, Math.toRadians(270)));
+                    driveModule.followTrajectory(fullCycle[amountAutoscored]);
+                    autoScoreState = AutoScoreState.SCORING;
+                }
 
                 if (!( gamepad1.left_stick_y <= -0.1 )) {
                     specimenToTransfer.reset();
@@ -296,10 +334,7 @@ public class StateMachine {
                     state = State.TRANSFER_SPEC;
                     fromTransferSpecimenToScore.reset();
                 }
-                if (gamepad1.cross && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
-                    driveModule.drive.setPoseEstimate(new Pose2d(trajToSpecimen.get(0).point0, Math.toRadians(270)));
-                    driveModule.followTrajectory(trajToSpecimen);
-                }
+
                 if ((gamepad2.triangle || gamepad1.triangle) && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
                     state = State.INITIAL;
                     initialTimer.reset();
@@ -308,16 +343,24 @@ public class StateMachine {
 
             case TRANSFER_SPEC:
                 scoringPerkid.currentMode = ScoringPerkid.Mode.TRANSFER_SPEC;
-                scorClaw.currentMode = ScorClaw.Mode.PICK;
 
                 lift.setSpecimen();
-
-                if (fromTransferSpecimenToScore.milliseconds() > WAIT_FOR_LINKAGE) {
+                /*if (fromTransferSpecimenToScore.milliseconds() > WAIT_FOR_LINKAGE + 200) {
+                    scorClaw.currentMode = ScorClaw.Mode.RELAX;
+                } else */if (fromTransferSpecimenToScore.milliseconds() > WAIT_FOR_LINKAGE) {
                     scoringDiff.currentMode = ScoringDiff.Mode.TRANSFER_SPEC;
                     scorerExtend.extend();
+                    scorClaw.currentMode = ScorClaw.Mode.PICK;
                 } else {
                     scoringDiff.currentMode = ScoringDiff.Mode.PICK_SPEC;
                     scorerExtend.retract();
+                    scorClaw.currentMode = ScorClaw.Mode.PICK;
+                }
+
+                if (stickyGamepad1.cross && driveModule.currentMode == DriveModule.Mode.FOLLOWING_TRAJECTORY) {
+                    driveModule.drive.discardTrajectory();
+                    amountAutoscored = 0;
+                    autoScoreState = AutoScoreState.INACTIVE;
                 }
 
                 if (!gamepad2.circle || !gamepad1.options) {
@@ -347,6 +390,12 @@ public class StateMachine {
                     scorClaw.currentMode = ScorClaw.Mode.PICK;
                 } else {
                     scorClaw.currentMode = ScorClaw.Mode.RELAX;
+                }
+
+                if (stickyGamepad1.cross && driveModule.currentMode == DriveModule.Mode.FOLLOWING_TRAJECTORY) {
+                    driveModule.drive.discardTrajectory();
+                    amountAutoscored = 0;
+                    autoScoreState = AutoScoreState.INACTIVE;
                 }
 
                 if (gamepad2.square) {
@@ -478,7 +527,7 @@ public class StateMachine {
                     }
                 }
                 if (humanDropPickSpecTimer.milliseconds() >= 800 && humanDropPickSpecTimer.milliseconds() <= 1300) {
-                    state = State.RIGT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS;
+                    state = State.RIGHT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS;
                 }
                 if (gamepad1.circle) {
                     rightSideDropSampleTimer.reset();
@@ -496,7 +545,7 @@ public class StateMachine {
                 }
 
                 break;
-            case RIGT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS:
+            case RIGHT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS:
                 startHumanDropPickSpec = false;
 
                 if (rightSideDropSampleTimer.milliseconds() > 0 && rightSideDropSampleTimer.milliseconds() <= 700) {
@@ -730,8 +779,7 @@ public class StateMachine {
                 }
                 break;
         }
-        linearOpMode.telemetry.addData("xSample", cam.x);
-        linearOpMode.telemetry.addData("xSample", cam.y);
+
         linearOpMode.telemetry.addData("Heading", driveModule.drive.getRawExternalHeading());
         linearOpMode.telemetry.addData("distance", distInClaw.getDistance(DistanceUnit.MM));
         linearOpMode.telemetry.addData("state", state);
@@ -761,10 +809,12 @@ public class StateMachine {
     @Config
     public static class TeleOpAutomaticScoreConstants {
         public static double POINT_PERKID_START = 0.2;
-        public static double SLOWDOWN_POINT_1 = 0.65;
+        public static double SLOWDOWN_POINT_1 = 0.89;
         public static double POINT_SPECIMEN_START_SCORE = 0.91;
         public static double POINT_MOVE_PERKID_TO_PICK = 0.2;
-        public static double POINT_TO_INITIAL = 0.4;
+        public static double POINT_TO_INITIAL = 0.3;
+
+        public static double SLOWDOWN_POINT_2 = 0.8;
 
         public static double ANGLE_START = 0;
         public static double ANGLE_END = 0.6;
@@ -776,46 +826,16 @@ public class StateMachine {
 
         public static double SLOWDOWN_FORCE = 0.15;
 
-        public static double WAIT_END = 200;
-    }
+        public static double DELTA = 0.1;
 
-    public void buildHumanToSpec(TrajectoryBuilder builder, double t) {
-        builder.addSpatialMarker(0, () -> {
-                    driveModule.drive.setForce(1);
-                    scoringDiff.liftSpecimenFromWall();
-                })
-                .addTurnMarker(0, (param) -> {
-                    if (param < ANGLE_START) {
-                        return Math.toRadians(ANGLE_0);
-                    } else if (ANGLE_END > param && param > ANGLE_START) {
-                        return Math.toRadians(ANGLE_1);
-                    } else  {
-                        return Math.toRadians(ANGLE_2);
-                    }
-                })
-                .addSpatialMarker(POINT_PERKID_START, () -> {
-                    scoringPerkid.transferSpecimen();
-                    scoringDiff.transferSpecimen();
-                    scorClaw.close();
-                    lift.setSpecimen();
-                    state = State.TRANSFER_SPEC;
-                    fromTransferSpecimenToScore.reset();
-                })
-                .addSpatialMarker(SLOWDOWN_POINT_1, () -> {
-                    driveModule.drive.setForce(SLOWDOWN_FORCE);
-                })
-                .addSpatialMarker(POINT_SPECIMEN_START_SCORE, () -> {
-                    state = State.SCORE_SPEC;
-                    fromTransferSpecimenToScore.reset();
-                    scoringPerkid.scoreSpecimen();
-                    scoringDiff.scoreSpecimen();
-                })
-                .waitForAt(1, 200, -90);
+        public static double WAIT_END = 200;
+        public static int AMOUNT_TO_SCORE = 8;
     }
 
     public void buildOneCycle(TrajectoryBuilder builder, double t) {
         builder.addSpatialMarker(t, () -> {
-                    scoringDiff.liftSpecimenFromWall();
+                    driveModule.drive.setForce(1);
+                    scoringDiff.transferSpecimen();
                 })
                 .addTurnMarker((int) t, -90)
                 .addSpatialMarker(t + POINT_PERKID_START, () -> {
@@ -839,10 +859,14 @@ public class StateMachine {
                     scoringDiff.scoreSpecimen();
                 })
                 .waitForAt(1, WAIT_AT_RUNG, -90)
+                .addTimeMarker(0, () -> {
+                    scorClaw.currentMode = ScorClaw.Mode.DROP;
+                })
                 .addTurnMarker((int) t + 1, -90)
                 .addSpatialMarker(t + 1, () -> {
-                    scorClaw.relax();
-                    scoringDiff.liftAfterScoreSpecimen();
+                    scorClaw.currentMode = ScorClaw.Mode.RELAX;
+                    scoringDiff.currentMode = ScoringDiff.Mode.AFTER_SCORE_SPEC;
+                    driveModule.drive.setForce(1);
                 })
                 .addSpatialMarker(t + 1 + POINT_MOVE_PERKID_TO_PICK, () -> {
                     state = State.SPECIMEN_TO_INITIAL;
@@ -854,7 +878,12 @@ public class StateMachine {
                     state = State.INITIAL;
                     initialTimer.reset();
                 })
-                .waitForAt(t + 2, 100);
-
+                .addSpatialMarker(t + 1 + SLOWDOWN_POINT_2, () -> {
+                    driveModule.drive.setForce(SLOWDOWN_FORCE);
+                })
+                .waitForAt(t + 2, WAIT_END, -90)
+                .addTimeMarker(WAIT_END - 100, () -> {
+                    state = State.PICK_SPEC;
+                });
     }
 }
