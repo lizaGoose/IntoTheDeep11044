@@ -27,7 +27,6 @@ public class ScorerDifferential {
 
     enum Mode {
         SCORE_SAMP,
-        PICK_POSITION,
         PICK_SPEC,
         SCORE_SPEC,
         AFTER_SCORE_SPEC,
@@ -44,18 +43,11 @@ public class ScorerDifferential {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad2;
         diff = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "scoring_diff");
-        // right.setDirection(Servo.Direction.REVERSE);
         cam = new CameraTest();
     }
 
     public void teleop() {
         switch (currentMode) {
-        /*    case SCORE_SAMP:
-              diff.setPosition(ScoringDiffConstants.SCOR_POS);
-                break;
-            case PICK_POSITION:
-                diff.setPosition(ScoringDiffConstants.PICK_POS);
-                break;*/
             case PICK_SPEC:
                 diff.setPosition(ScorerDiffConstants.PICK_SPEC);
                 break;
@@ -86,10 +78,6 @@ public class ScorerDifferential {
         }
     }
 
-    public void transferSample() {
-        diff.setPosition(GET_FROM_CLAW);
-    }
-
     public void transferSpecimen() {
         diff.setPosition(TRANSFER_SPEC);
     }
@@ -114,10 +102,6 @@ public class ScorerDifferential {
         diff.setPosition(AIM_SPEC);
     }
 
-    public void moveSpecimens(){
-        diff.setPosition(MOVE_SPECIMENS);
-    }
-
     public void scoreSample() {
         diff.setPosition(SCORE_SAMP);
     }
@@ -133,7 +117,7 @@ public class ScorerDifferential {
         public static double PICK_SPEC = 0.83;
         public static double GET_FROM_CLAW = 0.7;
         public static double SCORE_SAMP = 0.76;
-        public static double LEBRON = 0.95;
+        public static double LEBRON = 0.5;
         public static double SCORE_SPEC = 0.92;
         public static double AFTER_SCORE_SPEC = 0.83;
         public static double TRANSFER_SPEC = 0.92;

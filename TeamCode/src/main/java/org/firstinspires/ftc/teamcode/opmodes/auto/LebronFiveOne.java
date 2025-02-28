@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.HOLD_POS;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL_OFFSET;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.RELAX_CLAW;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.SPECIMEN_ADD_FORCE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_START;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.FreakLawConstants.SLOWDOWN_POINT_RUNG;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_LEFT_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_MIDDLE_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_BASKET;
@@ -39,15 +36,14 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.MIDDLE_STOP_POINT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_BASKET_SLOWDOWN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_START_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_START_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_TO_SCORE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_SPECIMEN_START_SCORE_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_START_RAISING_LIFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.RIGHT_STOP_POINT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_FORCE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_1;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_2;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_HUMAN_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_HUMAN_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_RUNG_0;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_RUNG_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AT_BASKET;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AT_LEFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AT_MIDDLE;
@@ -61,7 +57,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_SLOWDOWN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_HOLD_POS_AT_RUNG;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_PICK_UP;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_RELAX_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_SPECIMEN_PICK_UP;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -75,6 +70,9 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.auto.Drive;
+import org.firstinspires.ftc.teamcode.auto.Trajectory;
+import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.modules.Claw;
 import org.firstinspires.ftc.teamcode.modules.Differential;
 import org.firstinspires.ftc.teamcode.modules.Extend;
@@ -82,12 +80,9 @@ import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
 import org.firstinspires.ftc.teamcode.modules.ScorerClaw;
-import org.firstinspires.ftc.teamcode.modules.ScorerLinkage;
 import org.firstinspires.ftc.teamcode.modules.ScorerDifferential;
+import org.firstinspires.ftc.teamcode.modules.ScorerLinkage;
 import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
-import org.firstinspires.ftc.teamcode.auto.Trajectory;
-import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
-import org.firstinspires.ftc.teamcode.auto.Drive;
 
 import java.io.IOException;
 
@@ -135,32 +130,30 @@ public class LebronFiveOne extends LinearOpMode {
                         lift.setSpecimen();
                         scorerLinkage.extend();
                     })
-                    .addSpatialMarker(SLOWDOWN_POINT_RUNG, () -> {
-                        drive.setForce(FreakLawConstants.SLOWDOWN_FORCE);
+                    .addSpatialMarker(SLOWDOWN_POINT_RUNG_0, () -> {
+                        drive.setForce(SLOWDOWN_FORCE);
                     })
                     .waitForAt(1, HOLD_POS, -90)
                     .plusPoint(2, new Vector2d(0, DELTA_1ST))
                     .plusPoint(3, new Vector2d(0, DELTA_1ST))
                     .build();
             trajToThree = drive.buildTrajectory("traj15transposed.json")
-                    .addSpatialMarker(0, () -> {
-                        drive.setForce(FORCE);
-                    })
                     .addTurnMarker(0, -90)
                     .plusPoint(0, new Vector2d(0, DELTA_1ST))
                     .plusPoint(1, new Vector2d(0, DELTA_1ST))
                     .addSpatialMarker(0, () -> {
                         drive.setForce(FORCE);
-
-                        relaxFlag = true;
-                        clock.reset();
+                        scorerDifferential.liftAfterScoreSpecimen();
+                        scorerClaw.open();
                     })
                     .addSpatialMarker(INITIAL, () -> {
                         scorerPerkid.pickSpecimen();
                         scorerDifferential.pickSpecimen();
+                        scorerLinkage.retract();
                         scorerClaw.open();
                     })
                     .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
+                        lift.setReference(0);
                         hand.setPosition(0.5);
                         perkid.transfer();
                         diff.transfer();
@@ -292,17 +285,12 @@ public class LebronFiveOne extends LinearOpMode {
                         scorerDifferential.pickSpecimen();
                         scorerClaw.open();
                     })
-                    .addSpatialMarker(2 + SLOWDOWN_POINT_0, () -> {
+                    .addSpatialMarker(2 + SLOWDOWN_POINT_HUMAN_0, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .addSpatialMarker(2.8, () -> {
                         extend.setReference(0);
                     })
-                    /*
-                    .addSpatialMarker(POINT_THIRD_RELEASE, () -> {
-                        claw.open();
-                    })
-                    */
                     .waitForAt(3, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_CLAW_RELEASE, () -> {
                         claw.open();
@@ -310,28 +298,16 @@ public class LebronFiveOne extends LinearOpMode {
                     .build();
             buildSpecimenToRung = drive.buildTrajectory("traj13transposed.json")
                     .addSpatialMarker(0, () -> {
-                        scorerDifferential.liftSpecimenFromWall();
+                        scorerDifferential.scoreSpecimen();
                     })
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(POINT_PERKID_START_0, () -> {
-                        scorerPerkid.transferSpecimen();
-                        scorerDifferential.pickSpecimen();
-                        scorerClaw.close();
-
-                        perkid.liftSample();
-                        hand.setPosition(0.5);
-                        claw.close();
-                        diff.aim();
-                    })
-                    .addSpatialMarker(SLOWDOWN_POINT_1, () -> {
-                        drive.setForce(SLOWDOWN_FORCE);
-                    })
-                    .addSpatialMarker(POINT_PERKID_START_1, () -> {
-                        scorerDifferential.transferSpecimen();
-                    })
-                    .addSpatialMarker(POINT_SPECIMEN_START_SCORE_0, () -> {
                         scorerPerkid.scoreSpecimen();
-                        scorerDifferential.scoreSpecimen();
+                        lift.setSpecimen();
+                        scorerLinkage.extend();
+                    })
+                    .addSpatialMarker(SLOWDOWN_POINT_RUNG_1, () -> {
+                        drive.setForce(SLOWDOWN_FORCE);
                     })
                     .waitForAt(1, WAIT_HOLD_POS_AT_RUNG, -90);
             trajSpecimenToRung = buildSpecimenToRung
@@ -353,23 +329,20 @@ public class LebronFiveOne extends LinearOpMode {
             buildRungToSpecimen = drive.buildTrajectory("traj11transposed.json")
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(0, () -> {
-                        drive.setForce(SPECIMEN_ADD_FORCE);
-
-                        relaxFlag = true;
-                        clock.reset();
+                        drive.setForce(FORCE);
+                        scorerClaw.open();
+                        scorerDifferential.liftAfterScoreSpecimen();
                     })
                     .addSpatialMarker(INITIAL, () -> {
                         scorerPerkid.pickSpecimen();
                         scorerDifferential.pickSpecimen();
                         scorerClaw.open();
+                        scorerLinkage.retract();
                     })
                     .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
-                        hand.setPosition(0.5);
-                        perkid.transfer();
-                        diff.transfer();
-                        claw.close();
+                        lift.setReference(0);
                     })
-                    .addSpatialMarker(SLOWDOWN_POINT_2, () -> {
+                    .addSpatialMarker(SLOWDOWN_POINT_HUMAN_1, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .waitForAt(1, WAIT_FOR_HUMAN_ADJUST + 100, -90);
@@ -398,9 +371,6 @@ public class LebronFiveOne extends LinearOpMode {
                     .addSpatialMarker(POINT_START_RAISING_LIFT, () -> {
                         lift.setReference(LIFT_SCORE);
                     })
-                    .addSpatialMarker(POINT_BASKET_SLOWDOWN, () -> {
-//                        drive.setForce(SLOWDOWN_FORCE);
-                    })
                     .waitForAt(1, WAIT_AT_BASKET, -180)
                     .addTimeMarker(WAIT_DROP_SAMPLE - 100, () -> {
                         scorerDifferential.slamDunkSample();
@@ -425,6 +395,9 @@ public class LebronFiveOne extends LinearOpMode {
         drive.setForce(FORCE);
 
         scorerClaw.close();
+        scorerDifferential.aimSpecimen();
+        scorerPerkid.aimAtSpecimen();
+        scorerLinkage.retract();
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("extend_reference", extend.getReference());
@@ -452,6 +425,7 @@ public class LebronFiveOne extends LinearOpMode {
             packet.put("extend_position", extend.getPosition());
             dashboard.sendTelemetryPacket(packet);
 
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
         }
@@ -463,17 +437,12 @@ public class LebronFiveOne extends LinearOpMode {
         drive.followTrajectory(trajToThree);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            if (relaxFlag && clock.milliseconds() > RELAX_CLAW) {
-                scorerClaw.relax();
-                drive.setForce(FORCE);
-                relaxFlag = false;
-            }
-
             packet = new TelemetryPacket();
             packet.put("extend_reference", extend.getReference());
             packet.put("extend_position", extend.getPosition());
             dashboard.sendTelemetryPacket(packet);
 
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
         }
@@ -497,11 +466,7 @@ public class LebronFiveOne extends LinearOpMode {
         boolean resetX = true;
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            if (resetX && !frontSensor.getState()) {
-                Pose2d poseEstimate = drive.getPoseEstimate();
-                //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
-                resetX = false;
-            }
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
         }
@@ -511,11 +476,7 @@ public class LebronFiveOne extends LinearOpMode {
         drive.followTrajectory(trajRungToSpecimen);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorerClaw.relax();
-                relaxFlag = false;
-            }
-
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
         }
@@ -544,6 +505,7 @@ public class LebronFiveOne extends LinearOpMode {
                 //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
                 resetX = false;
             }
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
         }
@@ -553,11 +515,7 @@ public class LebronFiveOne extends LinearOpMode {
         drive.followTrajectory(trajRungToSpecimen3rd);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorerClaw.relax();
-                relaxFlag = false;
-            }
-
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
         }
@@ -586,6 +544,7 @@ public class LebronFiveOne extends LinearOpMode {
                 //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
                 resetX = false;
             }
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
         }
@@ -595,11 +554,7 @@ public class LebronFiveOne extends LinearOpMode {
         drive.followTrajectory(trajRungToSpecimen4th);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorerClaw.relax();
-                relaxFlag = false;
-            }
-
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
         }
@@ -628,6 +583,7 @@ public class LebronFiveOne extends LinearOpMode {
                 //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
                 resetX = false;
             }
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
         }
@@ -637,12 +593,7 @@ public class LebronFiveOne extends LinearOpMode {
         drive.followTrajectory(trajRungToYellowSample);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            if (relaxFlag && clock.milliseconds() > WAIT_RELAX_CLAW) {
-                scorerClaw.relax();
-                relaxFlag = false;
-                drive.setForce(FORCE);
-            }
-
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
         }
@@ -676,6 +627,8 @@ public class LebronFiveOne extends LinearOpMode {
         scorerPerkid = new ScorerPerkid(this);
         scorerDifferential = new ScorerDifferential(this);
         scorerClaw = new ScorerClaw(this);
+        scorerLinkage = new ScorerLinkage(hardwareMap);
+        lift = new Lift(this);
 
         perkid = new Perkid(this);
         hand = new Hand(this);
@@ -683,7 +636,6 @@ public class LebronFiveOne extends LinearOpMode {
         claw = new Claw(this);
 
         extend = new Extend(this);
-        lift = new Lift(this);
         distInClaw = hardwareMap.get(DistanceSensor.class, "ScorClawDist");
         frontSensor = hardwareMap.get(DigitalChannel.class, "DistanceFront");
 

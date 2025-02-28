@@ -596,7 +596,7 @@ public class FreakLawFiveZero extends LinearOpMode {
         scorerPerkid = new ScorerPerkid(this);
         scorerDifferential = new ScorerDifferential(this);
         scorerClaw = new ScorerClaw(this);
-        scorerLinkage = new ScorerLinkage(this.hardwareMap);
+        scorerLinkage = new ScorerLinkage(hardwareMap);
         lift = new Lift(this);
 
         perkid = new Perkid(this);
