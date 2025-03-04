@@ -41,8 +41,8 @@ public class AnglesToServos extends LinearOpMode {
 
         double reference = 0;
         while (opModeIsActive()){
-            camera.goToElementPosExtend();
-            camera.goToElementPosHand();
+            camera.goToElementPosExtend(pos);
+            camera.goToElementPosHand(pos);
             xFromGamepad = gamepad1.right_stick_x * xCoordMax;
             yFromGamepad = gamepad1.right_stick_y * yCoordMax;
             ik = ClawCalculation.inverseKinematics(10, xFromGamepad, yFromGamepad);
