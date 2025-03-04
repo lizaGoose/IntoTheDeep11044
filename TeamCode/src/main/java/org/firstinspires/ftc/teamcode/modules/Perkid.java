@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.modules;
 
 
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.AIM_AT_SPIKE;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.LOOK_POS;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.PICK_UP;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.RIGHT_SIDE_DROP_SAMPLE;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.STRAIGHT_POS;
@@ -51,8 +52,8 @@ public class Perkid {
                 right.setPosition(PerkidConstants.TRANSFER_POS);
                 break;
             case LOOK:
-                left.setPosition(PerkidConstants.LOOK_POS);
-                right.setPosition(PerkidConstants.LOOK_POS);
+                left.setPosition(LOOK_POS);
+                right.setPosition(LOOK_POS);
                 break;
             case PICK_UP:
                 left.setPosition(PerkidConstants.PICK_UP);
@@ -81,6 +82,10 @@ public class Perkid {
     public void pickUp() {
         left.setPosition(PICK_UP);
         right.setPosition(PICK_UP);
+    }
+    public void look() {
+        left.setPosition(LOOK_POS);
+        right.setPosition(LOOK_POS);
     }
 
     public void transfer() {
