@@ -162,20 +162,17 @@ public class LebronDriveFiveOne extends LinearOpMode {
                     // PUSH MIDDLE
                     .addTurnMarker(4, -90)
                     // GO TO RIGHT
-                    .addTurnMarker(3, -90)
-                    // PUSH RIGHT
-                    .addTurnMarker(4, -90)
-                    // GO TO HUMAN
                     .addTurnMarker(5, -90)
-                    .addSpatialMarker(5 + SLOWDOWN_POINT_HUMAN_0, () -> {
+                    // PUSH RIGHT
+                    .addTurnMarker(6, -90)
+                    // GO TO HUMAN
+                    .addTurnMarker(7, -90)
+                    .addSpatialMarker(7 + SLOWDOWN_POINT_HUMAN_0, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
-                    .addSpatialMarker(2.8, () -> {
-                        extend.setReference(0);
-                    })
-                    .waitForAt(3, WAIT_FOR_HUMAN_ADJUST + 100, -90)
+                    .waitForAt(8, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_CLAW_RELEASE, () -> {
-                        claw.open();
+                        scorerClaw.open();
                         DEBUG_END_FLAG = true; // TODO: REMOVE PLS
                     })
                     .build();
