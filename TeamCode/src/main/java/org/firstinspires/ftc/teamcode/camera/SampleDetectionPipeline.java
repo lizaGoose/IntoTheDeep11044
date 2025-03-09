@@ -48,7 +48,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
     public static int YELLOW_MASK_THRESHOLD = 110;
     public static int BLUE_MASK_THRESHOLD = 57;
     public static int RED_MASK_THRESHOLD = 198;
-    public static double areaSize = 900;
+    public static double areaSize = 900, k = 90;
     Point x;
     /*
      * Elements for noise reduction
@@ -76,8 +76,12 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
     volatile ArrayList<AnalyzedStone> clientStoneList = new ArrayList<>();
     public volatile Set<Double> RotateStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    volatile Set<Integer> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    public volatile Set<Integer> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
     public ArrayList<Integer> Center = new ArrayList<>();
+    public ArrayList<Integer> Red = new ArrayList<>();
+    public ArrayList<Integer> Yellow = new ArrayList<>();
+    public ArrayList<Integer> Blue = new ArrayList<>();
 
     /*
      * Viewport stages
@@ -265,24 +269,32 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         // Store the detected stone information
         AnalyzedStone analyzedStone = new AnalyzedStone();
         Center = new ArrayList<>(CenterStone);
+
+        if(YELLOW_MASK_THRESHOLD == 95){
+           Yellow = new ArrayList<>(CenterStone);
+        }
+        else if(YELLOW_MASK_THRESHOLD == 85){
+            Blue = new ArrayList<>(CenterStone);
+        }
+        else{
+            Red = new ArrayList<>(CenterStone);
+        }
+
         analyzedStone.angle = angle;
         analyzedStone.color = color;
         analyzedStone.xS = x;
         analyzedStone.yS = y;
 
         RotateStone.add((double) Math.round(rotRectAngle));
-        CenterStone.add((int) rotRectX);
+        CenterStone.add((int) rotRectY);
         internalStoneList.add(analyzedStone);
         if (!Center.isEmpty()) {
-            //   if (Imgproc.contourArea(contour2f) >= 5000) {
-            if (Math.round(rotatedRectFitToContour.center.x) == Collections.min(Center)) {
 
-            }
-            //Я вот это чуть чуть поменял
-            //кросава
-            xSample = analyzedStone.xS-177/*-380/*(InchPerPixel / 640 )/* matrixKoeff*/;
-            ySample = 570-analyzedStone.yS/*/10/2.54/*(InchPerPixel / 640 )/* matrixKoeff*/;
-            Angle = analyzedStone.angle;
+            if (Math.round(rotatedRectFitToContour.center.y) == Collections.max(Center)) {
+                xSample = analyzedStone.xS-k;
+                ySample = 418-analyzedStone.yS;
+                Angle = analyzedStone.angle;
+
 
                 if (analyzedStone.angle <= 90) {
                     Angle = analyzedStone.angle;
@@ -290,8 +302,9 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
                 else{
                     Angle = 90-Math.abs(analyzedStone.angle - 90);
                 }
-            Area = Imgproc.contourArea(contour2f);
-            // }
+                Area = Imgproc.contourArea(contour2f);
+            }
+
         }
     }
 

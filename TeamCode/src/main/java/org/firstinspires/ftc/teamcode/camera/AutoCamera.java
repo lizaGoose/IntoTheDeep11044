@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.modules.Extend;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
+import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.opencv.core.RotatedRect;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -41,9 +42,10 @@ public class AutoCamera {
     public int indexAngle;
     Extend extend;
     public Hand hand;
+    public Lift lift;
     public double xFromGamepad, yFromGamepad, xCoordMax = 499.293 / 2.54, yCoordMax = 544.599 / 2.54;
     public double xCoordSampleInches, yCoordSampleInches, maxPositionInchesY = 16, ticksPerInchY = 259 / 16, extendPos, handPos, distanceY, distanceX;
-    public static double k = 0, k2 = 200;
+    public static double k = 50, k2 = 350;
 
 
     public AutoCamera(LinearOpMode linearOpMode) {
@@ -51,6 +53,7 @@ public class AutoCamera {
         hardwareMap = linearOpMode.hardwareMap;
         extend = new Extend(linearOpMode);
         hand = new Hand(linearOpMode);
+        lift = new Lift(linearOpMode);
         //diff = new Diff(linearOpMode);
        /* clawColorSensor = hardwareMap.get(ColorSensor.class, "Color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Color");*/
@@ -68,7 +71,7 @@ public class AutoCamera {
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                cam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                cam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_RIGHT);
             }
 
             @Override
@@ -81,11 +84,11 @@ public class AutoCamera {
 
     public List<Double> AutonomousRecognition() {
         //  if(pip.xSample <=300 && pip.xSample >= 100) {177 343
-        handPos = pip.xSample / k2;
+        handPos = (pip.xSample + lift.leftMotor.getCurrentPosition())/ k2;
         //  distanceY = Math.pow(356/21,2)+Math.pow(66/2.54, 2)/*21*k/(356/pip.ySample - 1 + k) /*+ 6*Math.cos(Math.abs(handPos-0.5)*120)*/;
         //Math.pow(Math.pow(distanceY, 2) - Math.pow(66/2.54, 2), 0.5)*ticksPerInchY;
         //  }
-        extendPos = ( pip.ySample - Math.sin(handPos * 30 + 30) * k ) * ticksPerInchY * 21 / 356;//*(21/356)
+        extendPos = ((pip.ySample+lift.leftMotor.getCurrentPosition()) - Math.sin(handPos * 30 + 30) * 0 ) * ticksPerInchY * 25 / 427 - k;//*(21/356)
         /*yCoordSampleInches = 480/yCoordMax * pip.ySample;
         xCoordSampleInches = 640/xCoordMax * pip.xSample;
         ticksPerInchY = maxPositionInchesY/yCoordMax;
@@ -143,16 +146,16 @@ public class AutoCamera {
     }
 
     public void operatorControlRed() {
-        if (linearOpMode.gamepad1.square) {
+       /* if (linearOpMode.gamepad1.square) {
             pip.YELLOW_MASK_THRESHOLD = 95;
             pip.BLUE_MASK_THRESHOLD = 57;
             pip.RED_MASK_THRESHOLD = 198;
-        }
-        if (linearOpMode.gamepad1.circle) {
+        }*/
+     //   if (linearOpMode.gamepad1.circle) {
             pip.YELLOW_MASK_THRESHOLD = 5;
             pip.BLUE_MASK_THRESHOLD = 70;
             pip.RED_MASK_THRESHOLD = 170;
-        }
+        //}
         x = pip.xSample;
         y = pip.ySample;
     }
