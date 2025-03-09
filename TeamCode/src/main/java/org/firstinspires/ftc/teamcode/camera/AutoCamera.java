@@ -131,16 +131,11 @@ public class AutoCamera {
     }
 
     public void operatorControlBlue() {
-        if (linearOpMode.gamepad1.square) {
-            pip.YELLOW_MASK_THRESHOLD = 95;
-            pip.BLUE_MASK_THRESHOLD = 57;
-            pip.RED_MASK_THRESHOLD = 198;
-        }
-        if (linearOpMode.gamepad1.circle) {
+
             pip.YELLOW_MASK_THRESHOLD = 85;
             pip.BLUE_MASK_THRESHOLD = 138;
             pip.RED_MASK_THRESHOLD = 70;
-        }
+
         x = pip.xSample;
         y = pip.ySample;
     }
@@ -156,6 +151,15 @@ public class AutoCamera {
             pip.BLUE_MASK_THRESHOLD = 70;
             pip.RED_MASK_THRESHOLD = 170;
         //}
+        x = pip.xSample;
+        y = pip.ySample;
+    }
+    public void operatorControlYellow() {
+
+            pip.YELLOW_MASK_THRESHOLD = 95;
+            pip.BLUE_MASK_THRESHOLD = 57;
+            pip.RED_MASK_THRESHOLD = 198;
+
         x = pip.xSample;
         y = pip.ySample;
     }
