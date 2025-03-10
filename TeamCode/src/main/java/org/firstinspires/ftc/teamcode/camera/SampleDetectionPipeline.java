@@ -291,20 +291,20 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         if (!Center.isEmpty()) {
 
             if (Math.round(rotatedRectFitToContour.center.y) == Collections.max(Center)) {
-                xSample = analyzedStone.xS-k;
-                ySample = 418-analyzedStone.yS;
-                Angle = analyzedStone.angle;
 
-
-                if (analyzedStone.angle <= 90) {
-                    Angle = analyzedStone.angle;
-                }
-                else{
-                    Angle = 90-Math.abs(analyzedStone.angle - 90);
-                }
-                Area = Imgproc.contourArea(contour2f);
             }
+            xSample = analyzedStone.xS-k;
+            ySample = 418-analyzedStone.yS;
+            Angle = analyzedStone.angle;
 
+
+            if (analyzedStone.angle <= 90) {
+                Angle = analyzedStone.angle;
+            }
+            else{
+                Angle = 90-Math.abs(analyzedStone.angle - 90);
+            }
+            Area = Imgproc.contourArea(contour2f);
         }
     }
 

@@ -44,6 +44,8 @@ public class Differential {
     public double rotation = 0;
     private ElapsedTime timer;
 
+    public double leftPosition = 0.5, rightPosition = 0.5;
+
     public enum Mode {
         TRANSFER,
         PICK_UP,
@@ -54,7 +56,8 @@ public class Differential {
         VISION_HUYNYA,
         RIGHT_SIDE_DROP_SAMPLE,
         TRANSFER_ROT,
-        RELAX
+        RELAX,
+        ANGLE
     }
 
     public Mode currentMode = Mode.TRANSFER;
@@ -222,6 +225,10 @@ public class Differential {
                 left.setPwmDisable();
                 right.setPwmDisable();
                 break;
+            case ANGLE:
+                left.setPosition(leftPosition);
+                right.setPosition(rightPosition);
+                break;
         }
     }
 
@@ -261,6 +268,11 @@ public class Differential {
     public void transferAngle() {
         double angle = 90 * ((TRANSFER - DOWN) / (FORWARD - DOWN) - 1);
         setAngleRotation(angle, TRANSFER_ROTATION);
+    }
+
+    public void setPositions(double leftPosition, double rightPosition) {
+        this.leftPosition = leftPosition;
+        this.rightPosition = rightPosition;
     }
 
     public void setAngleRotation(double angle, double rotation) {

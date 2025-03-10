@@ -26,8 +26,6 @@ public class Hand {
     AnalogInput axonEnc;
     ElapsedTime timer;
     double rotation = 0.5;
-    // 0.83
-    //
 
     enum Mode {
         DRIVER_CONTROL,
@@ -77,6 +75,10 @@ public class Hand {
         hand.setPosition(position);
     }
 
+    public void setRotation(double rotation) {
+        this.rotation = rotation;
+    }
+
     public double getPosition() {
         return hand.getPosition();
     }
@@ -106,8 +108,7 @@ public class Hand {
     }
 
     @Config
-    static
-    class HandConstants {
+    static class HandConstants {
         public static double RANGE_CENTER = 0.24;
         public static double RANGE_SERVO = 0.24;
         public static double RANGE_START = RANGE_CENTER - RANGE_SERVO;

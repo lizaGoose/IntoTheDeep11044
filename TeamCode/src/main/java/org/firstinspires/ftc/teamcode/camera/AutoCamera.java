@@ -84,11 +84,11 @@ public class AutoCamera {
 
     public List<Double> AutonomousRecognition() {
         //  if(pip.xSample <=300 && pip.xSample >= 100) {177 343
-        handPos = (pip.xSample + lift.leftMotor.getCurrentPosition())/ k2;
+        handPos = ( pip.xSample + lift.leftMotor.getCurrentPosition() ) / k2;
         //  distanceY = Math.pow(356/21,2)+Math.pow(66/2.54, 2)/*21*k/(356/pip.ySample - 1 + k) /*+ 6*Math.cos(Math.abs(handPos-0.5)*120)*/;
         //Math.pow(Math.pow(distanceY, 2) - Math.pow(66/2.54, 2), 0.5)*ticksPerInchY;
         //  }
-        extendPos = ((pip.ySample+lift.leftMotor.getCurrentPosition()) - Math.sin(handPos * 30 + 30) * 0 ) * ticksPerInchY * 25 / 427 - k;//*(21/356)
+        extendPos = ( ( pip.ySample + lift.leftMotor.getCurrentPosition() ) - Math.sin(handPos * 30 + 30) * 0 ) * ticksPerInchY * 25 / 427 - k;//*(21/356)
         /*yCoordSampleInches = 480/yCoordMax * pip.ySample;
         xCoordSampleInches = 640/xCoordMax * pip.xSample;
         ticksPerInchY = maxPositionInchesY/yCoordMax;
@@ -132,9 +132,9 @@ public class AutoCamera {
 
     public void operatorControlBlue() {
 
-            pip.YELLOW_MASK_THRESHOLD = 85;
-            pip.BLUE_MASK_THRESHOLD = 138;
-            pip.RED_MASK_THRESHOLD = 70;
+        SampleDetectionPipeline.YELLOW_MASK_THRESHOLD = 85;
+        SampleDetectionPipeline.BLUE_MASK_THRESHOLD = 138;
+        SampleDetectionPipeline.RED_MASK_THRESHOLD = 70;
 
         x = pip.xSample;
         y = pip.ySample;
@@ -146,19 +146,20 @@ public class AutoCamera {
             pip.BLUE_MASK_THRESHOLD = 57;
             pip.RED_MASK_THRESHOLD = 198;
         }*/
-     //   if (linearOpMode.gamepad1.circle) {
-            pip.YELLOW_MASK_THRESHOLD = 5;
-            pip.BLUE_MASK_THRESHOLD = 70;
-            pip.RED_MASK_THRESHOLD = 170;
+        //   if (linearOpMode.gamepad1.circle) {
+        SampleDetectionPipeline.YELLOW_MASK_THRESHOLD = 5;
+        SampleDetectionPipeline.BLUE_MASK_THRESHOLD = 70;
+        SampleDetectionPipeline.RED_MASK_THRESHOLD = 170;
         //}
         x = pip.xSample;
         y = pip.ySample;
     }
+
     public void operatorControlYellow() {
 
-            pip.YELLOW_MASK_THRESHOLD = 95;
-            pip.BLUE_MASK_THRESHOLD = 57;
-            pip.RED_MASK_THRESHOLD = 198;
+        SampleDetectionPipeline.YELLOW_MASK_THRESHOLD = 95;
+        SampleDetectionPipeline.BLUE_MASK_THRESHOLD = 57;
+        SampleDetectionPipeline.RED_MASK_THRESHOLD = 198;
 
         x = pip.xSample;
         y = pip.ySample;

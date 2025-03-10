@@ -40,6 +40,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
+import org.firstinspires.ftc.teamcode.camera.AutoCamera;
 import org.firstinspires.ftc.teamcode.hardware.StickyKeys;
 
 import java.io.IOException;
@@ -102,7 +103,7 @@ public class StateMachine {
     public double zeroPos = 0;
     public FtcDashboard dashboard;
     private final StickyKeys stickyGamepad1;
-    //SampleDetectionCameraClass cam;
+    AutoCamera cam;
 
     private Trajectory trajScore7, trajToSpecimen;
     private Trajectory[] fullCycle = new Trajectory[8];
@@ -141,7 +142,6 @@ public class StateMachine {
     public StateMachine(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
 
-        //cam = new SampleDetectionCameraClass(linearOpMode);
         extend = new Extend(linearOpMode);
         claw = new Claw(linearOpMode);
         perkid = new Perkid(linearOpMode);
@@ -154,7 +154,7 @@ public class StateMachine {
         hang = new Hang(linearOpMode);
         driveModule = new DriveModule(linearOpMode.hardwareMap, new Pose2d(POSE_X, POSE_Y, Math.toRadians(270)));
         driveModule.drive.setForce(1);
-//        cam = new SampleDetectionCameraClass(linearOpMode);
+        cam = new AutoCamera(linearOpMode);
         scorerLinkage = new ScorerLinkage(linearOpMode.hardwareMap);
 
         gamepad1 = linearOpMode.gamepad1;
@@ -198,8 +198,6 @@ public class StateMachine {
 //        distanceSensor = linearOpMode.hardwareMap.get(DistanceSensor.class, "Color");
         distInClaw = linearOpMode.hardwareMap.get(DistanceSensor.class, "ScorClawDist");
         frontSensor = linearOpMode.hardwareMap.get(DigitalChannel.class, "DistanceFront");
-        //cam.visionInUse();
-        //cam.operatorControlBlue();
         extend.teleop();
         claw.teleop();
         perkid.teleop();
@@ -409,7 +407,9 @@ public class StateMachine {
                     state = State.TRANSFER_SPEC;
                 }
                 if (gamepad1.square) {
-                    state = State.PICK_UP_THE_BLOCK_SCORSPEC;
+                    diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
+                    state = State.LOOK_FOR_BLOCK_SCORSPEC;
+                    hand.setRotation(0.5);
                     pickedUnpickedTimer.reset();
                 }
                 break;
@@ -433,12 +433,13 @@ public class StateMachine {
                 claw.currentMode = Claw.Mode.DROP;
                 scorerLinkage.retract();
                 // lift.pos = 0;
+
                 if (gamepad2.triangle || gamepad1.triangle) {
                     state = State.INITIAL;
                     initialTimer.reset();
                 }
-                if (gamepad2.cross || stickyGamepad1.square) {
 
+                if (gamepad2.cross || stickyGamepad1.square) {
                     state = State.PICK_UP_THE_BLOCK;
                     pickedUnpickedTimer.reset();
                 }
@@ -447,21 +448,26 @@ public class StateMachine {
 
             case LOOK_FOR_BLOCK_SCORSPEC:
                 perkid.currentMode = Perkid.Mode.LOOK;
-                //diff.currentMode = Differential.Mode.VISION_HUYNYA;
-                diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
+
                 scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                 hand.currentMode = Hand.Mode.DRIVER_CONTROL;
                 claw.currentMode = Claw.Mode.DROP;
-                // lift.pos = 0;
+
                 if (gamepad2.triangle || gamepad1.triangle) {
                     state = State.INITIAL;
                     initialTimer.reset();
                 }
                 if (gamepad2.cross || stickyGamepad1.square) {
-
                     state = State.PICK_UP_THE_BLOCK_SCORSPEC;
                     pickedUnpickedTimer.reset();
                 }
+
+                if (stickyGamepad1.circle) {
+                    pickFromSub();
+                }
+
+                extend.setReference(pos);
+                hand.setRotation(posHand);
 
                 break;
 
@@ -511,6 +517,7 @@ public class StateMachine {
 
                     }
                 }
+
                 if (startTimerFromClawToClaw && fromClawToClawTimer.milliseconds() >= 300) {
                     state = State.FROM_CLAW_TO_CLAW;
                 }
@@ -786,6 +793,7 @@ public class StateMachine {
         linearOpMode.telemetry.addData("perkid_state", perkid.currentMode);
         linearOpMode.telemetry.addData("diff_state", diff.currentMode);
         linearOpMode.telemetry.addData("hand_state", hand.currentMode);
+        linearOpMode.telemetry.addData("hand_rotation", hand.rotation);
         linearOpMode.telemetry.addData("scorDiff_state", scorerDifferential.currentMode);
         linearOpMode.telemetry.addData("scorPerkid_state", scorerPerkid.currentMode);
         linearOpMode.telemetry.addData("transfer_timer", fromClawToClawTimer);
@@ -793,10 +801,12 @@ public class StateMachine {
         linearOpMode.telemetry.addData("lift_right", lift.rightMotor.getCurrentPosition());
         linearOpMode.telemetry.addData("lift_ref", lift.getReference());
         linearOpMode.telemetry.addData("extend", extend.motor.getCurrentPosition());
+        linearOpMode.telemetry.addData("extend_reference", extend.getReference());
         linearOpMode.telemetry.addData("StartTimer", startTimer);
         linearOpMode.telemetry.addData("hang", hang.hang.getCurrentPosition());
         linearOpMode.telemetry.addData("extend_voltage", extend.motor.getCurrent(CurrentUnit.AMPS));
         linearOpMode.telemetry.addData("drive_state", driveModule.currentMode);
+        linearOpMode.telemetry.addData("xSample", cam.pip.CenterStone);
         linearOpMode.telemetry.update();
 
         TelemetryPacket packet = new TelemetryPacket();
@@ -885,5 +895,18 @@ public class StateMachine {
                 .addTimeMarker(WAIT_END - 100, () -> {
                     state = State.PICK_SPEC;
                 });
+    }
+
+    public double pos = 0, posHand = 0.5;
+    public static double minRange = 0.25, maxRange = 0.75, minRange1 = 0.45, maxRange1 = 0.55, k = 60;
+    public double x, y;
+
+    public void pickFromSub() {
+        cam.operatorControlRed();
+        pos = cam.AutonomousRecognition().get(0) - k;
+        posHand = 1 - (cam.AutonomousRecognition().get(1) - 1);
+        diff.currentMode = Differential.Mode.ANGLE;
+        diff.setPositions(1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) ),
+                1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) ));
     }
 }

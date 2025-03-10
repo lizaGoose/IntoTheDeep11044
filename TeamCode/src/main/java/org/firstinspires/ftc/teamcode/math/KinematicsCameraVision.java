@@ -20,10 +20,10 @@ public class KinematicsCameraVision {
     public Extend extend;
     public AutoCamera cam;
     public boolean calculated = false;
-    public double x,y;
+    public double x, y;
     public double xRomaniaMin, xRomaniaMax, yRomaniaMin, yRomaniaMax;
 
-    public KinematicsCameraVision(LinearOpMode linearOpMode){
+    public KinematicsCameraVision(LinearOpMode linearOpMode) {
         cam = new AutoCamera(linearOpMode);
         extend = new Extend(linearOpMode);
         perkid = new Perkid(linearOpMode);
@@ -34,10 +34,18 @@ public class KinematicsCameraVision {
         leftDiff.scaleRange(minRange, maxRange);
         rightDiff.scaleRange(minRange1, maxRange1);
     }
-    public void pickFromSub(String mode){
+
+    public void pickFromSub(String mode) {
         perkid2.scoreSpecimen();
+        cam.operatorControlRed();
+        pos = cam.AutonomousRecognition().get(0) - k;
+        posHand = 1 - cam.AutonomousRecognition().get(1);
+        leftDiff.setPosition(1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) ));
+        rightDiff.setPosition(1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) ));
+/*
 
         if(mode == "Red"){
+
             cam.operatorControlRed();
             x = cam.pip.xSample;
             y = cam.pip.ySample;
@@ -115,9 +123,9 @@ public class KinematicsCameraVision {
         if(x > -5 && x < 270 && y > 70 && y < 285) {
             pos = cam.AutonomousRecognition().get(0) - k;
             posHand = 1 - cam.AutonomousRecognition().get(1);
-            leftDiff.setPosition(1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) )/* - 0.25*/);
-            rightDiff.setPosition(1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) )/* - 0.25*/);
-        }
-        }
+            leftDiff.setPosition(1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) )/* - 0.25*///);
+        //rightDiff.setPosition(1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) )/* - 0.25*/);
+        //  }*/
+    }
 }
 

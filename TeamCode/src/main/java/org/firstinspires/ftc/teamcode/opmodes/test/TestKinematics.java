@@ -41,7 +41,7 @@ public class TestKinematics extends LinearOpMode {
 
             if (gamepad1.triangle) {
                 if (!isPressed) {
-                   kinematics.pickFromSub();
+                   kinematics.pickFromSub("Red");
                 }
                 isPressed = true;
             } else {
@@ -52,7 +52,7 @@ public class TestKinematics extends LinearOpMode {
             } else {
                 perkid.look();
             }
-           /* if (gamepad1.cross){
+            /* if (gamepad1.cross){
                 claw.close();
             }
             else {
