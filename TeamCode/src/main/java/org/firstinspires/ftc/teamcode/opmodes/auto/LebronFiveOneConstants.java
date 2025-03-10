@@ -39,23 +39,20 @@ public class LebronFiveOneConstants {
     public static double DIFF_ROTATION_RIGHT = 5;
     public static double HAND_RIGHT = 0.64;
 
-    public static int EXTEND_RIGHT_TO_HUMAN = 350;
-    public static double ANGLE_RIGHT_TO_HUMAN = -235;
-    public static int WAIT_FOR_RIGHT_ROTATION = 500;
-
     public static int WAIT_PICK_UP = 150;
 
     public static int EXTEND_CLOSED = 20;
     public static int EXTEND_TEMP_CLOSED = 100;
 
-    public static double SLOWDOWN_FORCE = 0.1;
-    public static double SLOWDOWN_POINT_RUNG_0 = 0.66;
-    public static double SLOWDOWN_POINT_RUNG_1 = 0.8;
+    public static double SLOWDOWN_FORCE = 0;
+    public static double SLOWDOWN_POINT_RUNG_0 = 0.83;
+    public static double SLOWDOWN_POINT_RUNG_1 = 0.87;
     public static double SLOWDOWN_POINT_HUMAN_0 = 0.48;
-    public static double SLOWDOWN_POINT_HUMAN_1 = 0.8;
+    public static double SLOWDOWN_POINT_HUMAN_1 = 0.87;
 
     public static int WAIT_FOR_CLAW_RELEASE = 50;
     public static int WAIT_FOR_HUMAN_ADJUST = 0;
+    public static int WAIT_AFTER_PICK_UP = 100;
 
     public static int WAIT_SPECIMEN_PICK_UP = 150;
 

@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.modules;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRANSFER_POS;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.AIM_SPEC;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.DROP_SAMPLE_TO_HUMAN;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.EXTRA_PICK_SPEC;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.PICK_SPEC;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCORE_SAMP;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCOR_SPEC;
@@ -100,6 +101,11 @@ public class ScorerPerkid {
         right.setPosition(PICK_SPEC);
     }
 
+    public void pushIntoSpecimen() {
+        left.setPosition(EXTRA_PICK_SPEC);
+        right.setPosition(EXTRA_PICK_SPEC);
+    }
+
     public void aimAtSpecimen() {
         left.setPosition(AIM_SPEC);
         right.setPosition(AIM_SPEC);
@@ -123,7 +129,8 @@ public class ScorerPerkid {
     @Config
     static
     class ScorerPerkidConstants {
-        public static double PICK_SPEC = 0.35;
+        public static double PICK_SPEC = 0.385;
+        public static double EXTRA_PICK_SPEC = 0.385;
         public static double AIM_SPEC = 0.45;
         public static double DROP_SAMPLE_TO_HUMAN = 0.35;
         public static double TRANSFER_POS = 0.52;

@@ -323,7 +323,7 @@ public class FreakLawFiveZero extends LinearOpMode {
             buildRungToSpecimen = drive.buildTrajectory("traj11transposed.json")
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(0, () -> {
-                        drive.setForce(0.65);
+                        drive.setForce(FORCE);
                         scorerClaw.open();
                         scorerDifferential.liftAfterScoreSpecimen();
                     })

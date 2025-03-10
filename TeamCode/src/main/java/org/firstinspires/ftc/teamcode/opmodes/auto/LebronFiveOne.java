@@ -34,7 +34,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.HAND_RIGHT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.LIFT_SCORE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.MIDDLE_STOP_POINT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_BASKET_SLOWDOWN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_START_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_TO_SCORE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_START_RAISING_LIFT;
@@ -273,9 +272,6 @@ public class LebronFiveOne extends LinearOpMode {
                     })
                     // RIGHT TO HUMAN
                     .addTurnMarker(2, -90)
-                    .addSpatialMarker(2.01, () -> {
-                        scorerClaw.open();
-                    })
                     .addSpatialMarker(2.1, () -> {
                         extend.setReference(EXTEND_TEMP_CLOSED);
                         hand.dropOverRightSide();

@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.AFTER_SCORE_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.AIM_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.GET_FROM_CLAW;
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.LEBRON;
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.MOVE_SPECIMENS;
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.PICK_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.SCORE_SAMP;
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.SCORE_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDiffConstants.TRANSFER_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.AFTER_SCORE_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.AIM_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.GET_FROM_CLAW;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.LEBRON;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.MOVE_SPECIMENS;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.PICK_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.SCORE_SAMP;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.SCORE_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.TRANSFER_SPEC;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -49,19 +49,19 @@ public class ScorerDifferential {
     public void teleop() {
         switch (currentMode) {
             case PICK_SPEC:
-                diff.setPosition(ScorerDiffConstants.PICK_SPEC);
+                diff.setPosition(ScorerDifferentialConstants.PICK_SPEC);
                 break;
             case GET_FROM_CLAW:
                 diff.setPosition(GET_FROM_CLAW);
                 break;
             case SCORE_SAMP:
-                diff.setPosition(ScorerDiffConstants.SCORE_SAMP);
+                diff.setPosition(ScorerDifferentialConstants.SCORE_SAMP);
                 break;
             case SCORE_SPEC:
-                diff.setPosition(ScorerDiffConstants.SCORE_SPEC);
+                diff.setPosition(ScorerDifferentialConstants.SCORE_SPEC);
                 break;
             case TRANSFER_SPEC:
-                diff.setPosition(ScorerDiffConstants.TRANSFER_SPEC);
+                diff.setPosition(ScorerDifferentialConstants.TRANSFER_SPEC);
                 break;
             case RELAX:
                 diff.setPwmDisable();
@@ -112,9 +112,9 @@ public class ScorerDifferential {
 
     @Config
     static
-    class ScorerDiffConstants {
+    class ScorerDifferentialConstants {
         public static double AIM_SPEC = 0.86;
-        public static double PICK_SPEC = 0.83;
+        public static double PICK_SPEC = 0.86;
         public static double GET_FROM_CLAW = 0.7;
         public static double SCORE_SAMP = 0.76;
         public static double LEBRON = 0.5;

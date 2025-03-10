@@ -197,6 +197,11 @@ public class TrajectoryRunner {
 //                }
 //            }
 
+            if (!markers.isEmpty() && t + curveIndex >= markers.get(0).t) {
+                markers.get(0).getRunnable().onMarkerReached();
+                markers.remove(0);
+            }
+
             timeMarkerTimer.reset();
             integralSumHeading = 0;
 
@@ -249,10 +254,6 @@ public class TrajectoryRunner {
             packet.put("curve", true);
         }
 
-        if (!markers.isEmpty() && t + curveIndex >= markers.get(0).t) {
-            markers.get(0).getRunnable().onMarkerReached();
-            markers.remove(0);
-        }
 
         poseHistory.add(poseEstimate);
 

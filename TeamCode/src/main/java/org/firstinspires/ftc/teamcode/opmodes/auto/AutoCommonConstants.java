@@ -7,6 +7,8 @@ public class AutoCommonConstants {
     public static double POINT_MOVE_PERKID_0 = 0;
     public static double POINT_MOVE_PERKID_1 = 0.5;
 
+    public static double POINT_MOVE_INTAKE = 0.5;
+
     public static int HOLD_POS = 300;
 
     public static double WAIT_SCORE = 0;
