@@ -47,8 +47,10 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeC
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.WAIT_MIDDLE_PICKUP;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.WAIT_FOR_INTAKE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.WAIT_RELEASE_SAMPLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.WAIT_RIGHT_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.WAIT_RIGHT_PICKUP;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.WAIT_START_RETRACT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.WAIT_LEFT_HUMAN;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -87,19 +89,22 @@ public class SubThreeClaw extends LinearOpMode {
         public static double WAIT_AFTER_STOP_FOR_SUB_SAMPLE = 300;
 
         public static double WAIT_START_RETRACT = 200;
-        public static double WAIT_RELEASE_SAMPLE = 100;
+        public static double WAIT_RELEASE_SAMPLE = 300;
 
         public static double EXTEND_MIDDLE_SAMPLE = 160;
         public static double WAIT_MIDDLE_PICKUP = 500 + 150 + 650;
         public static double WAIT_MIDDLE_HUMAN = 500;
+        // ANGLE MIDDLE 0
 
         public static double EXTEND_LEFT_SAMPLE = 160;
         public static double WAIT_LEFT_PICKUP = 500 + 150 + 650;
-        public static double ANGLE_RIGHT = -60;
+        public static double ANGLE_LEFT = -60;
+        public static double WAIT_LEFT_HUMAN = 500;
 
         public static double EXTEND_RIGHT_SAMPLE = 160;
         public static double WAIT_RIGHT_PICKUP = 500 + 150 + 650;
-        public static double ANGLE_LEFT = -120;
+        public static double ANGLE_RIGHT = -120;
+        public static double WAIT_RIGHT_HUMAN = 500;
 
         public static double EXTEND_TEMP_CLOSED = 100;
 
@@ -199,7 +204,7 @@ public class SubThreeClaw extends LinearOpMode {
                         claw.open();
                     })
                     // AT OBSERVATION ZONE
-                    // MIDDLE SAMPLE -------------------------------
+                    // MIDDLE SAMPLE -----------------------------
                     .waitForAt(1, WAIT_MIDDLE_PICKUP, -90)
                     .addTimeMarker(0, true, () -> {
                         extend.setReference(EXTEND_MIDDLE_SAMPLE);
@@ -235,9 +240,8 @@ public class SubThreeClaw extends LinearOpMode {
                     })
                     .addTimeMarker(WAIT_RELEASE_SAMPLE, true, () -> {
                         claw.open();
-                        DEBUG_END_FLAG = true;
                     })
-                    // LEFT SAMPLE ---------------------------------
+                    // LEFT SAMPLE -------------------------------
                     .waitForAt(1, WAIT_LEFT_PICKUP, ANGLE_LEFT)
                     .addTimeMarker(0, true, () -> {
                         extend.setReference(EXTEND_LEFT_SAMPLE);
@@ -261,7 +265,18 @@ public class SubThreeClaw extends LinearOpMode {
                     .addTimeMarker(150, true, () -> {
                         diff.aim();
                         perkid.liftSample();
-                        DEBUG_END_FLAG = true;
+                    })
+                    .waitForAt(1, WAIT_LEFT_HUMAN)
+                    .addTimeMarker(0, true, () -> {
+                        perkid.dropOverRightSide();
+                        hand.dropOverRightSide();
+                        diff.dropOverRightSide();
+                    })
+                    .addTimeMarker(WAIT_START_RETRACT, true, () -> {
+                        extend.setReference(0);
+                    })
+                    .addTimeMarker(WAIT_RELEASE_SAMPLE, true, () -> {
+                        claw.open();
                     })
                     // RIGHT SAMPLE --------------------------------
                     .waitForAt(1, WAIT_RIGHT_PICKUP, ANGLE_RIGHT)
@@ -287,6 +302,18 @@ public class SubThreeClaw extends LinearOpMode {
                     .addTimeMarker(150, true, () -> {
                         diff.aim();
                         perkid.liftSample();
+                    })
+                    .waitForAt(1, WAIT_RIGHT_HUMAN)
+                    .addTimeMarker(0, true, () -> {
+                        perkid.dropOverRightSide();
+                        hand.dropOverRightSide();
+                        diff.dropOverRightSide();
+                    })
+                    .addTimeMarker(WAIT_START_RETRACT, true, () -> {
+                        extend.setReference(0);
+                    })
+                    .addTimeMarker(WAIT_RELEASE_SAMPLE, true, () -> {
+                        claw.open();
                         DEBUG_END_FLAG = true;
                     })
                     // GO TO HUMAN
