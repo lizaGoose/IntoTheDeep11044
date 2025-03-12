@@ -134,7 +134,7 @@ public class Perkid {
         public static double AIM_AT_SPIKE = 0.55;
         public static double TRANSFER_FROM_SUBMERSABLE = 0.53;
 
-        public static double PICK_UP = 0.37;
+        public static double PICK_UP = 0.365;
         public static double RIGHT_SIDE_DROP_SAMPLE = 0.67;
     }
 }

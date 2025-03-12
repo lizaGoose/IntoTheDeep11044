@@ -16,6 +16,7 @@ public class Claw {
     LinearOpMode linearOpMode;
     Gamepad gamepad1;
     ServoImplEx claw;
+    Servo appendix;
 
     public enum Mode {
         LIGHT,
@@ -31,21 +32,26 @@ public class Claw {
         this.linearOpMode = linearOpMode;
         gamepad1 = linearOpMode.gamepad1;
         claw = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "claw_servo");
+        appendix = linearOpMode.hardwareMap.get(Servo.class, "claw_appendix_servo");
     }
 
     public void teleop() {
         switch (currentMode) {
             case PICK:
                 claw.setPosition(ClawConstants.PICK);
+                appendix.setPosition(ClawConstants.PICK_APPENDIX);
                 break;
             case DROP:
                 claw.setPosition(ClawConstants.DROP);
+                appendix.setPosition(ClawConstants.DROP_APPENDIX);
                 break;
             case TRANSFER:
-                claw.setPosition(ClawConstants.TRANSFER);
+                claw.setPosition(ClawConstants.PICK);
+                appendix.setPosition(ClawConstants.TRANSFER_APPENDIX);
                 break;
             case LIGHT:
                 claw.setPosition(LIGHT);
+                appendix.setPosition(ClawConstants.TRANSFER_APPENDIX);
                 break;
             case RELAX:
                 claw.setPwmDisable();
@@ -76,5 +82,8 @@ public class Claw {
         public static double PICK = 0.67;
         public static double DROP = 0.31;
         public static double TRANSFER = 0.4;
+        public static double TRANSFER_APPENDIX = 0.76;
+        public static double DROP_APPENDIX = 0.24;
+        public static double PICK_APPENDIX = 0.26;//0.24 0.76 0.26
     }
 }

@@ -309,7 +309,7 @@ public class Differential {
     @Config
     static
     class DifferentialConstants {
-        public static double HORIZONTAL_DOWN = 0.44;
+        public static double HORIZONTAL_DOWN = 0.38;
         public static double PICK_UP = 0.53;
         public static double PICK_UP_ANGLE = -45;
         public static double TRANSFER = 0.98;

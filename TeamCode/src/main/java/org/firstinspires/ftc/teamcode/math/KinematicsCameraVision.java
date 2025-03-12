@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 public class KinematicsCameraVision {
     public double pos, posHand;
     Servo leftDiff, rightDiff;
-    public static double minRange = 0.25, maxRange = 0.75, minRange1 = 0.45, maxRange1 = 0.55, k = 60;
+    public static double minRange = 0.25, maxRange = 0.75, minRange1 = 0.45, maxRange1 = 0.55, k = 0;
     public ScorerPerkid perkid2;
     public Perkid perkid;
     public Extend extend;

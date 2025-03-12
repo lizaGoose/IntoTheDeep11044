@@ -32,13 +32,15 @@ public class TestKinematics extends LinearOpMode {
         extend = new Extend(this);
         hand = new Hand(this);
         Claw claw = new Claw(this);
+        Lift lift = new Lift(this);
         //cam.operatorControlRed();
 
         waitForStart();
 
         while (opModeIsActive()) {
            // cam.operatorControlRed();
-
+            lift.setReference(440);
+            lift.PIDControl();
             if (gamepad1.triangle) {
                 if (!isPressed) {
                    kinematics.pickFromSub("Red");
@@ -62,7 +64,8 @@ public class TestKinematics extends LinearOpMode {
             extend.PIDControl();
             hand.setPosition(kinematics.posHand);
            // telemetry.update();
-            telemetry.addData("xSample", kinematics.cam.pip.CenterStone);//70 285
+            telemetry.addData("xSample", kinematics.cam.pip.xSample);
+            telemetry.addData("xSample", kinematics.cam.pip.ySample);//70 285
             telemetry.update();
         }
     }

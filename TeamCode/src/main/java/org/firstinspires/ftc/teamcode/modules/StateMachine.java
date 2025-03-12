@@ -54,7 +54,7 @@ class SensorsConstants {
 @Config
 class TeleOpConstants {
     public static double RELAX_SCORE_CLAW = 50;
-    public static double WAIT_UNTIL_SPECIMEN_PICKUP = 100;
+    public static double WAIT_UNTIL_SPECIMEN_PICKUP = 1;
     public static double REGISTER_MOVEMENT_AFTER = 450;
     public static double SET_POS_TO_ZERO_SAMPLE = 300;
     public static double PICKED_UNPICKED_PICK_BLOCK = 450;
@@ -291,13 +291,15 @@ public class StateMachine {
                         fromTransferSpecimenToScore.reset();
                     }
 
-                    if (distInClaw.getDistance(DistanceUnit.MM) >= 17 || gamepad2.triangle || gamepad1.triangle) {
+                    if (distInClaw.getDistance(DistanceUnit.MM) <= 22 || gamepad2.triangle || gamepad1.triangle) {
                         specimenPickedUp.reset();
-                    }
-                    if (specimenPickedUp.milliseconds() > WAIT_UNTIL_SPECIMEN_PICKUP) {
                         scorerDifferential.currentMode = ScorerDifferential.Mode.AIM_POS;
                         state = State.PICK_SPEC;
                     }
+                 /*   if (specimenPickedUp.milliseconds() > WAIT_UNTIL_SPECIMEN_PICKUP) {
+                        scorerDifferential.currentMode = ScorerDifferential.Mode.AIM_POS;
+                        state = State.PICK_SPEC;
+                    }*/
                 }
                 break;
 
@@ -376,7 +378,8 @@ public class StateMachine {
             case SCORE_SPEC:
                 scorerPerkid.currentMode = ScorerPerkid.Mode.SCOR_SPEC;
                 if (scorerDifferential.currentMode != ScorerDifferential.Mode.AFTER_SCORE_SPEC) {
-                    scorerDifferential.currentMode = ScorerDifferential.Mode.SCORE_SPEC;
+                   // scorerDifferential.currentMode = ScorerDifferential.Mode.SCORE_SPEC;
+                    scorerDifferential.currentMode = ScorerDifferential.Mode.PICK_SPEC;
                 }
 
                 scorerLinkage.extend();
@@ -384,6 +387,7 @@ public class StateMachine {
                 if (gamepad2.right_bumper || gamepad1.circle) {
                     scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                     scorerDifferential.currentMode = ScorerDifferential.Mode.AFTER_SCORE_SPEC;
+                    //scorerDifferential.currentMode = ScorerDifferential.Mode.PICK_SPEC;
                 } else if (gamepad1.cross) {
                     scorerClaw.currentMode = ScorerClaw.Mode.PICK;
                 } else {
@@ -606,7 +610,7 @@ public class StateMachine {
                 scorerDifferential.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
 
 
-                if (pickedUnpickedTimer.milliseconds() > 400) {
+                if (pickedUnpickedTimer.milliseconds() > 200) {
                     claw.currentMode = Claw.Mode.PICK;
                     if (pickedUnpickedTimer.milliseconds() >= PICKED_UNPICKED_PICK_BLOCK) {
                         perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSABLE;
@@ -652,7 +656,7 @@ public class StateMachine {
                     diff.currentMode = Differential.Mode.TRANSFER;
                     perkid.currentMode = Perkid.Mode.TRANSFER;
                 } else if (fromClawToClawTimer.milliseconds() > 800 && fromClawToClawTimer.milliseconds() <= 1300 && !startedMovingExtendBack) {
-                    claw.currentMode = Claw.Mode.PICK;
+                    claw.currentMode = Claw.Mode.TRANSFER;
                     //extend.setTransfer();
                 } else if (fromClawToClawTimer.milliseconds() > 1300 && fromClawToClawTimer.milliseconds() <= 1700 && !startedMovingExtendBack) {
                     extend.currentMode = Extend.Mode.POWER;

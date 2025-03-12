@@ -45,7 +45,7 @@ public class AutoCamera {
     public Lift lift;
     public double xFromGamepad, yFromGamepad, xCoordMax = 499.293 / 2.54, yCoordMax = 544.599 / 2.54;
     public double xCoordSampleInches, yCoordSampleInches, maxPositionInchesY = 16, ticksPerInchY = 259 / 16, extendPos, handPos, distanceY, distanceX;
-    public static double k = 50, k2 = 350;
+    public static double k = 50, k2 = 340;
 
 
     public AutoCamera(LinearOpMode linearOpMode) {
@@ -84,11 +84,11 @@ public class AutoCamera {
 
     public List<Double> AutonomousRecognition() {
         //  if(pip.xSample <=300 && pip.xSample >= 100) {177 343
-        handPos = ( pip.xSample + lift.leftMotor.getCurrentPosition() ) / k2;
+        handPos = ( pip.xSample/* + lift.leftMotor.getCurrentPosition() */) / k2;
         //  distanceY = Math.pow(356/21,2)+Math.pow(66/2.54, 2)/*21*k/(356/pip.ySample - 1 + k) /*+ 6*Math.cos(Math.abs(handPos-0.5)*120)*/;
         //Math.pow(Math.pow(distanceY, 2) - Math.pow(66/2.54, 2), 0.5)*ticksPerInchY;
         //  }
-        extendPos = ( ( pip.ySample + lift.leftMotor.getCurrentPosition() ) - Math.sin(handPos * 30 + 30) * 0 ) * ticksPerInchY * 25 / 427 - k;//*(21/356)
+        extendPos = ( ( pip.ySample/* + lift.leftMotor.getCurrentPosition()*/ ) - Math.sin(handPos * 30 + 30) * 0 ) * ticksPerInchY * 14 / 132 - k;//*(21/356)
         /*yCoordSampleInches = 480/yCoordMax * pip.ySample;
         xCoordSampleInches = 640/xCoordMax * pip.xSample;
         ticksPerInchY = maxPositionInchesY/yCoordMax;

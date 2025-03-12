@@ -135,7 +135,7 @@ public class ScorerPerkid {
         public static double DROP_SAMPLE_TO_HUMAN = 0.35;
         public static double TRANSFER_POS = 0.52;
         public static double SCORE_SAMP = 0;
-        public static double TRANSFER_SPEC = 0.81;
+        public static double TRANSFER_SPEC = 0.82;
         public static double SCOR_SPEC = 0.81;
     }
 }

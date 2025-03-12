@@ -48,7 +48,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
     public static int YELLOW_MASK_THRESHOLD = 110;
     public static int BLUE_MASK_THRESHOLD = 57;
     public static int RED_MASK_THRESHOLD = 198;
-    public static double areaSize = 900, k = 90;
+    public static double areaSize = 900, k = 118, k2 = 384;
     Point x;
     /*
      * Elements for noise reduction
@@ -294,7 +294,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
 
             }
             xSample = analyzedStone.xS-k;
-            ySample = 418-analyzedStone.yS;
+            ySample = k2-analyzedStone.yS;
             Angle = analyzedStone.angle;
 
 
