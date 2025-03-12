@@ -120,7 +120,7 @@ public class ScorerDifferential {
         public static double LEBRON = 0.5;
         public static double SCORE_SPEC = 0.87;
         public static double AFTER_SCORE_SPEC = 0.83;
-        public static double TRANSFER_SPEC = 0.92;
+        public static double TRANSFER_SPEC = 0.87;
         public static double MOVE_SPECIMENS = 0.9;
     }
 }

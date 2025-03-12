@@ -50,28 +50,6 @@ public class Extend {
     public void teleop() {
         switch (currentMode) {
             case DRIVER_CONTROL:
-              /*  if (gamepad.triangle && !lastTriangleState) {
-                    // setReference(motor.getCurrentPosition() + TICKS_PER_TAP);
-                    setNewReference = motor.getCurrentPosition() + TICKS_PER_TAP;
-                }
-
-                lastTriangleState = gamepad.triangle;
-                if (gamepad.cross && !lastCrossState) {
-                    // setReference(motor.getCurrentPosition() - TICKS_PER_TAP);
-                    setNewReference = motor.getCurrentPosition() - TICKS_PER_TAP;
-                }
-
-                lastTriangleState = gamepad.cross;*/
-
-             /*  if (gamepad2.right_stick_y != 0) {
-                    motor.setPower(-gamepad2.right_stick_y);
-                    //setReference(motor.getCurrentPosition());
-                    setNewReference = motor.getCurrentPosition();
-                } else {
-                    if (!( gamepad.triangle && !lastTriangleState ) && !( gamepad.cross && !lastCrossState ))
-                        setReference(setNewReference);
-                    PIDControl();
-                }*/
                 if (gamepad.right_stick_y != 0) {
                     motor.setPower(-gamepad.right_stick_y);
                     //setReference(motor.getCurrentPosition());
@@ -87,7 +65,6 @@ public class Extend {
                 PIDControl();
                 break;
             case VISION_CONTROL:
-                //itor.setPower(cam.extendingError);
                 PIDControl();
                 break;
             case CLOSE:
@@ -110,7 +87,7 @@ public class Extend {
 
     public double PIDControl() {
         int position = motor.getCurrentPosition();
-        double error = position - reference;
+        double error = reference - position;
 
         double derivative = ( error - lastError ) / timer.seconds();
         integralSum += error * timer.seconds();
@@ -126,7 +103,7 @@ public class Extend {
 
     public double AutoPIDControl() {
         int position = motor.getCurrentPosition();
-        double error = position - reference;
+        double error = reference - position;
 
         double derivative = ( error - lastError ) / timer.seconds();
         integralSum += error * timer.seconds();
@@ -200,8 +177,8 @@ public class Extend {
     @Config
     static
     class ExtendConstants {
-        public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(-0.018, 0.0, -0.000004, 0.015);
-        public static PIDFCoefficients AUTO_COEFFICIENTS = new PIDFCoefficients(-0.012, 0, -0.0005, 0);
+        public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.025, 0.0, 0.0007, 0);
+        public static PIDFCoefficients AUTO_COEFFICIENTS = new PIDFCoefficients(0.012, 0, 0.0005, 0);
         public static double TICKS_PER_TAP = 30;
 
         public static int MAX_POSITION = 260;

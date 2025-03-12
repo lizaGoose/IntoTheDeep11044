@@ -116,7 +116,7 @@ public class Hand {
         public static double RANGE = 35;
 
         public static double ROTATION_SPEED = 0.002;
-        public static double RIGHT_SIDE_DROP_SAMPLE = 0;
+        public static double RIGHT_SIDE_DROP_SAMPLE = 0.1;
         public static double FORWARD = 0.5;
     }
 }

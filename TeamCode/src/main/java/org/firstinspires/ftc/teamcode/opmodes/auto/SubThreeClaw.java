@@ -1,18 +1,19 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.HOLD_POS;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL_OFFSET;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_INTAKE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_START;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_BASKET;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_1ST;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_2ND;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_3RD;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_4TH;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_5TH;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DIFF_ROTATION_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DIST_SCOR_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.FORCE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.LIFT_SCORE;
@@ -38,6 +39,9 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeC
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.EXTEND_MIDDLE_SAMPLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.EXTEND_RIGHT_SAMPLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.EXTEND_TEMP_CLOSED;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.HAND_LEFT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.HAND_MIDDLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.HAND_RIGHT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.POINT_RETRACT_EXTEND;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.POINT_RIGHT_SIDE_DROP;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.SubThreeClaw.SubThreeClawConstants.SLOWDOWN_POINT_HUMAN;
@@ -93,18 +97,21 @@ public class SubThreeClaw extends LinearOpMode {
 
         public static double EXTEND_MIDDLE_SAMPLE = 160;
         public static double WAIT_MIDDLE_PICKUP = 500 + 150 + 650;
-        public static double WAIT_MIDDLE_HUMAN = 500;
         // ANGLE MIDDLE 0
+        public static double WAIT_MIDDLE_HUMAN = 500;
+        public static double HAND_MIDDLE = 0.5;
 
         public static double EXTEND_LEFT_SAMPLE = 160;
         public static double WAIT_LEFT_PICKUP = 500 + 150 + 650;
-        public static double ANGLE_LEFT = -60;
+        public static double ANGLE_LEFT = -70;
         public static double WAIT_LEFT_HUMAN = 500;
+        public static double HAND_LEFT = 0.5;
 
-        public static double EXTEND_RIGHT_SAMPLE = 160;
+        public static double EXTEND_RIGHT_SAMPLE = 200;
         public static double WAIT_RIGHT_PICKUP = 500 + 150 + 650;
         public static double ANGLE_RIGHT = -120;
         public static double WAIT_RIGHT_HUMAN = 500;
+        public static double HAND_RIGHT = 0.25;
 
         public static double EXTEND_TEMP_CLOSED = 100;
 
@@ -208,8 +215,9 @@ public class SubThreeClaw extends LinearOpMode {
                     .waitForAt(1, WAIT_MIDDLE_PICKUP, -90)
                     .addTimeMarker(0, true, () -> {
                         extend.setReference(EXTEND_MIDDLE_SAMPLE);
-                        hand.setPosition(0.5);
-                        diff.aim();
+                        hand.setPosition(HAND_MIDDLE);
+                        double rotation = hand.getAngle();
+                        diff.aimAngle(rotation);
                         perkid.aimAtSpike();
                         claw.close();
                     })
@@ -220,7 +228,8 @@ public class SubThreeClaw extends LinearOpMode {
                         perkid.pickUp();
                     })
                     .addTimeMarker(100, true, () -> {
-                        diff.pickUp();
+                        double rotation = hand.getAngle();
+                        diff.pickUpAngle(rotation);
                     })
                     .addTimeMarker(100, true, () -> {
                         claw.close();
@@ -245,8 +254,9 @@ public class SubThreeClaw extends LinearOpMode {
                     .waitForAt(1, WAIT_LEFT_PICKUP, ANGLE_LEFT)
                     .addTimeMarker(0, true, () -> {
                         extend.setReference(EXTEND_LEFT_SAMPLE);
-                        hand.setPosition(0.5);
-                        diff.aim();
+                        hand.setPosition(HAND_LEFT);
+                        double rotation = ANGLE_LEFT + 90 + hand.getAngle();
+                        diff.aimAngle(rotation);
                         perkid.aimAtSpike();
                         claw.close();
                     })
@@ -257,7 +267,8 @@ public class SubThreeClaw extends LinearOpMode {
                         perkid.pickUp();
                     })
                     .addTimeMarker(100, true, () -> {
-                        diff.pickUp();
+                        double rotation = ANGLE_LEFT + 90 + hand.getAngle();
+                        diff.pickUpAngle(rotation);
                     })
                     .addTimeMarker(100, true, () -> {
                         claw.close();
@@ -282,8 +293,9 @@ public class SubThreeClaw extends LinearOpMode {
                     .waitForAt(1, WAIT_RIGHT_PICKUP, ANGLE_RIGHT)
                     .addTimeMarker(0, true, () -> {
                         extend.setReference(EXTEND_RIGHT_SAMPLE);
-                        hand.setPosition(0.5);
-                        diff.aim();
+                        hand.setPosition(HAND_RIGHT);
+                        double rotation = ANGLE_RIGHT + 90 + hand.getAngle();
+                        diff.aimAngle(rotation);
                         perkid.aimAtSpike();
                         claw.close();
                     })
@@ -294,7 +306,8 @@ public class SubThreeClaw extends LinearOpMode {
                         perkid.pickUp();
                     })
                     .addTimeMarker(100, true, () -> {
-                        diff.pickUp();
+                        double rotation = ANGLE_RIGHT + 90 + hand.getAngle();
+                        diff.pickUp(rotation);
                     })
                     .addTimeMarker(100, true, () -> {
                         claw.close();

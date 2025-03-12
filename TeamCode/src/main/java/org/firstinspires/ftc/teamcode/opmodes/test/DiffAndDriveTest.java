@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.modules.Claw;
 import org.firstinspires.ftc.teamcode.modules.Differential;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.auto.Drive;
+import org.firstinspires.ftc.teamcode.modules.Perkid;
 
 @Config
 @TeleOp
@@ -21,6 +22,7 @@ public class DiffAndDriveTest extends LinearOpMode {
         Differential diff = new Differential(this);
         Hand hand = new Hand(this);
         Claw claw = new Claw(this);
+        Perkid perkid = new Perkid(this);
 
         waitForStart();
         claw.currentMode = Claw.Mode.DROP;
@@ -32,6 +34,8 @@ public class DiffAndDriveTest extends LinearOpMode {
             hand.setAngle(HAND_ANGLE);
 
             diff.setAngleRotation(DIFF_ANGLE, Math.toDegrees(heading) + hand.getAngle());
+
+            perkid.aimAtSpike();
 
             telemetry.addData("x", pose.getX());
             telemetry.addData("y", pose.getY());

@@ -45,7 +45,7 @@ public class LebronFiveOneConstants {
     public static int EXTEND_TEMP_CLOSED = 100;
 
     public static double SLOWDOWN_FORCE = 0;
-    public static double SLOWDOWN_POINT_RUNG_0 = 0.83;
+    public static double SLOWDOWN_POINT_RUNG_0 = 0.87;
     public static double SLOWDOWN_POINT_RUNG_1 = 0.87;
     public static double SLOWDOWN_POINT_HUMAN_0 = 0.48;
     public static double SLOWDOWN_POINT_HUMAN_1 = 0.87;

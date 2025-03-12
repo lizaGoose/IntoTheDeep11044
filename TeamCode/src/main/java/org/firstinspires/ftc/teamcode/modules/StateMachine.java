@@ -563,12 +563,8 @@ public class StateMachine {
                     claw.currentMode = Claw.Mode.DROP;
                 } else if (rightSideDropSampleTimer.milliseconds() >= 900 && rightSideDropSampleTimer.milliseconds() <= 1200) {
                     perkid.currentMode = Perkid.Mode.LOOK;
-                    //diff.currentMode = Differential.Mode.VISION_HUYNYA;
                     diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
-                    // scorClaw.currentMode = ScorClaw.Mode.DROP;
                     hand.currentMode = Hand.Mode.DRIVER_CONTROL;
-                    // claw.currentMode = Claw.Mode.DROP;
-                    // lift.pos = 0;
                     if (gamepad2.triangle || gamepad1.triangle) {
                         state = State.INITIAL;
                         initialTimer.reset();
