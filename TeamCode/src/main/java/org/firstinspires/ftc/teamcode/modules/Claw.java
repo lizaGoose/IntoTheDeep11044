@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.modules;
 
 
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.DROP;
-import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.LIGHT;
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.PICK;
-import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.TRANSFER;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,7 +17,6 @@ public class Claw {
     Servo appendix;
 
     public enum Mode {
-        LIGHT,
         PICK,
         DROP,
         TRANSFER,
@@ -47,20 +44,12 @@ public class Claw {
                 break;
             case TRANSFER:
                 claw.setPosition(ClawConstants.PICK);
-                appendix.setPosition(ClawConstants.TRANSFER_APPENDIX);
-                break;
-            case LIGHT:
-                claw.setPosition(LIGHT);
-                appendix.setPosition(ClawConstants.TRANSFER_APPENDIX);
+                appendix.setPosition(ClawConstants.DROP_APPENDIX);
                 break;
             case RELAX:
                 claw.setPwmDisable();
                 break;
         }
-    }
-
-    public void light() {
-        claw.setPosition(LIGHT);
     }
 
     public void open() {
@@ -71,19 +60,12 @@ public class Claw {
         claw.setPosition(PICK);
     }
 
-    public void transfer() {
-        claw.setPosition(TRANSFER);
-    }
-
     @Config
     static
     class ClawConstants{
-        public static double LIGHT = 0.67;
-        public static double PICK = 0.67;
+        public static double PICK = 0.7;
         public static double DROP = 0.31;
-        public static double TRANSFER = 0.4;
-        public static double TRANSFER_APPENDIX = 0.76;
         public static double DROP_APPENDIX = 0.24;
-        public static double PICK_APPENDIX = 0.26;//0.24 0.76 0.26
+        public static double PICK_APPENDIX = 0.76;// 0.26
     }
 }

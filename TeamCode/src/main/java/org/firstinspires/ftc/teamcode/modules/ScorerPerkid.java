@@ -26,9 +26,6 @@ public class ScorerPerkid {
     Servo left, right;
 
     enum Mode {
-        SPECIMEN,
-        PICK,
-        SAMPLE,
         PICK_SPEC,
         TRANSFER,
         SCORE_SAMP,
@@ -50,18 +47,6 @@ public class ScorerPerkid {
 
     public void teleop() {
         switch (currentMode) {
-            /*case SPECIMEN:
-                left.setPosition(ScoringPerkidConstants.SPEC_POS);
-                right.setPosition(ScoringPerkidConstants.SPEC_POS);
-                break;
-            case SAMPLE:
-                left.setPosition(ScoringPerkidConstants.SAMP_POS);
-                right.setPosition(ScoringPerkidConstants.SAMP_POS);
-                break;
-            case PICK:
-                left.setPosition(ScoringPerkidConstants.PICK_POS);
-                right.setPosition(ScoringPerkidConstants.PICK_POS);
-                break;*/
             case PICK_SPEC:
                 left.setPosition(ScorerPerkidConstants.PICK_SPEC);
                 right.setPosition(ScorerPerkidConstants.PICK_SPEC);
@@ -82,7 +67,6 @@ public class ScorerPerkid {
                 left.setPosition(ScorerPerkidConstants.SCOR_SPEC);
                 right.setPosition(ScorerPerkidConstants.SCOR_SPEC);
                 break;
-
         }
     }
 
@@ -130,12 +114,12 @@ public class ScorerPerkid {
     static
     class ScorerPerkidConstants {
         public static double PICK_SPEC = 0.385;
-        public static double EXTRA_PICK_SPEC = 0.385;
+        public static double EXTRA_PICK_SPEC = 0.33;
         public static double AIM_SPEC = 0.45;
         public static double DROP_SAMPLE_TO_HUMAN = 0.35;
-        public static double TRANSFER_POS = 0.52;
+        public static double TRANSFER_POS = 0.5;
         public static double SCORE_SAMP = 0;
         public static double TRANSFER_SPEC = 0.82;
-        public static double SCOR_SPEC = 0.81;
+        public static double SCOR_SPEC = 0.84;
     }
 }

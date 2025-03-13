@@ -156,7 +156,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                         double rotation = ANGLE_TO_LEFT + hand.getAngle() + 90 + DIFF_ROTATION_LEFT;
                         diff.aimAngle(rotation);
                         perkid.aimAtSpike();
-                        claw.transfer();
+                        claw.close();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 200, () -> {
                         claw.open();

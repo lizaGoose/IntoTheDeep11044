@@ -36,7 +36,6 @@ public class ExtendTest extends OpMode {
         leftServo.setPosition(position);
         rightServo.setPosition(position);
 
-
         extend.setReference(reference);
         extend.PIDControl();
 

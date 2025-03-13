@@ -356,7 +356,7 @@ public class SampleStateMachine {
                 startTimerFromClawToClaw = false;
                 if (fromClawToClawTimer.milliseconds() <= 500 && !startedMovingExtendBack) {
                     scorerClaw.currentMode = ScorerClaw.Mode.DROP;
-                    claw.currentMode = Claw.Mode.LIGHT;
+                    claw.currentMode = Claw.Mode.TRANSFER;
                     hand.currentMode = Hand.Mode.FORWARD;
                     scorDiff.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
                     scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;

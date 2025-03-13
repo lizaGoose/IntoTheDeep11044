@@ -5,7 +5,8 @@ import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDi
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.GET_FROM_CLAW;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.LEBRON;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.MOVE_SPECIMENS;
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.PICK_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.PICK_SPECIMEN;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.PUSH_INTO_SPECIMEN;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.SCORE_SAMP;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.SCORE_SPEC;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.TRANSFER_SPEC;
@@ -49,7 +50,7 @@ public class ScorerDifferential {
     public void teleop() {
         switch (currentMode) {
             case PICK_SPEC:
-                diff.setPosition(ScorerDifferentialConstants.PICK_SPEC);
+                diff.setPosition(ScorerDifferentialConstants.PICK_SPECIMEN);
                 break;
             case GET_FROM_CLAW:
                 diff.setPosition(GET_FROM_CLAW);
@@ -91,7 +92,11 @@ public class ScorerDifferential {
     }
 
     public void pickSpecimen() {
-        diff.setPosition(PICK_SPEC);
+        diff.setPosition(PICK_SPECIMEN);
+    }
+
+    public void pushIntoSpecimen() {
+        diff.setPosition(PUSH_INTO_SPECIMEN);
     }
 
     public void liftSpecimenFromWall() {
@@ -114,13 +119,14 @@ public class ScorerDifferential {
     static
     class ScorerDifferentialConstants {
         public static double AIM_SPEC = 0.86;
-        public static double PICK_SPEC = 0.86;
-        public static double GET_FROM_CLAW = 0.7;
-        public static double SCORE_SAMP = 0.76;
-        public static double LEBRON = 0.5;
+        public static double PICK_SPECIMEN = 0.86;
+        public static double PUSH_INTO_SPECIMEN = 0.78;
+        public static double GET_FROM_CLAW = 0.3;
+        public static double SCORE_SAMP = 0.6;
+        public static double LEBRON = 0.4;
         public static double SCORE_SPEC = 0.87;
         public static double AFTER_SCORE_SPEC = 0.83;
-        public static double TRANSFER_SPEC = 0.87;
+        public static double TRANSFER_SPEC = 0.82;
         public static double MOVE_SPECIMENS = 0.9;
     }
 }

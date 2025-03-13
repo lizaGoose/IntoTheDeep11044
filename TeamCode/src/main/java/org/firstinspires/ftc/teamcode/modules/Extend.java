@@ -177,7 +177,7 @@ public class Extend {
     @Config
     static
     class ExtendConstants {
-        public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.025, 0.0, 0.0007, 0);
+        public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.0, 1e-5, 0);
         public static PIDFCoefficients AUTO_COEFFICIENTS = new PIDFCoefficients(0.012, 0, 0.0005, 0);
         public static double TICKS_PER_TAP = 30;
 
