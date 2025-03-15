@@ -11,7 +11,7 @@ import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidCo
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.TRANSFER_SPEC;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.camera.CameraTest;
 
 public class ScorerPerkid {
-    LinearOpMode linearOpMode;
+    OpMode opMode;
     Gamepad gamepad1;
     DcMotor extend;
     CameraTest cam;
@@ -36,11 +36,11 @@ public class ScorerPerkid {
 
     Mode currentMode = Mode.PICK_SPEC;
 
-    public ScorerPerkid(LinearOpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        gamepad1 = linearOpMode.gamepad1;
-        left = linearOpMode.hardwareMap.get(Servo.class, "left_scor_perkid");
-        right = linearOpMode.hardwareMap.get(Servo.class, "right_scor_perkid");
+    public ScorerPerkid(OpMode opMode) {
+        this.opMode = opMode;
+        gamepad1 = opMode.gamepad1;
+        left = opMode.hardwareMap.get(Servo.class, "left_scor_perkid");
+        right = opMode.hardwareMap.get(Servo.class, "right_scor_perkid");
         right.setDirection(Servo.Direction.REVERSE);
         cam = new CameraTest();
     }
@@ -108,6 +108,9 @@ public class ScorerPerkid {
     public void scoreSample() {
         left.setPosition(SCORE_SAMP);
         right.setPosition(SCORE_SAMP);
+    }
+    public double getPos(){
+        return  left.getPosition();
     }
 
     @Config

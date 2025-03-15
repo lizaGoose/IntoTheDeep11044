@@ -772,8 +772,8 @@ public class StateMachine {
         linearOpMode.telemetry.addData("scorDiff_state", scorerDifferential.currentMode);
         linearOpMode.telemetry.addData("scorPerkid_state", scorerPerkid.currentMode);
         linearOpMode.telemetry.addData("transfer_timer", fromClawToClawTimer);
-        linearOpMode.telemetry.addData("lift_left", lift.leftMotor.getCurrentPosition());
-        linearOpMode.telemetry.addData("lift_right", lift.rightMotor.getCurrentPosition());
+        linearOpMode.telemetry.addData("lift_left", lift.getPosition());
+        linearOpMode.telemetry.addData("lift_right", lift.getPosition());
         linearOpMode.telemetry.addData("lift_ref", lift.getReference());
         linearOpMode.telemetry.addData("extend", extend.motor.getCurrentPosition());
         linearOpMode.telemetry.addData("extend_reference", extend.getReference());
@@ -785,8 +785,8 @@ public class StateMachine {
         linearOpMode.telemetry.update();
 
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("left_motor_pos", lift.leftMotor.getCurrentPosition());
-        packet.put("right_motor_pos", lift.rightMotor.getCurrentPosition());
+        packet.put("left_motor_pos", lift.getPosition());
+        packet.put("right_motor_pos", lift.getPosition());
         packet.put("reference", lift.getReference());
         packet.put("extend", extend.motor.getCurrentPosition());
         packet.put("extend_reference", extend.getReference());

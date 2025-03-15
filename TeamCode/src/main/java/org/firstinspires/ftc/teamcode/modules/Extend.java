@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Extend {
-    OpMode linearOpMode;
+    OpMode opMode;
     Gamepad gamepad, gamepad2;
     public final DcMotorEx motor;
     private final ElapsedTime timer;
@@ -36,11 +36,11 @@ public class Extend {
 
     Extend.Mode currentMode = Mode.DRIVER_CONTROL;
 
-    public Extend(OpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        gamepad = linearOpMode.gamepad1;
-        gamepad2 = linearOpMode.gamepad2;
-        motor = linearOpMode.hardwareMap.get(DcMotorEx.class, "extend_motor");
+    public Extend(OpMode opMode) {
+        this.opMode = opMode;
+        gamepad = opMode.gamepad1;
+        gamepad2 = opMode.gamepad2;
+        motor = opMode.hardwareMap.get(DcMotorEx.class, "extend_motor");
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -127,6 +127,11 @@ public class Extend {
         this.reference = reference;
     }
 
+    public void setPositionMillimeters(double mm) {
+        double reference = 253.0 / 360 * mm;
+        setReference(reference);
+    }
+
     double power = 0;
 
     public void setPower(double power) {
@@ -146,8 +151,20 @@ public class Extend {
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    public void setMode(DcMotor.RunMode mode) {
+        motor.setMode(mode);
+    }
+
+    public DcMotor.RunMode getMode() {
+        return motor.getMode();
+    }
+
     public double getPosition() {
         return motor.getCurrentPosition();
+    }
+
+    public double getPositionMillimeters() {
+        return getPosition() * 360 / 253.0;
     }
 
     public double getMaxPosition() {

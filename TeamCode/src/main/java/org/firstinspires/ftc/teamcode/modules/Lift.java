@@ -16,17 +16,17 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Lift {
-    public final DcMotorEx leftMotor, rightMotor;
+    private final DcMotorEx leftMotor, rightMotor;
     private final ElapsedTime timer;
-    OpMode linearOpMode;
+    OpMode opMode;
     Gamepad gamepad;
     public double pos;
 
 
-    public Lift(OpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        leftMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "leftLift");
-        rightMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "rightLift");
+    public Lift(OpMode opMode) {
+        this.opMode = opMode;
+        leftMotor = opMode.hardwareMap.get(DcMotorEx.class, "leftLift");
+        rightMotor = opMode.hardwareMap.get(DcMotorEx.class, "rightLift");
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -34,7 +34,7 @@ public class Lift {
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        gamepad = linearOpMode.gamepad2;
+        gamepad = opMode.gamepad2;
 
         timer = new ElapsedTime();
     }
@@ -67,6 +67,16 @@ public class Lift {
         lastError = error;
 
         timer.reset();
+    }
+
+    public void setPower(double power) {
+        leftMotor.setPower(power);
+        rightMotor.setPower(power);
+    }
+
+    public void resetEncoder() {
+        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public double getReference() {

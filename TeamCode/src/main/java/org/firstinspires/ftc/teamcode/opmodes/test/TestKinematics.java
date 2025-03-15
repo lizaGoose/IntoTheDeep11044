@@ -3,10 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.test;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.math.KinematicsCameraVision;
 import org.firstinspires.ftc.teamcode.modules.Claw;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
@@ -18,54 +15,51 @@ import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 @Config
 @TeleOp
 public class TestKinematics extends LinearOpMode {
-    public KinematicsCameraVision kinematics;
+ //   public KinematicsCameraVision kinematics;
     public boolean isPressed;
     public Extend extend;
     public Hand hand;
-  //  public AutoCamera cam;
+    public AutoCamera cam;
+    public ScorerPerkid scorerPerkid;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        kinematics = new KinematicsCameraVision(this);
-        //cam = new AutoCamera(this);
+       // kinematics = new KinematicsCameraVision(this);
+        cam = new AutoCamera(this);
         Perkid perkid = new Perkid(this);
         extend = new Extend(this);
         hand = new Hand(this);
         Claw claw = new Claw(this);
         Lift lift = new Lift(this);
+        scorerPerkid = new ScorerPerkid(this);
         //cam.operatorControlRed();
 
         waitForStart();
 
         while (opModeIsActive()) {
-           // cam.operatorControlRed();
-            lift.setReference(440);
-            lift.PIDControl();
-            if (gamepad1.triangle) {
-                if (!isPressed) {
-                   kinematics.pickFromSub("Red");
-                }
-                isPressed = true;
-            } else {
-                isPressed = false;
+            if (gamepad1.triangle){
+                cam.operatorControlRed();
+                extend.setReference(cam.kinematics(lift.getPosition()).getY());
             }
-            if (gamepad1.square) {
-                perkid.pickUp();
-            } else {
-                perkid.look();
-            }
-            /* if (gamepad1.cross){
-                claw.close();
-            }
-            else {
-                claw.open();
-            }*/
-            extend.setReference(kinematics.pos);
+           // extend.motor.setPower(gamepad1.left_stick_y);
+            scorerPerkid.scoreSpecimen();
             extend.PIDControl();
-            hand.setPosition(kinematics.posHand);
-           // telemetry.update();
-            telemetry.addData("xSample", kinematics.cam.pip.xSample);
-            telemetry.addData("xSample", kinematics.cam.pip.ySample);//70 285
+          //  cam.operatorControlRed();
+            lift.setReference(810*gamepad1.right_stick_y);
+            lift.PIDControl();
+            //kinematics.perkid2.scoreSpecimen();
+
+            telemetry.addData("xSample", cam.kinematics(lift.getPosition()).getX());
+            telemetry.addData("ySample", cam.kinematics(lift.getPosition()).getY());
+            telemetry.addData("zSample", cam.kinematics(lift.getPosition()).getZ());
+            telemetry.addData("a", cam.a);
+            telemetry.addData("h", lift.getPosition() *cam.ticksPerInchLift);
+            telemetry.addData("ExtendPos", extend.motor.getCurrentPosition());
+            telemetry.addData("Xp", cam.P.getX());
+            telemetry.addData("Yp", cam.P.getY());
+            telemetry.addData("Zp", cam.P.getZ());
+            telemetry.addData("x", cam.pip.xSample);
+            telemetry.addData("y", cam.pip.ySample);
             telemetry.update();
         }
     }

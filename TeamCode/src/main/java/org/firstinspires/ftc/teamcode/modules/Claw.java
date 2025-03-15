@@ -5,13 +5,13 @@ import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.DROP;
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.PICK;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 public class Claw {
-    LinearOpMode linearOpMode;
+    OpMode opMode;
     Gamepad gamepad1;
     ServoImplEx claw;
     Servo appendix;
@@ -25,11 +25,11 @@ public class Claw {
 
     public Mode currentMode = Mode.PICK;
 
-    public Claw(LinearOpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        gamepad1 = linearOpMode.gamepad1;
-        claw = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "claw_servo");
-        appendix = linearOpMode.hardwareMap.get(Servo.class, "claw_appendix_servo");
+    public Claw(OpMode opMode) {
+        this.opMode = opMode;
+        gamepad1 = opMode.gamepad1;
+        claw = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "claw_servo");
+        appendix = opMode.hardwareMap.get(Servo.class, "claw_appendix_servo");
     }
 
     public void teleop() {

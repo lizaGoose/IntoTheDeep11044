@@ -161,7 +161,7 @@ public class SampleStateMachine {
             lift.setReference(0);
         }
         if(gamepad2.right_bumper){
-            lift.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            lift.resetEncoder();
         }
 
         if (gamepad1.left_bumper) {
@@ -514,8 +514,7 @@ public class SampleStateMachine {
         linearOpMode.telemetry.addData("scorDiff_state", scorDiff.currentMode);
         linearOpMode.telemetry.addData("scorPerkid_state", scorPerkid.currentMode);
         linearOpMode.telemetry.addData("transfer_timer", fromClawToClawTimer);
-        linearOpMode.telemetry.addData("lift_left", lift.leftMotor.getCurrentPosition());//810 - high 220 - low
-        linearOpMode.telemetry.addData("lift_right", lift.rightMotor.getCurrentPosition());
+        linearOpMode.telemetry.addData("lift_left", lift.getPosition());//810 - high 220 - low
         linearOpMode.telemetry.addData("lift_ref", lift.getReference());
         linearOpMode.telemetry.addData("extend", extend.motor.getCurrentPosition());
         linearOpMode.telemetry.addData("StartTimer", startTimer);
@@ -524,8 +523,7 @@ public class SampleStateMachine {
         linearOpMode.telemetry.update();
 
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("left_motor_pos", lift.leftMotor.getCurrentPosition());
-        packet.put("right_motor_pos", lift.rightMotor.getCurrentPosition());
+        packet.put("left_motor_pos", lift.getPosition());
         packet.put("reference", lift.getReference());
         dashboard.sendTelemetryPacket(packet);
     }

@@ -36,16 +36,18 @@ public class ExtendTest extends OpMode {
         leftServo.setPosition(position);
         rightServo.setPosition(position);
 
-        extend.setReference(reference);
-        extend.PIDControl();
+//        extend.setReference(reference);
+//        extend.PIDControl();
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("motor_pos", extend.motor.getCurrentPosition());
         packet.put("reference", extend.getReference());
+        packet.put("position_mm", extend.getPositionMillimeters());
         dashboard.sendTelemetryPacket(packet);
 
         mulTelemetry.addData("motor_pos", extend.motor.getCurrentPosition());
         mulTelemetry.addData("reference", extend.getReference());
+        mulTelemetry.addData("position_mm", extend.getPositionMillimeters());
         mulTelemetry.update();
     }
 }

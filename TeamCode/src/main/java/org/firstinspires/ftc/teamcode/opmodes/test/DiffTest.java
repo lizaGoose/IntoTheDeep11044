@@ -20,6 +20,12 @@ public class DiffTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             differential.setAngleRotation(angle, rotation);
+
+            telemetry.addData("left_calc", differential.angleRotationToPosition(angle, rotation).get(0));
+            telemetry.addData("right_calc", differential.angleRotationToPosition(angle, rotation).get(1));
+            telemetry.addData("left", differential.getPositions().get(0));
+            telemetry.addData("right", differential.getPositions().get(1));
+            telemetry.update();
         }
     }
 }

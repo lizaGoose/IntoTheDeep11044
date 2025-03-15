@@ -11,7 +11,7 @@ import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRAN
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.VERTICAL_POS;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import org.firstinspires.ftc.teamcode.camera.CameraTest;
 
 public class Perkid {
-    LinearOpMode linearOpMode;
+    OpMode opMode;
     Gamepad gamepad1;
     CameraTest cam;
     ServoImplEx left, right;
@@ -36,11 +36,11 @@ public class Perkid {
 
     Mode currentMode = Mode.SCORE_POSITION;
 
-    public Perkid(LinearOpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        gamepad1 = linearOpMode.gamepad1;
-        left = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "left_vertical_servo");
-        right = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "right_vertical_servo");
+    public Perkid(OpMode opMode) {
+        this.opMode = opMode;
+        gamepad1 = opMode.gamepad1;
+        left = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "left_vertical_servo");
+        right = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "right_vertical_servo");
         right.setDirection(Servo.Direction.REVERSE);
         cam = new CameraTest();
     }
@@ -126,8 +126,8 @@ public class Perkid {
     @Config
     static
     class PerkidConstants {
-        public static double VERTICAL_POS = 0.63;
-        public static double STRAIGHT_POS = 0.39;
+        public static double VERTICAL_POS = 0.69;
+        public static double STRAIGHT_POS = 0.46;
 
         public static double TRANSFER_POS = 0.78;
         public static double LOOK_POS = 0.48;

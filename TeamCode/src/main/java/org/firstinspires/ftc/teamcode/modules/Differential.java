@@ -12,7 +12,7 @@ import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialCo
 
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -25,7 +25,7 @@ import java.util.List;
 
 @Config
 public class Differential {
-    LinearOpMode linearOpMode;
+    OpMode opMode;
     Gamepad gamepad1, gamepad2;
     public double rotationOfDiff = 0;
     ServoImplEx right, left;
@@ -60,12 +60,12 @@ public class Differential {
 
     public Mode currentMode = Mode.TRANSFER;
 
-    public Differential(LinearOpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        gamepad1 = linearOpMode.gamepad1;
-        gamepad2 = linearOpMode.gamepad2;
-        left = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "left_diff_servo");
-        right = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "right_diff_servo");
+    public Differential(OpMode opMode) {
+        this.opMode = opMode;
+        gamepad1 = opMode.gamepad1;
+        gamepad2 = opMode.gamepad2;
+        left = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "left_diff_servo");
+        right = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "right_diff_servo");
         left.setDirection(Servo.Direction.REVERSE);
 
         timer = new ElapsedTime();

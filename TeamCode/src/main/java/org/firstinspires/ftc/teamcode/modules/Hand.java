@@ -8,7 +8,7 @@ import static org.firstinspires.ftc.teamcode.modules.Hand.HandConstants.RIGHT_SI
 import static org.firstinspires.ftc.teamcode.modules.Hand.HandConstants.ROTATION_SPEED;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.camera.CameraTest;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 
 public class Hand {
-    LinearOpMode linearOpMode;
+    OpMode opMode;
     Gamepad gamepad;
     CameraTest cam;
     ServoImplEx hand;
@@ -37,10 +37,10 @@ public class Hand {
 
     Mode currentMode = Mode.DRIVER_CONTROL;
 
-    public Hand(LinearOpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        gamepad = linearOpMode.gamepad1;
-        hand = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "horizontal_servo");
+    public Hand(OpMode opMode) {
+        this.opMode = opMode;
+        gamepad = opMode.gamepad1;
+        hand = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "horizontal_servo");
         hand.scaleRange(RANGE_START, RANGE_END);
 
         cam = new CameraTest();
@@ -100,7 +100,7 @@ public class Hand {
     public void setAngle(double angle) {
         double position = ClawCalculation.angleToServoPos(angle, RANGE);
 
-        hand.setPosition(position);
+        hand.setPosition(1 - position);
     }
 
     public void resetTimer() {
@@ -113,7 +113,7 @@ public class Hand {
         public static double RANGE_SERVO = 0.24;
         public static double RANGE_START = RANGE_CENTER - RANGE_SERVO;
         public static double RANGE_END = RANGE_CENTER + RANGE_SERVO;
-        public static double RANGE = 35;
+        public static double RANGE = 45;
 
         public static double ROTATION_SPEED = 0.002;
         public static double RIGHT_SIDE_DROP_SAMPLE = 0.1;
