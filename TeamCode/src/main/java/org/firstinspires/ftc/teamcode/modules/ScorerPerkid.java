@@ -116,7 +116,7 @@ public class ScorerPerkid {
     @Config
     static
     class ScorerPerkidConstants {
-        public static double PICK_SPEC = 0.385;
+        public static double PICK_SPEC = 0.37;
         public static double EXTRA_PICK_SPEC = 0.33;
         public static double AIM_SPEC = 0.45;
         public static double DROP_SAMPLE_TO_HUMAN = 0.35;

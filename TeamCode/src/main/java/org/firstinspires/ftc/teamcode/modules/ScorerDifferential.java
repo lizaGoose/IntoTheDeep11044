@@ -119,7 +119,7 @@ public class ScorerDifferential {
     static
     class ScorerDifferentialConstants {
         public static double AIM_SPEC = 0.86;
-        public static double PICK_SPECIMEN = 0.86;
+        public static double PICK_SPECIMEN = 0.8;
         public static double PUSH_INTO_SPECIMEN = 0.78;
         public static double GET_FROM_CLAW = 0.3;
         public static double SCORE_SAMP = 0.6;
