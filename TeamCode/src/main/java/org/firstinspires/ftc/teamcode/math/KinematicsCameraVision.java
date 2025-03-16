@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.camera.AutoCamera;
 import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
 import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
@@ -19,6 +20,7 @@ public class KinematicsCameraVision {
     public Perkid perkid;
     public Extend extend;
     public AutoCamera cam;
+    public Hand hand;
     public boolean calculated = false;
     public double x, y;
     public double xRomaniaMin, xRomaniaMax, yRomaniaMin, yRomaniaMax;
@@ -28,6 +30,7 @@ public class KinematicsCameraVision {
         extend = new Extend(linearOpMode);
         perkid = new Perkid(linearOpMode);
         perkid2 = new ScorerPerkid(linearOpMode);
+        hand = new Hand(linearOpMode);
         leftDiff = linearOpMode.hardwareMap.get(Servo.class, "left_diff_servo");
         rightDiff = linearOpMode.hardwareMap.get(Servo.class, "right_diff_servo");
 
@@ -40,8 +43,8 @@ public class KinematicsCameraVision {
         cam.operatorControlRed();
         pos = cam.AutonomousRecognition().get(0) - k;
         posHand = 1 - cam.AutonomousRecognition().get(1);
-        leftDiff.setPosition(1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) ));
-        rightDiff.setPosition(1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) ));
+        leftDiff.setPosition(1 - ( Math.abs(cam.getAngle() / 90 - hand.getPosition()) ));
+        rightDiff.setPosition(1 - ( Math.abs(cam.getAngle() / 90 - hand.getPosition()) ));
 /*
 
         if(mode == "Red"){

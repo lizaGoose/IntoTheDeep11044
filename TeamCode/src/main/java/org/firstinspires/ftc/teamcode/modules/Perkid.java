@@ -126,8 +126,8 @@ public class Perkid {
     @Config
     static
     class PerkidConstants {
-        public static double VERTICAL_POS = 0.69;
-        public static double STRAIGHT_POS = 0.46;
+        public static double VERTICAL_POS = 0.7;
+        public static double STRAIGHT_POS = 0.47;
 
         public static double TRANSFER_POS = 0.78;
         public static double LOOK_POS = 0.48;

@@ -39,7 +39,7 @@ public class TestKinematics extends LinearOpMode {
         while (opModeIsActive()) {
             if (gamepad1.triangle){
                 cam.operatorControlRed();
-                extend.setReference(cam.kinematics(lift.getPosition()).getY());
+                extend.setReference(cam.kinematics(lift.getPosition(), scorerPerkid.getPos()).getY());
             }
            // extend.motor.setPower(gamepad1.left_stick_y);
             scorerPerkid.scoreSpecimen();
@@ -49,9 +49,9 @@ public class TestKinematics extends LinearOpMode {
             lift.PIDControl();
             //kinematics.perkid2.scoreSpecimen();
 
-            telemetry.addData("xSample", cam.kinematics(lift.getPosition()).getX());
-            telemetry.addData("ySample", cam.kinematics(lift.getPosition()).getY());
-            telemetry.addData("zSample", cam.kinematics(lift.getPosition()).getZ());
+            telemetry.addData("xSample", cam.kinematics(lift.getPosition(), scorerPerkid.getPos()).getX());
+            telemetry.addData("ySample", cam.kinematics(lift.getPosition(), scorerPerkid.getPos()).getY());
+            telemetry.addData("zSample", cam.kinematics(lift.getPosition(), scorerPerkid.getPos()).getZ());
             telemetry.addData("a", cam.a);
             telemetry.addData("h", lift.getPosition() *cam.ticksPerInchLift);
             telemetry.addData("ExtendPos", extend.motor.getCurrentPosition());
