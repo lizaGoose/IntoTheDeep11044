@@ -57,7 +57,7 @@ class TeleOpConstants {
     public static double WAIT_UNTIL_SPECIMEN_PICKUP = 1;
     public static double REGISTER_MOVEMENT_AFTER = 450;
     public static double SET_POS_TO_ZERO_SAMPLE = 300;
-    public static double PICKED_UNPICKED_PICK_BLOCK = 450;
+    public static double PICKED_UNPICKED_PICK_BLOCK = 300;
 
     public static double OFFSET_CLAW_CLOSE = 0;
     public static double WAIT_FOR_PERKID = 200;
@@ -796,7 +796,7 @@ public class StateMachine {
     @Config
     public static class TeleOpAutomaticScoreConstants {
         public static double POINT_PERKID_START = 0.2;
-        public static double SLOWDOWN_POINT_1 = 0.89;
+        public static double SLOWDOWN_POINT_1 = 0.92;
         public static double POINT_SPECIMEN_START_SCORE = 0.91;
         public static double POINT_MOVE_PERKID_TO_PICK = 0.2;
         public static double POINT_TO_INITIAL = 0.3;
@@ -877,7 +877,7 @@ public class StateMachine {
         pos = cam.AutonomousRecognition().get(0) - k;
         posHand = 1 - (cam.AutonomousRecognition().get(1) - 1);
         diff.currentMode = Differential.Mode.ANGLE;
-        diff.setPositions(1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) ),
-                1 - ( Math.abs(cam.getAngle() / 90 - cam.hand.getPosition()) ));
+        diff.setPositions(1 - ( Math.abs(cam.getAngle() / 90 - hand.getPosition()) ),
+                1 - ( Math.abs(cam.getAngle() / 90 - hand.getPosition()) ));
     }
 }
