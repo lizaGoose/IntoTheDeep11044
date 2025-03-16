@@ -36,7 +36,7 @@ public class Claw {
         switch (currentMode) {
             case PICK:
                 claw.setPosition(ClawConstants.PICK);
-                appendix.setPosition(ClawConstants.PICK_APPENDIX);
+                appendix.setPosition(ClawConstants.DROP_APPENDIX);
                 break;
             case DROP:
                 claw.setPosition(ClawConstants.DROP);
@@ -44,7 +44,7 @@ public class Claw {
                 break;
             case TRANSFER:
                 claw.setPosition(ClawConstants.PICK);
-                appendix.setPosition(ClawConstants.DROP_APPENDIX);
+                appendix.setPosition(ClawConstants.PICK_APPENDIX);
                 break;
             case RELAX:
                 claw.setPwmDisable();

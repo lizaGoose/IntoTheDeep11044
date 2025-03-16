@@ -51,9 +51,10 @@ public class Hand {
     public void teleop() {
         switch (currentMode) {
             case DRIVER_CONTROL:
-                rotation = rotation - Math.pow(gamepad.right_stick_x, 3) * timer.milliseconds() * ROTATION_SPEED;
-                rotation = Math.max(rotation, 0);
-                rotation = Math.min(rotation, 1);
+//                rotation = rotation - Math.pow(gamepad.right_stick_x, 3) * timer.milliseconds() * ROTATION_SPEED;
+//                rotation = Math.max(rotation, 0);
+//                rotation = Math.min(rotation, 1);
+                rotation = 0.5;
                 hand.setPosition(rotation);
                 timer.reset();
                 break;
