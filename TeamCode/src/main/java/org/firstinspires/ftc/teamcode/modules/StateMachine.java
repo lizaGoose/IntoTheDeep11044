@@ -454,13 +454,6 @@ public class StateMachine {
                     pickedUnpickedTimer.reset();
                 }
 
-                if (stickyGamepad1.circle) {
-                    pickFromSub();
-                }
-
-                extend.setReference(pos);
-                hand.setRotation(posHand);
-
                 break;
 
             case PICK_UP_THE_BLOCK_SCORSPEC:
@@ -781,7 +774,6 @@ public class StateMachine {
         linearOpMode.telemetry.addData("hang", hang.hang.getCurrentPosition());
         linearOpMode.telemetry.addData("extend_voltage", extend.motor.getCurrent(CurrentUnit.AMPS));
         linearOpMode.telemetry.addData("drive_state", driveModule.currentMode);
-        linearOpMode.telemetry.addData("xSample", cam.pip.CenterStone);
         linearOpMode.telemetry.update();
 
         TelemetryPacket packet = new TelemetryPacket();
@@ -866,18 +858,5 @@ public class StateMachine {
                 .addTimeMarker(WAIT_END - 100, () -> {
                     state = State.PICK_SPEC;
                 });
-    }
-
-    public double pos = 0, posHand = 0.5;
-    public static double minRange = 0.25, maxRange = 0.75, minRange1 = 0.45, maxRange1 = 0.55, k = 60;
-    public double x, y;
-
-    public void pickFromSub() {
-        cam.operatorControlRed();
-        pos = cam.AutonomousRecognition().get(0) - k;
-        posHand = 1 - (cam.AutonomousRecognition().get(1) - 1);
-        diff.currentMode = Differential.Mode.ANGLE;
-        diff.setPositions(1 - ( Math.abs(cam.getAngle() / 90 - hand.getPosition()) ),
-                1 - ( Math.abs(cam.getAngle() / 90 - hand.getPosition()) ));
     }
 }

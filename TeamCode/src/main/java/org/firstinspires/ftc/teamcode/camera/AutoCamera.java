@@ -2,19 +2,12 @@ package org.firstinspires.ftc.teamcode.camera;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.modules.Extend;
-import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
-import org.firstinspires.ftc.teamcode.modules.Lift;
-import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
-import org.opencv.core.RotatedRect;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -23,26 +16,17 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Config
 public class AutoCamera {
     OpenCvCamera cam;
     OpMode opMode;
     HardwareMap hardwareMap;
-    double centerCoord;
     public volatile double Angle, x, y, Area, xActual, yActual;
-    int index;
-    String sampleCoordinatesStatus;
-    RotatedRect theRect;
     public double distance;
-    boolean tf;
     public double extendingError, handError, clawError;
-    public boolean sample_status;
     public SampleDetectionPipeline pip;
-    //  public ColorSensor clawColorSensor;
-    public DistanceSensor distanceSensor;
-    //  public Diff diff;
-    public int indexAngle;
     public double xFromGamepad, yFromGamepad, xCoordMax = 499.293 / 2.54, yCoordMax = 544.599 / 2.54;
     public double xCoordSampleInches, yCoordSampleInches, maxPositionInchesY = 16, ticksPerInchY = 259 / 16, extendPos, handPos, distanceY, distanceX;
     public static double /*k = 50,*/ k2 = 340;
@@ -79,7 +63,8 @@ public class AutoCamera {
 
             }
         });
-    //operatorControlRed();
+
+        //operatorControlRed();
     }
 
     public List<Double> AutonomousRecognition() {
@@ -98,6 +83,7 @@ public class AutoCamera {
     }
 
     public Vector3D kinematics(double liftPosition, double scorerAngle) {
+
         a = scorerAngle * 310 - 179;
         l = 113.5 / 25.4;
 
@@ -112,19 +98,30 @@ public class AutoCamera {
         return new Vector3D(Current.getX(), ((Current.getY() - Math.cos(Math.asin(Current.getX() / (125 / 25.4))) * (125 / 25.4)) * 13.29 - 115.11), Current.getZ());
     }
 
-    public Vector3D getSamplePosition(double liftPosition, double scorerAngle) {
+    public Optional<AnalyzedSample> getSamplePosition(double liftPosition, double scorerAngle) {
+
+        ArrayList<AnalyzedSample> sampleOpt = pip.getRedSamples();
+        if (sampleOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        AnalyzedSample sample = sampleOpt.get(0);
+
         a = scorerAngle * 310 - 179;
         l = 113.5 / 25.4;
 
-        x1 = (pip.xSample - (double) Wp / 2) * 0.85 / Wp;
-        y1 = -(pip.ySample - (double) Hp / 2) * 1.2 / Hp;
+        x1 = (sample.x - (double) Wp / 2) * 0.85 / Wp;
+        y1 = -(sample.y - (double) Hp / 2) * 1.2 / Hp;
         L = new Vector3D(0, -liftPosition * ticksPerInchLift * Math.sin(Math.toRadians(10)), liftPosition * ticksPerInchLift * Math.cos(Math.toRadians(10)) + (422 / 25.4));
         P = new Vector3D(0, L.getY() + l * Math.sin(Math.toRadians(a)), L.getZ() - l * Math.cos(Math.toRadians(a)));
         C = new Vector3D(P.getX() + x1, P.getY() + Math.sin(Math.toRadians(a - b)) + y1 * Math.cos(Math.toRadians(a - b)), P.getZ() - Math.cos(Math.toRadians(a - b)) + y1 * Math.sin(Math.toRadians(a - b)));
         k = P.getZ() / (P.getZ() - C.getZ());
         Current = mul(C, k, P, (1 - k));
 
-        return Current;
+        sample.x = Current.getX() * 25.4;
+        sample.y = Current.getY() * 25.4 - 220.04;
+
+        return Optional.of(sample);
     }
 
     public Vector3D mul(Vector3D vector3D, double constant, Vector3D vector2, double constant2) {
@@ -132,9 +129,15 @@ public class AutoCamera {
         return vector;
     }
 
-    public double getAngle() {
-        Angle = pip.Angle;
-        return Angle;
+    public Optional<Double> getAngle() {
+        ArrayList<AnalyzedSample> list = pip.getDetectedSamples();
+
+        if (list.isEmpty()) {
+            return Optional.empty();
+        }
+
+        AnalyzedSample sample = list.get(0);
+        return Optional.of(sample.angle);
     }
 
     public void visionInUse() {

@@ -1,23 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 
-import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.HOLD_POS;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.INITIAL_OFFSET;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_INTAKE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_START;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.ANGLE_AT_RIGHT_SAMPLE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.DEBUG_WAIT;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.DIFFERENTIAL_ROTATION;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.EXTEND_RIGHT_SAMPLE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.EXTEND_TEMP_CLOSED;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.HAND_POSITION;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.POINT_RETRACT_EXTEND;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.POINT_RIGHT_SIDE_DROP;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.SLOWDOWN_POINT_HUMAN;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.WAIT_AT_RIGHT_SAMPLE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.DriveClaw.LebronDriveClawConstants.WAIT_FOR_INTAKE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_BASKET;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_1ST;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_2ND;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_3RD;
@@ -25,23 +13,31 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_5TH;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DIST_SCOR_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.FORCE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.LIFT_SCORE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_BASKET_SLOWDOWN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_START_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_TO_SCORE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_START_RAISING_LIFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_FORCE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_HUMAN_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_RUNG_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_RUNG_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AFTER_PICK_UP;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AT_BASKET;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_DROP_SAMPLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_CLAW_RELEASE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_HUMAN_ADJUST;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_SLOWDOWN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_HOLD_POS_AT_RUNG;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_SPECIMEN_PICK_UP;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.ANGLE_AT_RIGHT_SAMPLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.DEBUG_WAIT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.DELTA_6TH;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.DIFFERENTIAL_ROTATION;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.EXTEND_RIGHT_SAMPLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.EXTEND_TEMP_CLOSED;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.HAND_POSITION;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.POINT_OPEN_CLAW_RIGHT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.POINT_RETRACT_EXTEND;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.POINT_RIGHT_SIDE_DROP;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.SLOWDOWN_POINT_HUMAN;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.SLOWDOWN_POINT_HUMAN_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.SLOWDOWN_POINT_HUMAN_SIX;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.WAIT_AFTER_STOP_FOR_SUB_SAMPLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.WAIT_AT_RIGHT_SAMPLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.WAIT_FOR_INTAKE;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -71,24 +67,30 @@ import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 
 import java.io.IOException;
 
-@Autonomous(name = "2 Drive 1 Claw 5+1")
-public class DriveClaw extends LinearOpMode {
+@Autonomous(name = "Floyd Warshall 6+0")
+public class TwoDriveClawSix extends LinearOpMode {
     @Config
-    public static class LebronDriveClawConstants {
+    public static class FloydYoshelleConstants {
+        public static double DELTA_6TH = -1.1;
+
         public static double WAIT_AT_RIGHT_SAMPLE = 500 + 150 + 650;
-        public static double ANGLE_AT_RIGHT_SAMPLE = -105;
+        public static double ANGLE_AT_RIGHT_SAMPLE = -107.5;
         public static double WAIT_FOR_INTAKE = 500;
 
-        public static double EXTEND_RIGHT_SAMPLE = 170;
+        public static double EXTEND_RIGHT_SAMPLE = 165;
         public static double HAND_POSITION = 0.25;
         public static double DIFFERENTIAL_ROTATION = 5;
 
         public static double EXTEND_TEMP_CLOSED = 100;
 
         public static double POINT_RIGHT_SIDE_DROP = 0.3;
+        public static double POINT_OPEN_CLAW_RIGHT = 0.9;
 
         public static double SLOWDOWN_POINT_HUMAN = 0.65;
+        public static double SLOWDOWN_POINT_HUMAN_1 = 0.89;
+        public static double SLOWDOWN_POINT_HUMAN_SIX = 0.89;
         public static double POINT_RETRACT_EXTEND = 0.8;
+        public static double WAIT_AFTER_STOP_FOR_SUB_SAMPLE = 300;
         public static double DEBUG_WAIT = 0;
     }
 
@@ -118,13 +120,14 @@ public class DriveClaw extends LinearOpMode {
         initRobot();
 
         TrajectoryBuilder buildSpecimenToRung, buildRungToSpecimen;
-        Trajectory trajToRungs, trajToThree, trajSpecimenToRung, trajRungToSpecimen;
-        Trajectory trajSpecimenToRung3rd, trajRungToSpecimen3rd;
-        Trajectory trajSpecimenToRung4th, trajRungToSpecimen4th;
-        Trajectory trajSpecimenToRung5th, trajRungToYellowSample;
-        Trajectory trajSampleToBasket;
+        Trajectory trajFirstToRung, trajRungToHuman;
+        Trajectory trajSecondToRung, trajRungToThreeToThird;
+        Trajectory trajThirdToRung, trajRungToFourth;
+        Trajectory trajFourthToRung, trajRungToFifth;
+        Trajectory trajFifthToRung, trajRungToSixth;
+        Trajectory trajSixthToRung, trajRungToPark;
         try {
-            trajToRungs = drive.buildTrajectory("traj10transposed.json")
+            trajFirstToRung = drive.buildTrajectory("first_to_rung6.json")
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(POINT_MOVE_PERKID_0, () -> {
                         scorerPerkid.scoreSpecimen();
@@ -132,14 +135,61 @@ public class DriveClaw extends LinearOpMode {
                         lift.setSpecimen();
                         scorerLinkage.extend();
                     })
+                    .addSpatialMarker(POINT_MOVE_INTAKE, () -> {
+                        hand.setPosition(0.5);
+                        perkid.aimAtSpike();
+                        diff.aim();
+                        claw.open();
+                    })
                     .addSpatialMarker(SLOWDOWN_POINT_RUNG_0, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
-                    .waitForAt(1, HOLD_POS, -90)
+                    .waitForAt(1, 700, -90)
+                    .addTimeMarker(WAIT_AFTER_STOP_FOR_SUB_SAMPLE, true, () -> {
+                        perkid.pickUp();
+                    })
+                    .addTimeMarker(100, true, () -> {
+                        diff.pickUp();
+                    })
+                    .addTimeMarker(100, true, () -> {
+                        claw.close();
+                    })
+                    .addTimeMarker(150, true, () -> {
+                        diff.aim();
+                        perkid.liftSample();
+                    })
                     .plusPoint(2, new Vector2d(0, DELTA_1ST))
                     .plusPoint(3, new Vector2d(0, DELTA_1ST))
                     .build();
-            trajToThree = drive.buildTrajectory("auto_2_samp_drive.json")
+            trajRungToHuman = drive.buildTrajectory("rung_to_observ.json")
+                    .addTurnMarker(0, -90)
+                    .plusPoint(2, new Vector2d(0, DELTA_1ST))
+                    .plusPoint(3, new Vector2d(0, DELTA_1ST))
+                    .addSpatialMarker(0, () -> {
+                        drive.setForce(FORCE);
+                        scorerClaw.open();
+                        scorerDifferential.liftAfterScoreSpecimen();
+                    })
+                    .addSpatialMarker(INITIAL, () -> {
+                        scorerPerkid.pushIntoSpecimen();
+                        scorerDifferential.pushIntoSpecimen();
+                        scorerLinkage.retract();
+                    })
+                    .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
+                        lift.setReference(0);
+                        hand.dropOverRightSide();
+                        diff.dropOverRightSide();
+                        perkid.dropOverRightSide();
+                    })
+                    .addSpatialMarker(POINT_OPEN_CLAW_RIGHT, () -> {
+                        claw.open();
+                    })
+                    .addSpatialMarker(SLOWDOWN_POINT_HUMAN_1, () -> {
+                        drive.setForce(SLOWDOWN_FORCE);
+                    })
+                    .waitForAt(1, WAIT_FOR_HUMAN_ADJUST + 100, -90)
+                    .build();
+            trajRungToThreeToThird = drive.buildTrajectory("auto_2_samp_drive.json")
                     .addTurnMarker(0, -90)
                     .plusPoint(0, new Vector2d(0, DELTA_1ST))
                     .plusPoint(1, new Vector2d(0, DELTA_1ST))
@@ -152,7 +202,6 @@ public class DriveClaw extends LinearOpMode {
                         scorerPerkid.pickSpecimen();
                         scorerDifferential.pickSpecimen();
                         scorerLinkage.retract();
-                        scorerClaw.open();
                     })
                     .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
                         lift.setReference(0);
@@ -185,7 +234,7 @@ public class DriveClaw extends LinearOpMode {
                         double rotation = ANGLE_AT_RIGHT_SAMPLE + hand.getAngle() + 90 + DIFFERENTIAL_ROTATION;
                         diff.pickUpAngle(rotation);
                     })
-                    .addTimeMarker(100 + DEBUG_WAIT, true, () -> {
+                    .addTimeMarker(150 + DEBUG_WAIT, true, () -> {
                         claw.close();
                     })
                     .addTimeMarker(150 + DEBUG_WAIT, true, () -> {
@@ -216,7 +265,7 @@ public class DriveClaw extends LinearOpMode {
                         hand.relax();
                     })
                     .build();
-            buildSpecimenToRung = drive.buildTrajectory("traj13transposed.json")
+            buildSpecimenToRung = drive.buildTrajectory("observ_to_rung.json")
                     .waitForAt(0, WAIT_AFTER_PICK_UP, -90)
                     .addSpatialMarker(0, () -> {
                         scorerDifferential.scoreSpecimen();
@@ -231,23 +280,27 @@ public class DriveClaw extends LinearOpMode {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .waitForAt(1, WAIT_HOLD_POS_AT_RUNG, -90);
-            trajSpecimenToRung = buildSpecimenToRung
+            trajSecondToRung = buildSpecimenToRung
                     .plusPoint(3, new Vector2d(DELTA_2ND, 0))
                     .plusPoint(2, new Vector2d(DELTA_2ND, 0))
                     .build();
-            trajSpecimenToRung3rd = buildSpecimenToRung
+            trajThirdToRung = buildSpecimenToRung
                     .plusPoint(3, new Vector2d(DELTA_3RD, 0))
                     .plusPoint(2, new Vector2d(DELTA_3RD, 0))
                     .build();
-            trajSpecimenToRung4th = buildSpecimenToRung
+            trajFourthToRung = buildSpecimenToRung
                     .plusPoint(3, new Vector2d(DELTA_4TH, 0))
                     .plusPoint(2, new Vector2d(DELTA_4TH, 0))
                     .build();
-            trajSpecimenToRung5th = buildSpecimenToRung
+            trajFifthToRung = buildSpecimenToRung
                     .plusPoint(3, new Vector2d(DELTA_5TH, 0))
                     .plusPoint(2, new Vector2d(DELTA_5TH, 0))
                     .build();
-            buildRungToSpecimen = drive.buildTrajectory("traj11transposed.json")
+            trajSixthToRung = buildSpecimenToRung
+                    .plusPoint(3, new Vector2d(DELTA_6TH, 0))
+                    .plusPoint(2, new Vector2d(DELTA_6TH, 0))
+                    .build();
+            buildRungToSpecimen = drive.buildTrajectory("rung_to_observ.json")
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(0, () -> {
                         drive.setForce(FORCE);
@@ -263,59 +316,31 @@ public class DriveClaw extends LinearOpMode {
                     .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
                         lift.setReference(0);
                     })
-                    .addSpatialMarker(SLOWDOWN_POINT_HUMAN_1, () -> {
+                    .addSpatialMarker(SLOWDOWN_POINT_HUMAN_SIX, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .waitForAt(1, WAIT_FOR_HUMAN_ADJUST + 100, -90);
-            trajRungToSpecimen = buildRungToSpecimen
-                    .plusPoint(0, new Vector2d(DELTA_2ND, 0))
-                    .plusPoint(1, new Vector2d(DELTA_2ND, 0))
-                    .build();
-            trajRungToSpecimen3rd = buildRungToSpecimen
+            trajRungToFourth = buildRungToSpecimen
                     .plusPoint(0, new Vector2d(DELTA_3RD, 0))
                     .plusPoint(1, new Vector2d(DELTA_3RD, 0))
                     .build();
-            trajRungToSpecimen4th = buildRungToSpecimen
+            trajRungToFifth = buildRungToSpecimen
                     .plusPoint(0, new Vector2d(DELTA_4TH, 0))
                     .plusPoint(1, new Vector2d(DELTA_4TH, 0))
                     .build();
-            trajRungToYellowSample = buildRungToSpecimen
+            trajRungToSixth = buildRungToSpecimen
                     .plusPoint(0, new Vector2d(DELTA_5TH, 0))
                     .plusPoint(1, new Vector2d(DELTA_5TH, 0))
                     .build();
-            trajSampleToBasket = drive.buildTrajectory("traj19.json")
-                    .addTurnMarker(0, -180)
-                    .addSpatialMarker(POINT_PERKID_TO_SCORE, () -> {
-                        scorerPerkid.scoreSample();
-                        scorerDifferential.scoreSample();
-                    })
-                    .addSpatialMarker(POINT_START_RAISING_LIFT, () -> {
-                        lift.setReference(LIFT_SCORE);
-                    })
-                    .addSpatialMarker(POINT_BASKET_SLOWDOWN, () -> {
-                        drive.setForce(SLOWDOWN_FORCE);
-                    })
-                    .waitForAt(1, WAIT_AT_BASKET, -180)
-                    .addTimeMarker(WAIT_DROP_SAMPLE - 100, () -> {
-                        scorerDifferential.slamDunkSample();
-                    })
-                    .addTimeMarker(WAIT_DROP_SAMPLE, () -> {
-                        scorerClaw.open();
-                    })
-                    .addTimeMarker(WAIT_FOR_SLOWDOWN, () -> {
-                        drive.setForce(SLOWDOWN_FORCE);
-                    })
-                    .waitForAt(2, 400, ANGLE_TO_BASKET)
-                    .addTimeMarker(0, () -> {
-                        scorerPerkid.pickSpecimen();
-                        lift.setReference(0);
-                    })
+            trajRungToPark = buildRungToSpecimen
+                    .plusPoint(0, new Vector2d(DELTA_6TH, 0))
+                    .plusPoint(1, new Vector2d(DELTA_6TH, 0))
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        drive.setPoseEstimate(new Pose2d(trajToRungs.get(0).point0, Math.toRadians(270)));
+        drive.setPoseEstimate(new Pose2d(trajFirstToRung.get(0).point0, Math.toRadians(270)));
         drive.setForce(FORCE);
 
         scorerClaw.close();
@@ -330,17 +355,17 @@ public class DriveClaw extends LinearOpMode {
 
         waitForStart();
 
-        /* ************************************************************************************* */
 
-        /* *** WAIT *** */
+        // ********************* WAIT **************************************************
         clock.reset();
 
         while (clock.seconds() < WAIT_START) {
             telemetry.update();
         }
 
-        /* *** GO TO RUNGS *** */
-        drive.followTrajectory(trajToRungs);
+        // ********************* START 1TH SPECIMEN CYCLE **************************************************
+
+        drive.followTrajectory(trajFirstToRung);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
 
@@ -353,12 +378,33 @@ public class DriveClaw extends LinearOpMode {
             drive.update();
             extend.PIDControl();
         }
-        // -31.362
 
         clock.reset();
 
+        drive.followTrajectory(trajRungToHuman);
+
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
+            lift.PIDControl();
+            drive.update();
+            extend.PIDControl();
+        }
+
+        // ********************* START 2TH SPECIMEN CYCLE AND THREE SAMPLES **************************************************
+
+        scorerClaw.close();
+
+        drive.setForce(FORCE);
+
+        drive.followTrajectory(trajSecondToRung);
+
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
+            lift.PIDControl();
+            drive.update();
+            extend.PIDControl();
+        }
+
         /* *** GO TO HUMAN AND DO EVERYTHING *** */
-        drive.followTrajectory(trajToThree);
+        drive.followTrajectory(trajRungToThreeToThird);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             packet = new TelemetryPacket();
@@ -371,7 +417,7 @@ public class DriveClaw extends LinearOpMode {
             extend.PIDControl();
         }
 
-        /* ***************** START 2ND SPECIMEN CYCLE ***************** */
+        /* ***************** START 3ND SPECIMEN CYCLE ***************** */
 
         clock.reset();
         boolean pickedUp = false;
@@ -385,7 +431,7 @@ public class DriveClaw extends LinearOpMode {
 
         drive.setForce(FORCE);
 
-        drive.followTrajectory(trajSpecimenToRung);
+        drive.followTrajectory(trajThirdToRung);
 
         boolean resetX = true;
 
@@ -397,7 +443,7 @@ public class DriveClaw extends LinearOpMode {
 
         clock.reset();
 
-        drive.followTrajectory(trajRungToSpecimen);
+        drive.followTrajectory(trajRungToFourth);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
@@ -405,7 +451,7 @@ public class DriveClaw extends LinearOpMode {
             extend.PIDControl();
         }
 
-        // ********************* START 3ND SPECIMEN CYCLE **************************************************
+        // ********************* START 4ND SPECIMEN CYCLE **************************************************
 
         clock.reset();
         pickedUp = false;
@@ -419,7 +465,7 @@ public class DriveClaw extends LinearOpMode {
 
         drive.setForce(FORCE);
 
-        drive.followTrajectory(trajSpecimenToRung3rd);
+        drive.followTrajectory(trajFourthToRung);
 
         resetX = true;
 
@@ -436,46 +482,7 @@ public class DriveClaw extends LinearOpMode {
 
         clock.reset();
 
-        drive.followTrajectory(trajRungToSpecimen3rd);
-
-        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            lift.PIDControl();
-            drive.update();
-            extend.PIDControl();
-        }
-
-        // ********************* START 4TH SPECIMEN CYCLE **************************************************
-
-        clock.reset();
-        pickedUp = false;
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
-            if (distInClaw.getDistance(DistanceUnit.MM) <= DIST_SCOR_CLAW) {
-                pickedUp = true;
-            }
-        }
-
-        scorerClaw.close();
-
-        drive.setForce(FORCE);
-
-        drive.followTrajectory(trajSpecimenToRung4th);
-
-        resetX = true;
-
-        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            if (resetX && !frontSensor.getState()) {
-                Pose2d poseEstimate = drive.getPoseEstimate();
-                //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
-                resetX = false;
-            }
-            lift.PIDControl();
-            drive.update();
-            extend.PIDControl();
-        }
-
-        clock.reset();
-
-        drive.followTrajectory(trajRungToSpecimen4th);
+        drive.followTrajectory(trajRungToFifth);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
@@ -497,7 +504,7 @@ public class DriveClaw extends LinearOpMode {
 
         drive.setForce(FORCE);
 
-        drive.followTrajectory(trajSpecimenToRung5th);
+        drive.followTrajectory(trajFifthToRung);
 
         resetX = true;
 
@@ -514,7 +521,7 @@ public class DriveClaw extends LinearOpMode {
 
         clock.reset();
 
-        drive.followTrajectory(trajRungToYellowSample);
+        drive.followTrajectory(trajRungToSixth);
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
@@ -522,7 +529,7 @@ public class DriveClaw extends LinearOpMode {
             extend.PIDControl();
         }
 
-        // ********************* START YELLOW STUFF **************************************************
+        // ********************* START 6TH SPECIMEN CYCLE **************************************************
 
         clock.reset();
         pickedUp = false;
@@ -534,14 +541,31 @@ public class DriveClaw extends LinearOpMode {
 
         scorerClaw.close();
 
-        drive.setForce(1);
+        drive.setForce(FORCE);
 
-        drive.followTrajectory(trajSampleToBasket);
+        drive.followTrajectory(trajSixthToRung);
+
+        resetX = true;
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
+            if (resetX && !frontSensor.getState()) {
+                Pose2d poseEstimate = drive.getPoseEstimate();
+                //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
+                resetX = false;
+            }
+            lift.PIDControl();
             drive.update();
             extend.PIDControl();
+        }
+
+        clock.reset();
+
+        drive.followTrajectory(trajRungToPark);
+
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
+            drive.update();
+            extend.PIDControl();
         }
     }
 

@@ -135,6 +135,7 @@ public class Perkid {
         public static double TRANSFER_FROM_SUBMERSABLE = 0.53;
 
         public static double PICK_UP = 0.365;
-        public static double RIGHT_SIDE_DROP_SAMPLE = 0.67;
+        public static double RIGHT_SIDE_DROP_SAMPLE = 0.76;
+        public static double RELAX_POSITION = 0.74;
     }
 }

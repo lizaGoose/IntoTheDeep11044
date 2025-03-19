@@ -63,9 +63,9 @@ public class Claw {
     @Config
     static
     class ClawConstants{
-        public static double PICK = 0.7;
+        public static double PICK = 0.72;
         public static double DROP = 0.31;
-        public static double DROP_APPENDIX = 0.24;
-        public static double PICK_APPENDIX = 0.76;// 0.26
+        public static double DROP_APPENDIX = 0.3;
+        public static double PICK_APPENDIX = 0.76;
     }
 }

@@ -85,7 +85,7 @@ import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 
 import java.io.IOException;
 
-@Autonomous(name = "Lebron 5+1")
+@Autonomous(name = "Fake Lebron 5+1")
 public class LebronFiveOne extends LinearOpMode {
     private Drive drive;
     private ScorerPerkid scorerPerkid;

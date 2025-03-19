@@ -15,10 +15,6 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Config
 public class SampleDetectionPipeline extends OpenCvPipeline {
@@ -49,8 +45,11 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
     public static int YELLOW_MASK_THRESHOLD = 110;
     public static int BLUE_MASK_THRESHOLD = 57;
     public static int RED_MASK_THRESHOLD = 198;
-    public static double MAX_AREA = 1000;
+    public static double MAX_AREA = 2000;
     public static double MIN_AREA = 900, k = 118, k2 = 384;
+    public static int MAX_X = 345, MIN_X = 135;
+
+
     /*
      * Elements for noise reduction
      */
@@ -66,23 +65,15 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
 
     static final int CONTOUR_LINE_THICKNESS = 2;
 
-    public static class AnalyzedStone {
-        double angle;
-        String color;
-        double xS;
-        double yS;
-    }
+    ArrayList<AnalyzedSample> internalSampleList = new ArrayList<>();
+    ArrayList<AnalyzedSample> internalRedSample = new ArrayList<>();
+    ArrayList<AnalyzedSample> internalBlueSample = new ArrayList<>();
+    ArrayList<AnalyzedSample> internalYellowSample = new ArrayList<>();
 
-    ArrayList<AnalyzedStone> internalStoneList = new ArrayList<>();
-    volatile ArrayList<AnalyzedStone> clientStoneList = new ArrayList<>();
-    public volatile Set<Double> RotateStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
-
-    public volatile Set<Integer> CenterStone = Collections.newSetFromMap(new ConcurrentHashMap<>());
-
-    public ArrayList<Integer> Center = new ArrayList<>();
-    public ArrayList<Integer> Red = new ArrayList<>();
-    public ArrayList<Integer> Yellow = new ArrayList<>();
-    public ArrayList<Integer> Blue = new ArrayList<>();
+    volatile ArrayList<AnalyzedSample> clientSampleList = new ArrayList<>();
+    volatile ArrayList<AnalyzedSample> clientRedSample = new ArrayList<>();
+    volatile ArrayList<AnalyzedSample> clientBlueSample = new ArrayList<>();
+    volatile ArrayList<AnalyzedSample> clientYellowSample = new ArrayList<>();
 
     /*
      * Viewport stages
@@ -91,8 +82,14 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         FINAL,
         YCrCb,
         MASKS,
+        MASK_RED,
+        MASK_RED_NR,
+        MASK_YELLOW,
+        MASK_YELLOW_NR,
+        MASK_BLUE,
+        MASK_BLUE_NR,
         MASKS_NR,
-        CONTOURS;
+        CONTOURS
     }
 
     Stage[] stages = Stage.values();
@@ -112,18 +109,21 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-
         // We'll be updating this with new data below
-        internalStoneList.clear();
-        CenterStone.clear();
-        //RotateStone.clear();
+        internalSampleList.clear();
+        internalRedSample.clear();
+        internalBlueSample.clear();
+        internalYellowSample.clear();
 
         /*
          * Run the image processing
          */
         findContours(input);
 
-        clientStoneList = new ArrayList<>(internalStoneList);
+        clientSampleList = new ArrayList<>(internalSampleList);
+        clientRedSample = new ArrayList<>(internalRedSample);
+        clientBlueSample = new ArrayList<>(internalBlueSample);
+        clientYellowSample = new ArrayList<>(internalYellowSample);
 
         /*
          * Decide which buffer to send to the viewport
@@ -138,6 +138,30 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
                 Core.addWeighted(yellowThresholdMat, 1.0, redThresholdMat, 1.0, 0.0, masks);
                 Core.addWeighted(masks, 1.0, blueThresholdMat, 1.0, 0.0, masks);
                 return masks;
+            }
+
+            case MASK_BLUE: {
+                return blueThresholdMat;
+            }
+
+            case MASK_BLUE_NR: {
+                return morphedBlueThreshold;
+            }
+
+            case MASK_RED: {
+                return redThresholdMat;
+            }
+
+            case MASK_RED_NR: {
+                return morphedRedThreshold;
+            }
+
+            case MASK_YELLOW: {
+                return yellowThresholdMat;
+            }
+
+            case MASK_YELLOW_NR: {
+                return morphedYellowThreshold;
             }
 
             case MASKS_NR: {
@@ -157,8 +181,20 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         }
     }
 
-    public ArrayList<AnalyzedStone> getDetectedStones() {
-        return clientStoneList;
+    public ArrayList<AnalyzedSample> getDetectedSamples() {
+        return clientSampleList;
+    }
+
+    public ArrayList<AnalyzedSample> getRedSamples() {
+        return clientRedSample;
+    }
+
+    public ArrayList<AnalyzedSample> getBlueSamples() {
+        return clientBlueSample;
+    }
+
+    public ArrayList<AnalyzedSample> getYellowSamples() {
+        return clientYellowSample;
     }
 
     void findContours(Mat input) {
@@ -198,11 +234,11 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         contoursOnPlainImageMat = Mat.zeros(input.size(), input.type());
 
         // Analyze and draw contours
-        blueContoursList.forEach(contour -> analyzeContour(contour, input, "Blue"));
+        blueContoursList.forEach(contour -> analyzeContour(contour, input, SampleColor.BLUE));
 
-        redContoursList.forEach(contour -> analyzeContour(contour, input, "Blue"));
+        redContoursList.forEach(contour -> analyzeContour(contour, input, SampleColor.RED));
 
-        yellowContoursList.forEach(contour -> analyzeContour(contour, input, "Blue"));
+        yellowContoursList.forEach(contour -> analyzeContour(contour, input, SampleColor.YELLOW));
     }
 
     void morphMask(Mat input, Mat output) {
@@ -221,15 +257,15 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         return MAX_AREA >= countourArea && countourArea >= MIN_AREA;
     }
 
-    void analyzeContour(MatOfPoint contour, Mat input, String color) {
+    void analyzeContour(MatOfPoint contour, Mat input, SampleColor sampleColor) {
         // Transform the contour to a different format
         Point[] points = contour.toArray();
         MatOfPoint2f contour2f = new MatOfPoint2f(points);
 
         // Fit a rotated rectangle to the contour and draw it
         rotatedRectFitToContour = Imgproc.minAreaRect(contour2f);
-        drawRotatedRect(rotatedRectFitToContour, input, color);
-        drawRotatedRect(rotatedRectFitToContour, contoursOnPlainImageMat, color);
+        drawRotatedRect(rotatedRectFitToContour, input, sampleColor);
+        drawRotatedRect(rotatedRectFitToContour, contoursOnPlainImageMat, sampleColor);
 
         // Adjust the angle based on rectangle dimensions
         double rotRectAngle = rotatedRectFitToContour.angle;
@@ -237,54 +273,38 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
             rotRectAngle += 90;
         }
 
-        double rotRectX = Math.round(rotatedRectFitToContour.center.x /* CmPerPixel/640 * matrixKoeff*/);
-        double rotRectY = Math.round(rotatedRectFitToContour.center.y /* CmPerPixel/640 * matrixKoeff*/);
+        double rotRectX = rotatedRectFitToContour.center.x;
+        double rotRectY = rotatedRectFitToContour.center.y;
 
         // Compute the angle and store it
-        double angle;
-        drawTagText(rotatedRectFitToContour, Integer.toString((int) Math.round(Angle)) + " deg", input, color);
-        double x;
-        double y;
-        angle = rotRectAngle;
-        x = rotRectX;
-        y = rotRectY;
+        double angle = rotRectAngle - 90;
+        drawTagText(rotatedRectFitToContour, (int) Math.round(angle) + " deg", input, sampleColor);
 
         // Store the detected sample information
-        AnalyzedStone analyzedStone = new AnalyzedStone();
-        analyzedStone.angle = angle;
-        analyzedStone.color = color;
-        analyzedStone.xS = x;
-        analyzedStone.yS = y;
+        AnalyzedSample analyzedSample = new AnalyzedSample();
+        analyzedSample.angle = angle;
+        analyzedSample.sampleColor = sampleColor;
+        analyzedSample.x = rotRectX;
+        analyzedSample.y = rotRectY;
+        analyzedSample.area = rotatedRectFitToContour.size.area();
 
-        Center = new ArrayList<>(CenterStone);
+        internalSampleList.add(analyzedSample);
 
-        if (YELLOW_MASK_THRESHOLD == 95) {
-            Yellow = new ArrayList<>(CenterStone);
-        } else if (YELLOW_MASK_THRESHOLD == 85) {
-            Blue = new ArrayList<>(CenterStone);
-        } else {
-            Red = new ArrayList<>(CenterStone);
-        }
-
-        RotateStone.add((double) Math.round(rotRectAngle));
-        CenterStone.add((int) rotRectY);
-        internalStoneList.add(analyzedStone);
-        if (!Center.isEmpty()) {
-
-            if (Math.round(rotatedRectFitToContour.center.y) == Collections.max(Center)) {
-
+        switch (sampleColor) {
+            case RED: {
+                internalRedSample.add(analyzedSample);
             }
-
-            xSample = analyzedStone.xS;//-227
-            ySample = analyzedStone.yS;//640-435
-            Angle = analyzedStone.angle - 90;
-
-            Area = Imgproc.contourArea(contour2f);
+            case BLUE: {
+                internalBlueSample.add(analyzedSample);
+            }
+            case YELLOW: {
+                internalYellowSample.add(analyzedSample);
+            }
         }
     }
 
-    static void drawTagText(RotatedRect rect, String text, Mat mat, String color) {
-        Scalar colorScalar = getColorScalar(color);
+    static void drawTagText(RotatedRect rect, String text, Mat mat, SampleColor sampleColor) {
+        Scalar colorScalar = getColorScalar(sampleColor);
 
         Imgproc.putText(
                 mat, // The buffer we're drawing on
@@ -298,14 +318,14 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
                 2); // Font thickness
     }
 
-    static void drawRotatedRect(RotatedRect rect, Mat drawOn, String color) {
+    static void drawRotatedRect(RotatedRect rect, Mat drawOn, SampleColor sampleColor) {
         /*
          * Draws a rotated rectangle by drawing each of the 4 lines individually
          */
         Point[] points = new Point[4];
         rect.points(points);
 
-        Scalar colorScalar = getColorScalar(color);
+        Scalar colorScalar = getColorScalar(sampleColor);
 
         for (int i = 0; i < 4; ++i) {
             Imgproc.line(drawOn, points[i], points[(i + 1) % 4], colorScalar, 2);
@@ -313,11 +333,11 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
     }
 
 
-    static Scalar getColorScalar(String color) {
-        switch (color) {
-            case "Blue":
+    static Scalar getColorScalar(SampleColor sampleColor) {
+        switch (sampleColor) {
+            case BLUE:
                 return BLUE;
-            case "Yellow":
+            case YELLOW:
                 return YELLOW;
             default:
                 return RED;

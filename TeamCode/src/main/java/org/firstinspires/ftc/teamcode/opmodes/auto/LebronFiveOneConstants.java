@@ -54,9 +54,9 @@ public class LebronFiveOneConstants {
     public static int WAIT_FOR_HUMAN_ADJUST = 0;
     public static int WAIT_AFTER_PICK_UP = 100;
 
-    public static int WAIT_SPECIMEN_PICK_UP = 150;
+    public static int WAIT_SPECIMEN_PICK_UP = 50;
 
-    public static int WAIT_HOLD_POS_AT_RUNG = 200;
+    public static int WAIT_HOLD_POS_AT_RUNG = 100;
 
     public static double WAIT_RELAX_CLAW = 0;
 
@@ -74,7 +74,7 @@ public class LebronFiveOneConstants {
     public static double POINT_START_RAISING_LIFT = 0.5;
     public static double WAIT_AT_BASKET = 1000;
     public static double LIFT_SCORE = 820;
-    public static double WAIT_DROP_SAMPLE = 200;
+    public static double WAIT_DROP_SAMPLE = 50;
     public static double POINT_BASKET_SLOWDOWN = 0.8;
     public static double ANGLE_TO_BASKET = -175;
     public static double WAIT_FOR_SLOWDOWN = 200;
