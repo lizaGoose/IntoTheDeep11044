@@ -52,6 +52,10 @@ public class AutoCamera {
         pip = new SampleDetectionPipeline();
         cam.setPipeline(pip);
 
+        //operatorControlRed();
+    }
+
+    public void startCamera() {
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -63,8 +67,14 @@ public class AutoCamera {
 
             }
         });
+    }
 
-        //operatorControlRed();
+    public void stopCamera() {
+        cam.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
+            @Override
+            public void onClosed
+            }
+        })
     }
 
     public List<Double> AutonomousRecognition() {
@@ -98,14 +108,42 @@ public class AutoCamera {
         return new Vector3D(Current.getX(), ((Current.getY() - Math.cos(Math.asin(Current.getX() / (125 / 25.4))) * (125 / 25.4)) * 13.29 - 115.11), Current.getZ());
     }
 
+    public Optional<AnalyzedSample> getSample() {
+        ArrayList<AnalyzedSample> samples = pip.getDetectedSamples();
+        if (samples.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(samples.get(0));
+    }
+
+    public Optional<AnalyzedSample> getOptimalSample() {
+        ArrayList<AnalyzedSample> samples = pip.getDetectedSamples();
+        if (samples.isEmpty())
+            return Optional.empty();
+
+        AnalyzedSample optimalSample = null;
+
+        for (AnalyzedSample sample : samples) {
+            if (optimalSample == null) {
+                optimalSample = sample;
+                continue;
+            }
+            if (optimalSample.y < sample.y) {
+                optimalSample = sample;
+            }
+        }
+        return Optional.of(optimalSample);
+    }
+
+    @Deprecated
     public Optional<AnalyzedSample> getSamplePosition(double liftPosition, double scorerAngle) {
 
-        ArrayList<AnalyzedSample> sampleOpt = pip.getRedSamples();
-        if (sampleOpt.isEmpty()) {
+        ArrayList<AnalyzedSample> samples = pip.getDetectedSamples();
+        if (samples.isEmpty()) {
             return Optional.empty();
         }
 
-        AnalyzedSample sample = sampleOpt.get(0);
+        AnalyzedSample sample = samples.get(0);
 
         a = scorerAngle * 310 - 179;
         l = 113.5 / 25.4;
@@ -118,10 +156,36 @@ public class AutoCamera {
         k = P.getZ() / (P.getZ() - C.getZ());
         Current = mul(C, k, P, (1 - k));
 
-        sample.x = Current.getX() * 25.4;
-        sample.y = Current.getY() * 25.4 - 220.04;
+        AnalyzedSample newSample = sample.clone();
 
-        return Optional.of(sample);
+        newSample.x = Current.getX() * 25.4;
+        newSample.y = Current.getY() * 25.4 - 220.04;
+
+        return Optional.of(newSample);
+    }
+
+    public Optional<AnalyzedSample> getOptimalSamplePosition(double liftPosition, double scorerAngle) {
+
+        return getOptimalSample().map((sample) -> {
+                    a = scorerAngle * 310 - 179;
+                    l = 113.5 / 25.4;
+
+                    x1 = (sample.x - (double) Wp / 2) * 0.85 / Wp;
+                    y1 = -(sample.y - (double) Hp / 2) * 1.2 / Hp;
+                    L = new Vector3D(0, -liftPosition * ticksPerInchLift * Math.sin(Math.toRadians(10)), liftPosition * ticksPerInchLift * Math.cos(Math.toRadians(10)) + (422 / 25.4));
+                    P = new Vector3D(0, L.getY() + l * Math.sin(Math.toRadians(a)), L.getZ() - l * Math.cos(Math.toRadians(a)));
+                    C = new Vector3D(P.getX() + x1, P.getY() + Math.sin(Math.toRadians(a - b)) + y1 * Math.cos(Math.toRadians(a - b)), P.getZ() - Math.cos(Math.toRadians(a - b)) + y1 * Math.sin(Math.toRadians(a - b)));
+                    k = P.getZ() / (P.getZ() - C.getZ());
+                    Current = mul(C, k, P, (1 - k));
+
+                    AnalyzedSample resSample = sample.clone();
+
+                    resSample.x = Current.getX() * 25.4;
+                    resSample.y = Current.getY() * 25.4 - 220.04;
+
+                    return resSample;
+                }
+        );
     }
 
     public Vector3D mul(Vector3D vector3D, double constant, Vector3D vector2, double constant2) {
@@ -137,7 +201,12 @@ public class AutoCamera {
         }
 
         AnalyzedSample sample = list.get(0);
-        return Optional.of(sample.angle);
+
+        double angle = 0.0001 * Math.pow(sample.angle, 3) -
+                0.0197 * Math.pow(sample.angle, 2) +
+                2.0067 * sample.angle +
+                2.4772;
+        return Optional.of(angle);
     }
 
     public void visionInUse() {
@@ -173,9 +242,9 @@ public class AutoCamera {
             pip.RED_MASK_THRESHOLD = 198;
         }*/
         //   if (linearOpMode.gamepad1.circle) {
-        pip.YELLOW_MASK_THRESHOLD = 5;
-        pip.BLUE_MASK_THRESHOLD = 70;
-        pip.RED_MASK_THRESHOLD = 170;
+        SampleDetectionPipeline.YELLOW_MASK_THRESHOLD = 5;
+        SampleDetectionPipeline.BLUE_MASK_THRESHOLD = 70;
+        SampleDetectionPipeline.RED_MASK_THRESHOLD = 170;
         //}
         x = pip.xSample;
         y = pip.ySample;

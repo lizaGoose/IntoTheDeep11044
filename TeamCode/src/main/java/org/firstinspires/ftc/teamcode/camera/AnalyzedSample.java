@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.camera;
 
 import androidx.annotation.NonNull;
 
-public class AnalyzedSample {
+public class AnalyzedSample implements Cloneable {
     public double angle;
     SampleColor sampleColor;
     public double x;
@@ -25,9 +25,21 @@ public class AnalyzedSample {
     public String toString() {
         return "AnalyzedSample{" +
                 "angle=" + angle +
-                ", color='" + sampleColor + '\'' +
+                ", sampleColor=" + sampleColor +
                 ", x=" + x +
                 ", y=" + y +
+                ", area=" + area +
                 '}';
+    }
+
+    @NonNull
+    @Override
+    public AnalyzedSample clone() {
+        try {
+            AnalyzedSample clone = (AnalyzedSample) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

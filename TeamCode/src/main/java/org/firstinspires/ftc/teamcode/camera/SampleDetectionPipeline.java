@@ -46,7 +46,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
     public static int BLUE_MASK_THRESHOLD = 57;
     public static int RED_MASK_THRESHOLD = 198;
     public static double MAX_AREA = 2000;
-    public static double MIN_AREA = 900, k = 118, k2 = 384;
+    public static double MIN_AREA = 600, k = 118, k2 = 384;
     public static int MAX_X = 345, MIN_X = 135;
 
 
@@ -254,7 +254,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
 
     boolean filterCountour(MatOfPoint countour) {
         double countourArea = Imgproc.contourArea(countour);
-        return MAX_AREA >= countourArea && countourArea >= MIN_AREA;
+        return MAX_AREA <= countourArea || countourArea <= MIN_AREA;
     }
 
     void analyzeContour(MatOfPoint contour, Mat input, SampleColor sampleColor) {
@@ -264,8 +264,6 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
 
         // Fit a rotated rectangle to the contour and draw it
         rotatedRectFitToContour = Imgproc.minAreaRect(contour2f);
-        drawRotatedRect(rotatedRectFitToContour, input, sampleColor);
-        drawRotatedRect(rotatedRectFitToContour, contoursOnPlainImageMat, sampleColor);
 
         // Adjust the angle based on rectangle dimensions
         double rotRectAngle = rotatedRectFitToContour.angle;
@@ -273,12 +271,17 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
             rotRectAngle += 90;
         }
 
-        double rotRectX = rotatedRectFitToContour.center.x;
-        double rotRectY = rotatedRectFitToContour.center.y;
+        double rotRectX = Math.round(rotatedRectFitToContour.center.x);
+        double rotRectY = Math.round(rotatedRectFitToContour.center.y);
+        if (MIN_X >= rotRectX || rotRectX >= MAX_X) {
+            return;
+        }
+        drawRotatedRect(rotatedRectFitToContour, input, sampleColor);
+        drawRotatedRect(rotatedRectFitToContour, contoursOnPlainImageMat, sampleColor);
 
         // Compute the angle and store it
         double angle = rotRectAngle - 90;
-        drawTagText(rotatedRectFitToContour, (int) Math.round(angle) + " deg", input, sampleColor);
+        drawTagText(rotatedRectFitToContour, (int) Math.round(angle) + " deg, " + (int) rotRectY + " y", input, sampleColor);
 
         // Store the detected sample information
         AnalyzedSample analyzedSample = new AnalyzedSample();
@@ -313,7 +316,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
                         rect.center.x - 50,  // x anchor point
                         rect.center.y + 25), // y anchor point
                 Imgproc.FONT_HERSHEY_PLAIN, // Font
-                5, // Font size
+                2, // Font size
                 colorScalar, // Font color
                 2); // Font thickness
     }

@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.modules.Perkid;
 import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 
 import java.util.List;
+import java.util.Optional;
 
 @Config
 @TeleOp(group = "test")
@@ -31,7 +32,7 @@ public class InverseKinematicsCameraTest extends OpMode {
     // 345 - 240 = 105
     // 240 - 105 = 135
     // 135 345
-    public static double OFFSET = 80;
+    public static double OFFSET = 60;
     public static double PICK_UP_OFFSET = 60;
     public static double PICK_UP_CLOSE_AFTER = 100;
     public static double PICK_UP_LIFT_AFTER = 200;
@@ -65,8 +66,6 @@ public class InverseKinematicsCameraTest extends OpMode {
     private double pickUpDelta = 0;
 
     private AnalyzedSample targetSample = new AnalyzedSample(Y, Z, 0, SampleColor.RED, 1);
-    private Vector3D targetSamplePosition = new Vector3D(Y, Z, 0.0);
-    private double targetSampleRotation = 0;
     private List<Double> kinematicsResult;
 
     @Override
@@ -100,10 +99,8 @@ public class InverseKinematicsCameraTest extends OpMode {
 
     @Override
     public void loop() {
-        AnalyzedSample sample = camera.getSamplePosition(lift.getPosition(), scorerPerkid.getPos())
+        AnalyzedSample sample = camera.getOptimalSamplePosition(lift.getPosition(), scorerPerkid.getPos())
                 .orElse(targetSample);
-        double sampleRotation = camera.getAngle()
-                .orElse(targetSampleRotation);
 
         if (stickyKeys.triangle) {
             state = State.AIMING;
@@ -213,13 +210,13 @@ public class InverseKinematicsCameraTest extends OpMode {
         telemetry.addData("extend_pos", extend.getPosition());
         telemetry.addData("extend_target", extend.getReference());
         telemetry.addData("d0", kinematicsResult.get(0));
-        telemetry.addData("diff_rot", targetSamplePosition);
+        telemetry.addData("diff_rot", targetSample.angle - Math.toDegrees(kinematicsResult.get(2)));
         telemetry.addData("theta1", Math.toDegrees(kinematicsResult.get(1)));
         telemetry.addData("theta2", Math.toDegrees(kinematicsResult.get(2)));
         telemetry.addData("theta3", Math.toDegrees(kinematicsResult.get(1)));
-        telemetry.addData("x_sample", sample.x);
-        telemetry.addData("y_sample", sample.y);
-        telemetry.addData("rot_sample", sampleRotation);
+        telemetry.addData("pure_sample", camera.getSample().flatMap(x -> Optional.of(x.toString())).orElse("none"));
+        telemetry.addData("sample", sample);
+        telemetry.addData("targetSample", targetSample);
         telemetry.addData("loop_time_ns", globalTimer.nanoseconds());
         telemetry.addData("samples_list", camera.pip.getDetectedSamples());
         globalTimer.reset();
