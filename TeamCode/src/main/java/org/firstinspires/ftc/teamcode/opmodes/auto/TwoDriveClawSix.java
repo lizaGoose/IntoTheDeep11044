@@ -15,7 +15,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.FORCE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_START_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_FORCE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_RUNG_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_RUNG_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AFTER_PICK_UP;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_CLAW_RELEASE;
@@ -29,15 +28,20 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydY
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.EXTEND_RIGHT_SAMPLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.EXTEND_TEMP_CLOSED;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.HAND_POSITION;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.LINKAGE_OFFSET;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.POINT_OPEN_CLAW_RIGHT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.POINT_RETRACT_EXTEND;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.POINT_RIGHT_SIDE_DROP;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.SLOWDOWN_POINT_HUMAN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.SLOWDOWN_POINT_HUMAN_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.SLOWDOWN_POINT_HUMAN_SIX;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.SLOWDOWN_POINT_RUNG_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.WAIT_AFTER_STOP_FOR_SUB_SAMPLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.WAIT_AT_RIGHT_SAMPLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.WAIT_FOR_DETECTION;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.WAIT_FOR_INTAKE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.WAIT_FOR_LINKAGE_EXTEND;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydYoshelleConstants.WAIT_PICK_UP_SUM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -46,6 +50,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -54,9 +59,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auto.Drive;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
+import org.firstinspires.ftc.teamcode.camera.AnalyzedSample;
+import org.firstinspires.ftc.teamcode.camera.AutoCamera;
+import org.firstinspires.ftc.teamcode.camera.SampleColor;
+import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 import org.firstinspires.ftc.teamcode.modules.Claw;
 import org.firstinspires.ftc.teamcode.modules.Differential;
-import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
@@ -66,6 +75,7 @@ import org.firstinspires.ftc.teamcode.modules.ScorerLinkage;
 import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 
 import java.io.IOException;
+import java.util.List;
 
 @Autonomous(name = "Floyd Warshall 6+0")
 public class TwoDriveClawSix extends LinearOpMode {
@@ -86,13 +96,26 @@ public class TwoDriveClawSix extends LinearOpMode {
         public static double POINT_RIGHT_SIDE_DROP = 0.3;
         public static double POINT_OPEN_CLAW_RIGHT = 0.9;
 
+        public static double SLOWDOWN_POINT_RUNG_0 = 0.78;
         public static double SLOWDOWN_POINT_HUMAN = 0.65;
         public static double SLOWDOWN_POINT_HUMAN_1 = 0.89;
         public static double SLOWDOWN_POINT_HUMAN_SIX = 0.89;
         public static double POINT_RETRACT_EXTEND = 0.8;
+
+        public static double WAIT_PICK_UP_SUM = 2400;
+        public static double WAIT_FOR_DETECTION = 800;
         public static double WAIT_AFTER_STOP_FOR_SUB_SAMPLE = 300;
+        public static double WAIT_FOR_LINKAGE_EXTEND = 1000;
+
+        public static double LINKAGE_OFFSET = 60;
         public static double DEBUG_WAIT = 0;
     }
+
+    private static final double X = 25.3 - 83.76641;
+    private static final double X_PICK = X - 60;
+    private static final double X_LIFT = X + 10;
+    private static final double Y = 0;
+    private static final double Z = 127.45;
 
     private Drive drive;
     private ScorerPerkid scorerPerkid;
@@ -103,15 +126,21 @@ public class TwoDriveClawSix extends LinearOpMode {
     private Hand hand;
     private Differential diff;
     private Claw claw;
-    private Extend extend;
+    private Linkage linkage;
     private Lift lift;
     private ScorerLinkage scorerLinkage;
+    private AutoCamera camera;
     private DistanceSensor distInClaw;
     private DigitalChannel frontSensor;
     private FtcDashboard dashboard;
+    private AnalyzedSample sample = new AnalyzedSample(Y, Z, 0, SampleColor.RED, 1);
 
     // Make this true somewhere to stop program
     private boolean DEBUG_END_FLAG = false;
+    private boolean DETECTED = false;
+
+    // STATE
+    private boolean resettingLinkage = false;
 
     private ElapsedTime clock;
 
@@ -134,6 +163,7 @@ public class TwoDriveClawSix extends LinearOpMode {
                         scorerDifferential.scoreSpecimen();
                         lift.setSpecimen();
                         scorerLinkage.extend();
+                        camera.startCamera();
                     })
                     .addSpatialMarker(POINT_MOVE_INTAKE, () -> {
                         hand.setPosition(0.5);
@@ -144,19 +174,44 @@ public class TwoDriveClawSix extends LinearOpMode {
                     .addSpatialMarker(SLOWDOWN_POINT_RUNG_0, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
-                    .waitForAt(1, 700, -90)
-                    .addTimeMarker(WAIT_AFTER_STOP_FOR_SUB_SAMPLE, true, () -> {
-                        perkid.pickUp();
+                    .waitForAt(1, WAIT_PICK_UP_SUM, -90)
+                    .addTimeMarker(WAIT_FOR_DETECTION, true, () -> {
+                        camera.getOptimalSamplePosition(lift.getPosition(), scorerPerkid.getPos())
+                                .ifPresent(analyzedSample -> {
+                                    DETECTED = true;
+                                    sample = analyzedSample;
+                                });
                     })
-                    .addTimeMarker(100, true, () -> {
-                        diff.pickUp();
+                    .addTimeMarker(WAIT_AFTER_STOP_FOR_SUB_SAMPLE, true, () -> {
+                        List<Double> result = ClawCalculation.inverseKinematics(X, sample.x, sample.y, sample.angle);
+                        if (!result.contains(Double.NaN)) {
+                            linkage.setPositionMillimeters(result.get(0) - LINKAGE_OFFSET);
+                            perkid.setAngle(result.get(1));
+                            hand.setAngle(result.get(2));
+                            diff.setAngleRotation(-91, result.get(4));
+                        }
+                    })
+                    .addTimeMarker(WAIT_FOR_LINKAGE_EXTEND, true, () -> {
+                        List<Double> result = ClawCalculation.inverseKinematics(X_PICK, sample.x, sample.y, sample.angle);
+                        if (!result.contains(Double.NaN)) {
+                            linkage.setPositionMillimeters(result.get(0) - LINKAGE_OFFSET);
+                            perkid.setAngle(result.get(1));
+                            hand.setAngle(result.get(2));
+                            diff.setAngleRotation(-88, result.get(4));
+                        }
                     })
                     .addTimeMarker(100, true, () -> {
                         claw.close();
                     })
                     .addTimeMarker(150, true, () -> {
-                        diff.aim();
-                        perkid.liftSample();
+                        List<Double> result = ClawCalculation.inverseKinematics(X_LIFT, Y, Z, 0);
+                        if (!result.contains(Double.NaN)) {
+                            linkage.setPositionMillimeters(result.get(0));
+                            perkid.setAngle(result.get(1));
+                            hand.setAngle(result.get(2));
+                            diff.setAngleRotation(-91, result.get(4));
+                        }
+                        camera.stopCamera();
                     })
                     .plusPoint(2, new Vector2d(0, DELTA_1ST))
                     .plusPoint(3, new Vector2d(0, DELTA_1ST))
@@ -166,6 +221,7 @@ public class TwoDriveClawSix extends LinearOpMode {
                     .plusPoint(2, new Vector2d(0, DELTA_1ST))
                     .plusPoint(3, new Vector2d(0, DELTA_1ST))
                     .addSpatialMarker(0, () -> {
+                        DEBUG_END_FLAG = true;
                         drive.setForce(FORCE);
                         scorerClaw.open();
                         scorerDifferential.liftAfterScoreSpecimen();
@@ -217,7 +273,7 @@ public class TwoDriveClawSix extends LinearOpMode {
                     // GO TO RIGHT
                     .waitForAt(5, WAIT_AT_RIGHT_SAMPLE + 4 * DEBUG_WAIT, ANGLE_AT_RIGHT_SAMPLE)
                     .addTimeMarker(0, () -> {
-                        extend.setReference(EXTEND_RIGHT_SAMPLE);
+                        linkage.setReference(EXTEND_RIGHT_SAMPLE);
                         hand.setPosition(HAND_POSITION);
                         double rotation = ANGLE_AT_RIGHT_SAMPLE + hand.getAngle() + 90 + DIFFERENTIAL_ROTATION;
                         diff.aimAngle(rotation);
@@ -244,7 +300,7 @@ public class TwoDriveClawSix extends LinearOpMode {
                     // GO TO HUMAN
                     .addTurnMarker(5, -90)
                     .addSpatialMarker(5 + POINT_RIGHT_SIDE_DROP, () -> {
-                        extend.setReference(EXTEND_TEMP_CLOSED);
+                        linkage.setReference(EXTEND_TEMP_CLOSED);
                         hand.dropOverRightSide();
                         perkid.dropOverRightSide();
                         diff.dropOverRightSide();
@@ -256,7 +312,7 @@ public class TwoDriveClawSix extends LinearOpMode {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .addSpatialMarker(5 + POINT_RETRACT_EXTEND, () -> {
-                        extend.setReference(0);
+                        linkage.setReference(0);
                     })
                     .waitForAt(6, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_CLAW_RELEASE, () -> {
@@ -349,8 +405,8 @@ public class TwoDriveClawSix extends LinearOpMode {
         scorerLinkage.retract();
 
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("extend_reference", extend.getReference());
-        packet.put("extend_position", extend.getPosition());
+        packet.put("extend_reference", linkage.getReference());
+        packet.put("extend_position", linkage.getPosition());
         dashboard.sendTelemetryPacket(packet);
 
         waitForStart();
@@ -370,13 +426,26 @@ public class TwoDriveClawSix extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
 
             packet = new TelemetryPacket();
-            packet.put("extend_reference", extend.getReference());
-            packet.put("extend_position", extend.getPosition());
+            packet.put("extend_reference", linkage.getReference());
+            packet.put("extend_position", linkage.getPosition());
+            packet.put("sample", sample);
             dashboard.sendTelemetryPacket(packet);
+
+            telemetry.addData("DETECTED", DETECTED);
+            telemetry.addData("sample", sample);
+            telemetry.update();
 
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            if (resettingLinkage) {
+                linkage.setPower(-0.5);
+                if (linkage.getPosition() < 0) {
+                    linkage.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    linkage.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+            } else {
+                linkage.PIDControl();
+            }
         }
 
         clock.reset();
@@ -386,7 +455,7 @@ public class TwoDriveClawSix extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START 2TH SPECIMEN CYCLE AND THREE SAMPLES **************************************************
@@ -400,7 +469,7 @@ public class TwoDriveClawSix extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         /* *** GO TO HUMAN AND DO EVERYTHING *** */
@@ -408,13 +477,13 @@ public class TwoDriveClawSix extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             packet = new TelemetryPacket();
-            packet.put("extend_reference", extend.getReference());
-            packet.put("extend_position", extend.getPosition());
+            packet.put("extend_reference", linkage.getReference());
+            packet.put("extend_position", linkage.getPosition());
             dashboard.sendTelemetryPacket(packet);
 
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         /* ***************** START 3ND SPECIMEN CYCLE ***************** */
@@ -438,7 +507,7 @@ public class TwoDriveClawSix extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -448,7 +517,7 @@ public class TwoDriveClawSix extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START 4ND SPECIMEN CYCLE **************************************************
@@ -477,7 +546,7 @@ public class TwoDriveClawSix extends LinearOpMode {
             }
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -487,7 +556,7 @@ public class TwoDriveClawSix extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START 5TH SPECIMEN CYCLE **************************************************
@@ -516,7 +585,7 @@ public class TwoDriveClawSix extends LinearOpMode {
             }
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -526,7 +595,7 @@ public class TwoDriveClawSix extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START 6TH SPECIMEN CYCLE **************************************************
@@ -555,7 +624,7 @@ public class TwoDriveClawSix extends LinearOpMode {
             }
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -565,7 +634,7 @@ public class TwoDriveClawSix extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
     }
 
@@ -583,7 +652,11 @@ public class TwoDriveClawSix extends LinearOpMode {
         diff = new Differential(this);
         claw = new Claw(this);
 
-        extend = new Extend(this);
+        camera = new AutoCamera(this);
+
+        camera.operatorControlRed();
+
+        linkage = new Linkage(this);
         distInClaw = hardwareMap.get(DistanceSensor.class, "ScorClawDist");
         frontSensor = hardwareMap.get(DigitalChannel.class, "DistanceFront");
 

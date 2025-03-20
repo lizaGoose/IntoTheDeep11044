@@ -153,8 +153,8 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
   breaking change: old Blocks OpModes that use these Blocks will still function, both in the
   Blocks editor and at runtime.
 * Standardizes on the form "OpMode" for the term OpMode.
-    * The preferred way to refer to OpModes that specifically extend `LinearOpMode` (including Blocks OpModes) is "linear OpMode".
-    * The preferred way to refer to OpModes that specifically extend `OpMode` directly is "iterative OpMode".
+    * The preferred way to refer to OpModes that specifically linkage `LinearOpMode` (including Blocks OpModes) is "linear OpMode".
+    * The preferred way to refer to OpModes that specifically linkage `OpMode` directly is "iterative OpMode".
 * Overhauls `OpMode` and `LinearOpMode` Javadoc comments to be easier to read and include more detail.
 * Makes minor enhancements to Java samples
     * Javadoc comments in samples that could be rendered badly in Android Studio have been converted to standard multi-line comments

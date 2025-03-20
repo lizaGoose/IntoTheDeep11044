@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.AUTO_COEFFICIENTS;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.COEFFICIENTS;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.HANG;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.MAX_POSITION;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.MIN_POSITION;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.TRANSFER;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.TRANSFER_CLOSER;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.AUTO_COEFFICIENTS;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.COEFFICIENTS;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.HANG;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.MAX_POSITION;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.MIN_POSITION;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.TRANSFER;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.TRANSFER_CLOSER;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-public class Extend {
+public class Linkage {
     OpMode opMode;
     Gamepad gamepad, gamepad2;
     public final DcMotorEx motor;
@@ -34,9 +34,9 @@ public class Extend {
         POWER
     }
 
-    Extend.Mode currentMode = Mode.DRIVER_CONTROL;
+    Linkage.Mode currentMode = Mode.DRIVER_CONTROL;
 
-    public Extend(OpMode opMode) {
+    public Linkage(OpMode opMode) {
         this.opMode = opMode;
         gamepad = opMode.gamepad1;
         gamepad2 = opMode.gamepad2;

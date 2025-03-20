@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.firstinspires.ftc.teamcode.camera.AnalyzedSample;
 import org.firstinspires.ftc.teamcode.camera.AutoCamera;
 import org.firstinspires.ftc.teamcode.camera.SampleColor;
@@ -16,7 +15,7 @@ import org.firstinspires.ftc.teamcode.hardware.StickyKeys;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 import org.firstinspires.ftc.teamcode.modules.Claw;
 import org.firstinspires.ftc.teamcode.modules.Differential;
-import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
@@ -37,13 +36,13 @@ public class InverseKinematicsCameraTest extends OpMode {
     public static double PICK_UP_CLOSE_AFTER = 100;
     public static double PICK_UP_LIFT_AFTER = 200;
     public static double EXTEND_MIN_ERROR = 20;
-    public static double X = 25.3 - 83.76641;
-    public static double Y = 0;
-    public static double Z = 127.45;
+    private static final double X = 25.3 - 83.76641;
+    private static final double Y = 0;
+    private static final double Z = 127.45;
     public static double PICK_UP_LIFT_OFFSET = 20;
     public static double HAND_COEFF = 0.01;
 
-    private Extend extend;
+    private Linkage linkage;
     private Differential differential;
     private Perkid perkid;
     private Hand hand;
@@ -70,13 +69,14 @@ public class InverseKinematicsCameraTest extends OpMode {
 
     @Override
     public void init() {
-        extend = new Extend(this);
+        linkage = new Linkage(this);
         differential = new Differential(this);
         perkid = new Perkid(this);
         hand = new Hand(this);
         claw = new Claw(this);
         camera = new AutoCamera(this);
         camera.operatorControlRed();
+        camera.startCamera();
         lift = new Lift(this);
         scorerPerkid = new ScorerPerkid(this);
         stickyKeys = new StickyKeys();
@@ -87,7 +87,7 @@ public class InverseKinematicsCameraTest extends OpMode {
         lift.setSpecimen();
         scorerPerkid.scoreSpecimen();
 
-        kinematicsResult = ClawCalculation.inverseKinematics(X, Y, Z);
+        kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, Y, Z);
         dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
     }
@@ -104,9 +104,9 @@ public class InverseKinematicsCameraTest extends OpMode {
 
         if (stickyKeys.triangle) {
             state = State.AIMING;
-            kinematicsResult = ClawCalculation.inverseKinematics(X, sample.x, sample.y);
+            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, sample.x, sample.y);
             if (!kinematicsResult.contains(Double.NaN)) {
-                extend.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
+                linkage.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
                 hand.setAngle(Math.toDegrees(kinematicsResult.get(2)));
                 differential.setAngleRotation(-91, sample.angle - Math.toDegrees(kinematicsResult.get(2)));
@@ -116,9 +116,9 @@ public class InverseKinematicsCameraTest extends OpMode {
         }
 
         if (stickyKeys.circle) {
-            kinematicsResult = ClawCalculation.inverseKinematics(X, sample.x, sample.y);
+            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, sample.x, sample.y);
             if (!kinematicsResult.contains(Double.NaN)) {
-                extend.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
+                linkage.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
                 hand.setAngle(Math.toDegrees(kinematicsResult.get(2)));
                 differential.setAngleRotation(-91, sample.angle - Math.toDegrees(kinematicsResult.get(2)));
@@ -127,7 +127,7 @@ public class InverseKinematicsCameraTest extends OpMode {
         }
         if (gamepad1.circle) {
             if (!kinematicsResult.contains(Double.NaN)) {
-                extend.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
+                linkage.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
                 hand.setAngle(Math.toDegrees(kinematicsResult.get(2)));
                 differential.setAngleRotation(-91, targetSample.angle - Math.toDegrees(kinematicsResult.get(2)));
@@ -135,9 +135,9 @@ public class InverseKinematicsCameraTest extends OpMode {
         }
 
         if (gamepad1.cross) {
-            kinematicsResult = ClawCalculation.inverseKinematics(X, sample.x, sample.y);
+            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, sample.x, sample.y);
             if (!kinematicsResult.contains(Double.NaN)) {
-                extend.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
+                linkage.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
                 hand.setAngle(Math.toDegrees(kinematicsResult.get(2)));
                 differential.setAngleRotation(-91, sample.angle - Math.toDegrees(kinematicsResult.get(2)));
@@ -145,15 +145,15 @@ public class InverseKinematicsCameraTest extends OpMode {
             }
         }
 
-        if (state == State.AIMING && Math.abs(extend.getPosition() - extend.getReference()) < EXTEND_MIN_ERROR) {
+        if (state == State.AIMING && Math.abs(linkage.getPosition() - linkage.getReference()) < EXTEND_MIN_ERROR) {
             state = State.AIM;
         }
 
         if (state == State.AIM) {
             state = State.PICKUP;
-            kinematicsResult = ClawCalculation.inverseKinematics(X - PICK_UP_OFFSET, targetSample.x, targetSample.y);
+            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X - PICK_UP_OFFSET, targetSample.x, targetSample.y);
             if (!kinematicsResult.contains(Double.NaN)) {
-                extend.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
+                linkage.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
                 hand.setAngle(Math.toDegrees(kinematicsResult.get(2)));
                 differential.setAngleRotation(-91, targetSample.angle - Math.toDegrees(kinematicsResult.get(2)));
@@ -167,9 +167,9 @@ public class InverseKinematicsCameraTest extends OpMode {
             } else if (pickUpDelta < PICK_UP_LIFT_AFTER){
                 claw.close();
             } else {
-                kinematicsResult = ClawCalculation.inverseKinematics(X + PICK_UP_LIFT_OFFSET, targetSample.x, targetSample.y);
+                kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X + PICK_UP_LIFT_OFFSET, targetSample.x, targetSample.y);
                 if (!kinematicsResult.contains(Double.NaN)) {
-                    extend.setPositionMillimeters(kinematicsResult.get(0));
+                    linkage.setPositionMillimeters(kinematicsResult.get(0));
                     perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
                     hand.setAngle(Math.toDegrees(kinematicsResult.get(2)));
                     differential.setAngleRotation(-91, targetSample.angle - Math.toDegrees(kinematicsResult.get(2)));
@@ -182,21 +182,21 @@ public class InverseKinematicsCameraTest extends OpMode {
 
         if (gamepad1.square) {
             state = State.IDLE;
-            kinematicsResult = ClawCalculation.inverseKinematics(X, Y, Z);
+            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, Y, Z);
             if (!kinematicsResult.contains(Double.NaN)) {
-                extend.setDirectPower(-0.5);
-                if (extend.getPosition() < 0) {
-                    extend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    extend.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                linkage.setDirectPower(-0.5);
+                if (linkage.getPosition() < 0) {
+                    linkage.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    linkage.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 }
-                extend.setPositionMillimeters(kinematicsResult.get(0));
+                linkage.setPositionMillimeters(kinematicsResult.get(0));
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
                 hand.setAngle(Math.toDegrees(kinematicsResult.get(2)));
                 differential.setAngleRotation(Math.toDegrees(kinematicsResult.get(3)), 0);
                 claw.open();
             }
         } else {
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         lift.setSpecimen();
@@ -206,9 +206,9 @@ public class InverseKinematicsCameraTest extends OpMode {
 
         telemetry.addData("lift", lift.getPosition());
         telemetry.addData("lift_reference", lift.getReference());
-        telemetry.addData("extend_mm", extend.getPositionMillimeters());
-        telemetry.addData("extend_pos", extend.getPosition());
-        telemetry.addData("extend_target", extend.getReference());
+        telemetry.addData("extend_mm", linkage.getPositionMillimeters());
+        telemetry.addData("extend_pos", linkage.getPosition());
+        telemetry.addData("extend_target", linkage.getReference());
         telemetry.addData("d0", kinematicsResult.get(0));
         telemetry.addData("diff_rot", targetSample.angle - Math.toDegrees(kinematicsResult.get(2)));
         telemetry.addData("theta1", Math.toDegrees(kinematicsResult.get(1)));

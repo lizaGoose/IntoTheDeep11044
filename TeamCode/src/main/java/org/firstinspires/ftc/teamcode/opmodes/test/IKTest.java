@@ -33,7 +33,7 @@ public class IKTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            List<Double> result = ClawCalculation.inverseKinematics(x, y, z);
+            List<Double> result = ClawCalculation.inverseKinematics_noAngle(x, y, z);
 
             //perkid.setAngle(result.get(1));
 

@@ -60,7 +60,7 @@ import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.modules.Claw;
 import org.firstinspires.ftc.teamcode.modules.Differential;
-import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
@@ -101,7 +101,7 @@ public class TwoDriveClaw extends LinearOpMode {
     private Hand hand;
     private Differential diff;
     private Claw claw;
-    private Extend extend;
+    private Linkage linkage;
     private Lift lift;
     private ScorerLinkage scorerLinkage;
     private DistanceSensor distInClaw;
@@ -168,7 +168,7 @@ public class TwoDriveClaw extends LinearOpMode {
                     // GO TO RIGHT
                     .waitForAt(5, WAIT_AT_RIGHT_SAMPLE + 4 * DEBUG_WAIT, ANGLE_AT_RIGHT_SAMPLE)
                     .addTimeMarker(0, () -> {
-                        extend.setReference(EXTEND_RIGHT_SAMPLE);
+                        linkage.setReference(EXTEND_RIGHT_SAMPLE);
                         hand.setPosition(HAND_POSITION);
                         double rotation = ANGLE_AT_RIGHT_SAMPLE + hand.getAngle() + 90 + DIFFERENTIAL_ROTATION;
                         diff.aimAngle(rotation);
@@ -195,7 +195,7 @@ public class TwoDriveClaw extends LinearOpMode {
                     // GO TO HUMAN
                     .addTurnMarker(5, -90)
                     .addSpatialMarker(5 + POINT_RIGHT_SIDE_DROP, () -> {
-                        extend.setReference(EXTEND_TEMP_CLOSED);
+                        linkage.setReference(EXTEND_TEMP_CLOSED);
                         hand.dropOverRightSide();
                         perkid.dropOverRightSide();
                         diff.dropOverRightSide();
@@ -207,7 +207,7 @@ public class TwoDriveClaw extends LinearOpMode {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .addSpatialMarker(5 + POINT_RETRACT_EXTEND, () -> {
-                        extend.setReference(0);
+                        linkage.setReference(0);
                     })
                     .waitForAt(6, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_CLAW_RELEASE, () -> {
@@ -324,8 +324,8 @@ public class TwoDriveClaw extends LinearOpMode {
         scorerLinkage.retract();
 
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("extend_reference", extend.getReference());
-        packet.put("extend_position", extend.getPosition());
+        packet.put("extend_reference", linkage.getReference());
+        packet.put("extend_position", linkage.getPosition());
         dashboard.sendTelemetryPacket(packet);
 
         waitForStart();
@@ -345,13 +345,13 @@ public class TwoDriveClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
 
             packet = new TelemetryPacket();
-            packet.put("extend_reference", extend.getReference());
-            packet.put("extend_position", extend.getPosition());
+            packet.put("extend_reference", linkage.getReference());
+            packet.put("extend_position", linkage.getPosition());
             dashboard.sendTelemetryPacket(packet);
 
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
         // -31.362
 
@@ -362,13 +362,13 @@ public class TwoDriveClaw extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             packet = new TelemetryPacket();
-            packet.put("extend_reference", extend.getReference());
-            packet.put("extend_position", extend.getPosition());
+            packet.put("extend_reference", linkage.getReference());
+            packet.put("extend_position", linkage.getPosition());
             dashboard.sendTelemetryPacket(packet);
 
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         /* ***************** START 2ND SPECIMEN CYCLE ***************** */
@@ -392,7 +392,7 @@ public class TwoDriveClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -402,7 +402,7 @@ public class TwoDriveClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START 3ND SPECIMEN CYCLE **************************************************
@@ -431,7 +431,7 @@ public class TwoDriveClaw extends LinearOpMode {
             }
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -441,7 +441,7 @@ public class TwoDriveClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START 4TH SPECIMEN CYCLE **************************************************
@@ -470,7 +470,7 @@ public class TwoDriveClaw extends LinearOpMode {
             }
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -480,7 +480,7 @@ public class TwoDriveClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START 5TH SPECIMEN CYCLE **************************************************
@@ -509,7 +509,7 @@ public class TwoDriveClaw extends LinearOpMode {
             }
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -519,7 +519,7 @@ public class TwoDriveClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START YELLOW STUFF **************************************************
@@ -540,7 +540,7 @@ public class TwoDriveClaw extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
     }
@@ -559,7 +559,7 @@ public class TwoDriveClaw extends LinearOpMode {
         diff = new Differential(this);
         claw = new Claw(this);
 
-        extend = new Extend(this);
+        linkage = new Linkage(this);
         distInClaw = hardwareMap.get(DistanceSensor.class, "ScorClawDist");
         frontSensor = hardwareMap.get(DigitalChannel.class, "DistanceFront");
 

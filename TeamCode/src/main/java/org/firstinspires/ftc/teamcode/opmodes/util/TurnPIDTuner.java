@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.auto.Drive;
 
 @Config
@@ -15,7 +15,7 @@ public class TurnPIDTuner extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Drive drive = new Drive(hardwareMap);
-        Extend extend = new Extend(this);
+        Linkage linkage = new Linkage(this);
 
         waitForStart();
 
@@ -23,7 +23,7 @@ public class TurnPIDTuner extends LinearOpMode {
             drive.setReference(new Pose2d(0, 0, Math.toRadians(ANGLE)));
             drive.updateLocalizer();
             drive.toPoint();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
     }
 }

@@ -7,13 +7,11 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.PO
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_START;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_BASKET;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_1ST;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_2ND;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_3RD;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_4TH;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_5TH;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DIFF_ROTATION_MIDDLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DIST_SCOR_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.FORCE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.LIFT_SCORE;
@@ -73,7 +71,7 @@ import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.modules.Claw;
 import org.firstinspires.ftc.teamcode.modules.Differential;
-import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
@@ -130,7 +128,7 @@ public class SubThreeClaw extends LinearOpMode {
     private Hand hand;
     private Differential diff;
     private Claw claw;
-    private Extend extend;
+    private Linkage linkage;
     private Lift lift;
     private ScorerLinkage scorerLinkage;
     private DistanceSensor distInClaw;
@@ -214,7 +212,7 @@ public class SubThreeClaw extends LinearOpMode {
                     // MIDDLE SAMPLE -----------------------------
                     .waitForAt(1, WAIT_MIDDLE_PICKUP, -90)
                     .addTimeMarker(0, true, () -> {
-                        extend.setReference(EXTEND_MIDDLE_SAMPLE);
+                        linkage.setReference(EXTEND_MIDDLE_SAMPLE);
                         hand.setPosition(HAND_MIDDLE);
                         double rotation = hand.getAngle();
                         diff.aimAngle(rotation);
@@ -245,7 +243,7 @@ public class SubThreeClaw extends LinearOpMode {
                         diff.dropOverRightSide();
                     })
                     .addTimeMarker(WAIT_START_RETRACT, true, () -> {
-                        extend.setReference(0);
+                        linkage.setReference(0);
                     })
                     .addTimeMarker(WAIT_RELEASE_SAMPLE, true, () -> {
                         claw.open();
@@ -253,7 +251,7 @@ public class SubThreeClaw extends LinearOpMode {
                     // LEFT SAMPLE -------------------------------
                     .waitForAt(1, WAIT_LEFT_PICKUP, ANGLE_LEFT)
                     .addTimeMarker(0, true, () -> {
-                        extend.setReference(EXTEND_LEFT_SAMPLE);
+                        linkage.setReference(EXTEND_LEFT_SAMPLE);
                         hand.setPosition(HAND_LEFT);
                         double rotation = ANGLE_LEFT + 90 + hand.getAngle();
                         diff.aimAngle(rotation);
@@ -284,7 +282,7 @@ public class SubThreeClaw extends LinearOpMode {
                         diff.dropOverRightSide();
                     })
                     .addTimeMarker(WAIT_START_RETRACT, true, () -> {
-                        extend.setReference(0);
+                        linkage.setReference(0);
                     })
                     .addTimeMarker(WAIT_RELEASE_SAMPLE, true, () -> {
                         claw.open();
@@ -292,7 +290,7 @@ public class SubThreeClaw extends LinearOpMode {
                     // RIGHT SAMPLE --------------------------------
                     .waitForAt(1, WAIT_RIGHT_PICKUP, ANGLE_RIGHT)
                     .addTimeMarker(0, true, () -> {
-                        extend.setReference(EXTEND_RIGHT_SAMPLE);
+                        linkage.setReference(EXTEND_RIGHT_SAMPLE);
                         hand.setPosition(HAND_RIGHT);
                         double rotation = ANGLE_RIGHT + 90 + hand.getAngle();
                         diff.aimAngle(rotation);
@@ -323,7 +321,7 @@ public class SubThreeClaw extends LinearOpMode {
                         diff.dropOverRightSide();
                     })
                     .addTimeMarker(WAIT_START_RETRACT, true, () -> {
-                        extend.setReference(0);
+                        linkage.setReference(0);
                     })
                     .addTimeMarker(WAIT_RELEASE_SAMPLE, true, () -> {
                         claw.open();
@@ -332,7 +330,7 @@ public class SubThreeClaw extends LinearOpMode {
                     // GO TO HUMAN
                     .addTurnMarker(1, -90)
                     .addSpatialMarker(1 + POINT_RIGHT_SIDE_DROP, () -> {
-                        extend.setReference(EXTEND_TEMP_CLOSED);
+                        linkage.setReference(EXTEND_TEMP_CLOSED);
                         hand.dropOverRightSide();
                         perkid.dropOverRightSide();
                         diff.dropOverRightSide();
@@ -344,7 +342,7 @@ public class SubThreeClaw extends LinearOpMode {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .addSpatialMarker(1 + POINT_RETRACT_EXTEND, () -> {
-                        extend.setReference(0);
+                        linkage.setReference(0);
                     })
                     .waitForAt(2, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_CLAW_RELEASE, () -> {
@@ -461,8 +459,8 @@ public class SubThreeClaw extends LinearOpMode {
         scorerLinkage.retract();
 
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("extend_reference", extend.getReference());
-        packet.put("extend_position", extend.getPosition());
+        packet.put("extend_reference", linkage.getReference());
+        packet.put("extend_position", linkage.getPosition());
         dashboard.sendTelemetryPacket(packet);
 
         waitForStart();
@@ -482,13 +480,13 @@ public class SubThreeClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
 
             packet = new TelemetryPacket();
-            packet.put("extend_reference", extend.getReference());
-            packet.put("extend_position", extend.getPosition());
+            packet.put("extend_reference", linkage.getReference());
+            packet.put("extend_position", linkage.getPosition());
             dashboard.sendTelemetryPacket(packet);
 
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
         // -31.362
 
@@ -499,13 +497,13 @@ public class SubThreeClaw extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             packet = new TelemetryPacket();
-            packet.put("extend_reference", extend.getReference());
-            packet.put("extend_position", extend.getPosition());
+            packet.put("extend_reference", linkage.getReference());
+            packet.put("extend_position", linkage.getPosition());
             dashboard.sendTelemetryPacket(packet);
 
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         /* ***************** START 2ND SPECIMEN CYCLE ***************** */
@@ -529,7 +527,7 @@ public class SubThreeClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -539,7 +537,7 @@ public class SubThreeClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START 3ND SPECIMEN CYCLE **************************************************
@@ -568,7 +566,7 @@ public class SubThreeClaw extends LinearOpMode {
             }
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -578,7 +576,7 @@ public class SubThreeClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START 4TH SPECIMEN CYCLE **************************************************
@@ -607,7 +605,7 @@ public class SubThreeClaw extends LinearOpMode {
             }
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -617,7 +615,7 @@ public class SubThreeClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START 5TH SPECIMEN CYCLE **************************************************
@@ -646,7 +644,7 @@ public class SubThreeClaw extends LinearOpMode {
             }
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         clock.reset();
@@ -656,7 +654,7 @@ public class SubThreeClaw extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
         }
 
         // ********************* START YELLOW STUFF **************************************************
@@ -679,7 +677,7 @@ public class SubThreeClaw extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
     }
@@ -698,7 +696,7 @@ public class SubThreeClaw extends LinearOpMode {
         diff = new Differential(this);
         claw = new Claw(this);
 
-        extend = new Extend(this);
+        linkage = new Linkage(this);
         distInClaw = hardwareMap.get(DistanceSensor.class, "ScorClawDist");
         frontSensor = hardwareMap.get(DigitalChannel.class, "DistanceFront");
 

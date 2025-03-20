@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.modules.Claw;
 import org.firstinspires.ftc.teamcode.modules.Differential;
 import org.firstinspires.ftc.teamcode.modules.DriveModule;
-import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
 import org.firstinspires.ftc.teamcode.modules.ScorerClaw;
@@ -52,7 +52,7 @@ public class DriveModuleTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DriveModule driveModule = new DriveModule(hardwareMap);
         scorerDifferential = new ScorerDifferential(this);
-        Extend extend = new Extend(this);
+        Linkage linkage = new Linkage(this);
         scorerClaw = new ScorerClaw(this);
         perkid = new Perkid(this);
         TrajectoryBuilder builder;
@@ -71,7 +71,7 @@ public class DriveModuleTest extends LinearOpMode {
                 driveModule.followTrajectory(traj);
             }
             driveModule.update(gamepad1);
-            extend.teleop();
+            linkage.teleop();
         }
     }
 

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.camera.AutoCamera;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 import org.firstinspires.ftc.teamcode.modules.Differential;
-import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
@@ -22,7 +22,7 @@ public class InverseKinematicsTest extends OpMode {
     public static double Y = 0;
     public static double Z = 127.45;
 
-    private Extend extend;
+    private Linkage linkage;
     private Differential differential;
     private Perkid perkid;
     private Hand hand;
@@ -32,7 +32,7 @@ public class InverseKinematicsTest extends OpMode {
 
     @Override
     public void init() {
-        extend = new Extend(this);
+        linkage = new Linkage(this);
         differential = new Differential(this);
         perkid = new Perkid(this);
         hand = new Hand(this);
@@ -43,18 +43,18 @@ public class InverseKinematicsTest extends OpMode {
 
     @Override
     public void loop() {
-        List<Double> res = ClawCalculation.inverseKinematics(X, Y, Z);
+        List<Double> res = ClawCalculation.inverseKinematics_noAngle(X, Y, Z);
 
         if (!res.contains(null)){
-            extend.setPositionMillimeters(res.get(0));
+            linkage.setPositionMillimeters(res.get(0));
             perkid.setAngle(Math.toDegrees(res.get(1)));
             hand.setAngle(Math.toDegrees(res.get(2)));
             differential.setAngleRotation(Math.toDegrees(res.get(3)), 0);
         }
 
-        extend.PIDControl();
+        linkage.PIDControl();
 
-        telemetry.addData("extend", extend.getPositionMillimeters());
+        telemetry.addData("extend", linkage.getPositionMillimeters());
         telemetry.addData("d0", res.get(0));
         telemetry.addData("theta1", Math.toDegrees(res.get(1)));
         telemetry.addData("theta2", Math.toDegrees(res.get(2)));

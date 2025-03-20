@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
 import org.firstinspires.ftc.teamcode.camera.AutoCamera;
-import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 
 @Config
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 public class TestKinematics extends LinearOpMode {
  //   public KinematicsCameraVision kinematics;
     public boolean isPressed;
-    public Extend extend;
+    public Linkage linkage;
     public Hand hand;
     public AutoCamera cam;
     public ScorerPerkid scorerPerkid;
@@ -27,7 +27,7 @@ public class TestKinematics extends LinearOpMode {
        // kinematics = new KinematicsCameraVision(this);
         cam = new AutoCamera(this);
         Perkid perkid = new Perkid(this);
-        extend = new Extend(this);
+        linkage = new Linkage(this);
         hand = new Hand(this);
         Claw claw = new Claw(this);
         Lift lift = new Lift(this);
@@ -39,11 +39,11 @@ public class TestKinematics extends LinearOpMode {
         while (opModeIsActive()) {
             if (gamepad1.triangle){
                 cam.operatorControlRed();
-                extend.setReference(cam.kinematics(lift.getPosition(), scorerPerkid.getPos()).getY());
+                linkage.setReference(cam.kinematics(lift.getPosition(), scorerPerkid.getPos()).getY());
             }
            // extend.motor.setPower(gamepad1.left_stick_y);
             scorerPerkid.scoreSpecimen();
-            extend.PIDControl();
+            linkage.PIDControl();
           //  cam.operatorControlRed();
             lift.setReference(810*gamepad1.right_stick_y);
             lift.PIDControl();
@@ -54,7 +54,7 @@ public class TestKinematics extends LinearOpMode {
             telemetry.addData("zSample", cam.kinematics(lift.getPosition(), scorerPerkid.getPos()).getZ());
             telemetry.addData("a", cam.a);
             telemetry.addData("h", lift.getPosition() *cam.ticksPerInchLift);
-            telemetry.addData("ExtendPos", extend.motor.getCurrentPosition());
+            telemetry.addData("ExtendPos", linkage.motor.getCurrentPosition());
             telemetry.addData("Xp", cam.P.getX());
             telemetry.addData("Yp", cam.P.getY());
             telemetry.addData("Zp", cam.P.getZ());

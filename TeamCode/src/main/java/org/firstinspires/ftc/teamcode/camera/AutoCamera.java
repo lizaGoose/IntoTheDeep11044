@@ -70,11 +70,7 @@ public class AutoCamera {
     }
 
     public void stopCamera() {
-        cam.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
-            @Override
-            public void onClosed
-            }
-        })
+        cam.closeCameraDeviceAsync(() -> {});
     }
 
     public List<Double> AutonomousRecognition() {

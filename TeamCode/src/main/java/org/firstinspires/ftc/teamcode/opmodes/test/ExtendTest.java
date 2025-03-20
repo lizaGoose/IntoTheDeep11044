@@ -8,13 +8,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 
 @Config
 @TeleOp(group = "test")
 public class ExtendTest extends OpMode {
     private Servo leftServo, rightServo;
-    private Extend extend;
+    private Linkage linkage;
     private FtcDashboard dashboard;
     private MultipleTelemetry mulTelemetry;
     public static double reference = 0;
@@ -23,7 +23,7 @@ public class ExtendTest extends OpMode {
 
     @Override
     public void init() {
-        extend = new Extend(this);
+        linkage = new Linkage(this);
         dashboard = FtcDashboard.getInstance();
         mulTelemetry = new MultipleTelemetry(dashboard.getTelemetry(), telemetry);
         leftServo = hardwareMap.get(Servo.class, "left_vertical_servo");
@@ -40,14 +40,14 @@ public class ExtendTest extends OpMode {
 //        extend.PIDControl();
 
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("motor_pos", extend.motor.getCurrentPosition());
-        packet.put("reference", extend.getReference());
-        packet.put("position_mm", extend.getPositionMillimeters());
+        packet.put("motor_pos", linkage.motor.getCurrentPosition());
+        packet.put("reference", linkage.getReference());
+        packet.put("position_mm", linkage.getPositionMillimeters());
         dashboard.sendTelemetryPacket(packet);
 
-        mulTelemetry.addData("motor_pos", extend.motor.getCurrentPosition());
-        mulTelemetry.addData("reference", extend.getReference());
-        mulTelemetry.addData("position_mm", extend.getPositionMillimeters());
+        mulTelemetry.addData("motor_pos", linkage.motor.getCurrentPosition());
+        mulTelemetry.addData("reference", linkage.getReference());
+        mulTelemetry.addData("position_mm", linkage.getPositionMillimeters());
         mulTelemetry.update();
     }
 }
