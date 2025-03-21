@@ -44,8 +44,6 @@ public class AutoCamera {
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources().getIdentifier("cameraMonitorViewId",
                         "id", hardwareMap.appContext.getPackageName());
-        cam = OpenCvCameraFactory.getInstance()
-                .createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         cam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         FtcDashboard.getInstance().startCameraStream(cam, 60);
 

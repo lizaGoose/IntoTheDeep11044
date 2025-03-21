@@ -167,8 +167,8 @@ public class StateMachine {
             buildOneCycle(builder, 0);
             for (int i = 0; i < 8; ++i) {
                 fullCycle[i] = builder
-                        .plusPoint(3, new Vector2d(DELTA * i, 0))
-                        .plusPoint(4, new Vector2d(DELTA * i, 0))
+                        .plusPoint(3, new Vector2d(DELTA, 0))
+                        .plusPoint(4, new Vector2d(DELTA, 0))
                         .build();
             }
         } catch (IOException e) {
@@ -384,7 +384,7 @@ public class StateMachine {
                     scorerDifferential.currentMode = ScorerDifferential.Mode.AFTER_SCORE_SPEC;
                 } else if (gamepad1.cross) {
                     scorerClaw.currentMode = ScorerClaw.Mode.PICK;
-                } else {
+                } else if (driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL){
                     scorerClaw.currentMode = ScorerClaw.Mode.RELAX;
                 }
 
@@ -849,7 +849,7 @@ public class StateMachine {
 
         public static double SLOWDOWN_FORCE = 0.15;
 
-        public static double DELTA = 0.1;
+        public static double DELTA = -1;
 
         public static double WAIT_END = 200;
         public static int AMOUNT_TO_SCORE = 8;
@@ -876,6 +876,7 @@ public class StateMachine {
                 })
                 .addSpatialMarker(t + POINT_SPECIMEN_START_SCORE, () -> {
                     state = State.SCORE_SPEC;
+                    scorerClaw.currentMode = ScorerClaw.Mode.PICK;
                     fromTransferSpecimenToScore.reset();
 
                     scorerPerkid.scoreSpecimen();
@@ -887,7 +888,6 @@ public class StateMachine {
                 })
                 .addTurnMarker((int) t + 1, -90)
                 .addSpatialMarker(t + 1, () -> {
-                    scorerClaw.currentMode = ScorerClaw.Mode.RELAX;
                     scorerDifferential.currentMode = ScorerDifferential.Mode.AFTER_SCORE_SPEC;
                     driveModule.drive.setForce(1);
                 })

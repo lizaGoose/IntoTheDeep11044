@@ -17,6 +17,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDri
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.POINT_START_EXTENDING_LINKAGE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.POINT_START_RETRACTING_LIFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.SLOWDOWN_POINT_HUMAN;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.SLOWDOWN_POINT_HUMAN_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.WAIT_AT_RIGHT_SAMPLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.WAIT_FOR_INTAKE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.ANGLE_TO_BASKET;
@@ -33,7 +34,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_TO_SCORE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_START_RAISING_LIFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_FORCE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_HUMAN_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_RUNG_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_RUNG_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AFTER_PICK_UP;
@@ -81,7 +81,7 @@ public class TwoDriveClaw extends LinearOpMode {
         public static double ANGLE_AT_RIGHT_SAMPLE = -107.5;
         public static double WAIT_FOR_INTAKE = 500;
 
-        public static double EXTEND_RIGHT_SAMPLE = 170;
+        public static double EXTEND_RIGHT_SAMPLE = 180;
         public static double HAND_POSITION = 0.25;
         public static double DIFFERENTIAL_ROTATION = 5;
 
@@ -89,7 +89,8 @@ public class TwoDriveClaw extends LinearOpMode {
 
         public static double POINT_RIGHT_SIDE_DROP = 0.3;
 
-        public static double SLOWDOWN_POINT_HUMAN = 0.65;
+        public static double SLOWDOWN_POINT_HUMAN = 0.65 + 0.06;
+        public static double SLOWDOWN_POINT_HUMAN_1 = 0.88 + 0.02;
 
         public static double POINT_START_RETRACTING_LIFT = 0.5;
         public static double POINT_START_EXTENDING_LINKAGE = 0.2;

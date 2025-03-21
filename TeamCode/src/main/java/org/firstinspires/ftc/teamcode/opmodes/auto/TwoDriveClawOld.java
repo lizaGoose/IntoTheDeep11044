@@ -74,7 +74,7 @@ import java.io.IOException;
 @Autonomous(name = "Lebron 5+1")
 public class TwoDriveClawOld extends LinearOpMode {
     @Config
-    public static class LebronDriveClawConstants {
+    public static class LebronDriveClawOldConstants {
         public static double WAIT_AT_RIGHT_SAMPLE = 500 + 150 + 650;
         public static double ANGLE_AT_RIGHT_SAMPLE = -107.5;
         public static double WAIT_FOR_INTAKE = 500;

@@ -121,7 +121,7 @@ public class ScorerPerkid {
     static
     class ScorerPerkidConstants {
         public static double OLD_SCOR_SPEC = 0.97;
-        public static double PICK_SPEC = 0.37;
+        public static double PICK_SPEC = 0.38;
         public static double EXTRA_PICK_SPEC = 0.36;
         public static double AIM_SPEC = 0.45;
         public static double DROP_SAMPLE_TO_HUMAN = 0.35;

@@ -20,10 +20,9 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_TO_SCORE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_START_RAISING_LIFT;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_FORCE;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_HUMAN_0;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_HUMAN_1;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_RUNG_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_POINT_RUNG_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AFTER_PICK_UP;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_AT_BASKET;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_DROP_SAMPLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_CLAW_RELEASE;
@@ -31,8 +30,23 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_FOR_SLOWDOWN;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_HOLD_POS_AT_RUNG;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_SPECIMEN_PICK_UP;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.ANGLE_AT_RIGHT_SAMPLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.DEBUG_WAIT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.DIFFERENTIAL_ROTATION;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.EXTEND_RIGHT_SAMPLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.EXTEND_TEMP_CLOSED;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.HAND_POSITION;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.POINT_RETRACT_EXTEND;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.POINT_RIGHT_SIDE_DROP;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.POINT_START_EXTENDING_LINKAGE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.POINT_START_RETRACTING_LIFT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.SLOWDOWN_POINT_HUMAN;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.SLOWDOWN_POINT_HUMAN_1;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.WAIT_AT_RIGHT_SAMPLE;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClaw.LebronDriveClawConstants.WAIT_FOR_INTAKE;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -48,9 +62,9 @@ import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.modules.Claw;
 import org.firstinspires.ftc.teamcode.modules.Differential;
-import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
 import org.firstinspires.ftc.teamcode.modules.ScorerClaw;
 import org.firstinspires.ftc.teamcode.modules.ScorerDifferential;
@@ -59,8 +73,31 @@ import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 
 import java.io.IOException;
 
-@Autonomous(name = "Lebron drive 5+1")
-public class LebronDriveFiveOne extends LinearOpMode {
+@Autonomous(name = "Lebron Three Drive 5+1")
+public class ThreeDriveClawNew extends LinearOpMode {
+    @Config
+    public static class LebronDriveClawConstants {
+        public static double WAIT_AT_RIGHT_SAMPLE = 500 + 150 + 650;
+        public static double ANGLE_AT_RIGHT_SAMPLE = -107.5;
+        public static double WAIT_FOR_INTAKE = 500;
+
+        public static double EXTEND_RIGHT_SAMPLE = 180;
+        public static double HAND_POSITION = 0.25;
+        public static double DIFFERENTIAL_ROTATION = 5;
+
+        public static double EXTEND_TEMP_CLOSED = 100;
+
+        public static double POINT_RIGHT_SIDE_DROP = 0.3;
+
+        public static double SLOWDOWN_POINT_HUMAN = 0.65;
+        public static double SLOWDOWN_POINT_HUMAN_1 = 0.88;
+
+        public static double POINT_START_RETRACTING_LIFT = 0.5;
+        public static double POINT_START_EXTENDING_LINKAGE = 0.2;
+        public static double POINT_RETRACT_EXTEND = 0.8;
+        public static double DEBUG_WAIT = 0;
+    }
+
     private Drive drive;
     private ScorerPerkid scorerPerkid;
     private ScorerDifferential scorerDifferential;
@@ -91,7 +128,7 @@ public class LebronDriveFiveOne extends LinearOpMode {
         Trajectory trajSpecimenToRung3rd, trajRungToSpecimen3rd;
         Trajectory trajSpecimenToRung4th, trajRungToSpecimen4th;
         Trajectory trajSpecimenToRung5th, trajRungToYellowSample;
-        Trajectory trajSampleToBasket;
+        Trajectory trajSampleToBasket, trajBasketToPark;
         try {
             trajToRungs = drive.buildTrajectory("traj10transposed.json")
                     .addTurnMarker(0, -90)
@@ -108,7 +145,7 @@ public class LebronDriveFiveOne extends LinearOpMode {
                     .plusPoint(2, new Vector2d(0, DELTA_1ST))
                     .plusPoint(3, new Vector2d(0, DELTA_1ST))
                     .build();
-            trajToThree = drive.buildTrajectory("auto_3_samp_drive.json")
+            trajToThree = drive.buildTrajectory("v2_auto_3_samp_drive.json")
                     .addTurnMarker(0, -90)
                     .plusPoint(0, new Vector2d(0, DELTA_1ST))
                     .plusPoint(1, new Vector2d(0, DELTA_1ST))
@@ -121,7 +158,6 @@ public class LebronDriveFiveOne extends LinearOpMode {
                         scorerPerkid.pickSpecimen();
                         scorerDifferential.pickSpecimen();
                         scorerLinkage.retract();
-                        scorerClaw.open();
                     })
                     .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
                         lift.setReference(0);
@@ -140,16 +176,16 @@ public class LebronDriveFiveOne extends LinearOpMode {
                     .addTurnMarker(6, -90)
                     // GO TO HUMAN
                     .addTurnMarker(7, -90)
-                    .addSpatialMarker(7 + SLOWDOWN_POINT_HUMAN_0, () -> {
+                    .addSpatialMarker(7 + SLOWDOWN_POINT_HUMAN, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .waitForAt(8, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_CLAW_RELEASE, () -> {
                         scorerClaw.open();
-                        DEBUG_END_FLAG = true; // TODO: REMOVE PLS
                     })
                     .build();
             buildSpecimenToRung = drive.buildTrajectory("traj13transposed.json")
+                    .waitForAt(0, WAIT_AFTER_PICK_UP, -90)
                     .addSpatialMarker(0, () -> {
                         scorerDifferential.scoreSpecimen();
                     })
@@ -187,8 +223,8 @@ public class LebronDriveFiveOne extends LinearOpMode {
                         scorerDifferential.liftAfterScoreSpecimen();
                     })
                     .addSpatialMarker(INITIAL, () -> {
-                        scorerPerkid.pickSpecimen();
-                        scorerDifferential.pickSpecimen();
+                        scorerPerkid.pushIntoSpecimen();
+                        scorerDifferential.pushIntoSpecimen();
                         scorerClaw.open();
                         scorerLinkage.retract();
                     })
@@ -215,33 +251,48 @@ public class LebronDriveFiveOne extends LinearOpMode {
                     .plusPoint(0, new Vector2d(DELTA_5TH, 0))
                     .plusPoint(1, new Vector2d(DELTA_5TH, 0))
                     .build();
-            trajSampleToBasket = drive.buildTrajectory("traj19.json")
+            trajSampleToBasket = drive.buildTrajectory("sample_to_basket.json")
                     .addTurnMarker(0, -180)
                     .addSpatialMarker(POINT_PERKID_TO_SCORE, () -> {
                         scorerPerkid.scoreSample();
-                        scorerDifferential.scoreSample();
+                        scorerDifferential.slamDunkSample();
                     })
                     .addSpatialMarker(POINT_START_RAISING_LIFT, () -> {
                         lift.setReference(LIFT_SCORE);
                     })
                     .addSpatialMarker(POINT_BASKET_SLOWDOWN, () -> {
-//                        drive.setForce(SLOWDOWN_FORCE);
+                        drive.setForce(SLOWDOWN_FORCE);
+                        scorerLinkage.lebron();
                     })
-                    .waitForAt(1, WAIT_AT_BASKET, -180)
-                    .addTimeMarker(WAIT_DROP_SAMPLE - 100, () -> {
+                    .waitForAt(1, WAIT_AT_BASKET, ANGLE_TO_BASKET)
+                    .addTimeMarker(WAIT_DROP_SAMPLE, () -> {
                         scorerDifferential.slamDunkSample();
                     })
-                    .addTimeMarker(WAIT_DROP_SAMPLE, () -> {
+                    .addTimeMarker(WAIT_DROP_SAMPLE + 50, () -> {
                         scorerClaw.open();
                     })
                     .addTimeMarker(WAIT_FOR_SLOWDOWN, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
-                    .waitForAt(2, 400, ANGLE_TO_BASKET)
-                    .addTimeMarker(0, () -> {
+                    .build();
+            trajBasketToPark = drive.buildTrajectory("basket_to_park.json")
+                    .addTurnMarker(0, -180)
+                    .addSpatialMarker(0, () -> {
+                        drive.setForce(FORCE);
+                    })
+                    .addSpatialMarker(POINT_START_EXTENDING_LINKAGE, () -> {
+                        linkage.setReference(260);
+                    })
+                    .addSpatialMarker(POINT_START_RETRACTING_LIFT, () -> {
                         scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
+                        scorerLinkage.retract();
+                        scorerClaw.open();
+                    })
+                    .addSpatialMarker(POINT_START_RETRACTING_LIFT + 0.1, () -> {
                         lift.setReference(0);
                     })
+                    .waitForAt(1, 500, -180)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -456,8 +507,6 @@ public class LebronDriveFiveOne extends LinearOpMode {
 
         // ********************* START YELLOW STUFF **************************************************
 
-        DEBUG_END_FLAG = true;
-
         clock.reset();
         pickedUp = false;
         while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
@@ -476,6 +525,16 @@ public class LebronDriveFiveOne extends LinearOpMode {
             drive.update();
             linkage.PIDControl();
             lift.PIDControl();
+        }
+
+        clock.reset();
+
+        drive.followTrajectory(trajBasketToPark);
+
+        while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
+            lift.PIDControl();
+            drive.update();
+            linkage.PIDControl();
         }
     }
 
