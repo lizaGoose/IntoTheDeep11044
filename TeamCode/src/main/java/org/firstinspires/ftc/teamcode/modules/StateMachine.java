@@ -131,7 +131,8 @@ public class StateMachine {
         RIGHT_SIDE_DROP_SAMPLE,
         RIGHT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS,
         SPECIMEN_TO_INITIAL,
-        START
+        START,
+        PICK_UP_THE_BLOCK_WITH_APPENDIX
     }
 
     public State state = State.START;
@@ -256,6 +257,7 @@ public class StateMachine {
                         claw.currentMode = Claw.Mode.PICK;
                         hand.currentMode = Hand.Mode.RIGHT_SIDE_DROP_SAMPLE;
                         diff.currentMode = Differential.Mode.TRANSFER;
+
                     }
                     scorerPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
                     scorerDifferential.currentMode = ScorerDifferential.Mode.PICK_SPEC;
@@ -434,12 +436,17 @@ public class StateMachine {
                     state = State.PICK_UP_THE_BLOCK;
                     pickedUnpickedTimer.reset();
                 }
+                if(gamepad1.touchpad){
+
+                    state = State.PICK_UP_THE_BLOCK_WITH_APPENDIX;
+                    pickedUnpickedTimer.reset();
+                }
 
                 break;
 
             case LOOK_FOR_BLOCK_SCORSPEC:
                 perkid.currentMode = Perkid.Mode.LOOK;
-
+                diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
                 scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                 hand.currentMode = Hand.Mode.DRIVER_CONTROL;
                 claw.currentMode = Claw.Mode.DROP;
@@ -590,6 +597,46 @@ public class StateMachine {
 
                 if (pickedUnpickedTimer.milliseconds() > 200) {
                     claw.currentMode = Claw.Mode.PICK;
+                    if (pickedUnpickedTimer.milliseconds() >= PICKED_UNPICKED_PICK_BLOCK) {
+                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSABLE;
+                        if (gamepad2.right_stick_y != 0 || gamepad1.cross && !startForgetPosTimer) {
+                            startForgetPosTimer = true;
+                        }
+                        if (!startForgetPosTimer) {
+                            forgetPosTimer.reset();
+                        }
+                        if (forgetPosTimer.milliseconds() >= SET_POS_TO_ZERO_SAMPLE) {
+                            diff.rotation = 0;
+                        }
+                    }
+                }
+
+                if (gamepad2.right_bumper || gamepad1.circle) {
+                    state = State.LOOK_FOR_BLOCK;
+                }
+                if (gamepad2.cross || gamepad1.touchpad) {
+                    startFromClawToClaw = true;
+                }
+                if (startFromClawToClaw) {
+                    claw.currentMode = Claw.Mode.PICK;
+                    startTimerFromClawToClaw = true;
+                }
+                if (!startTimerFromClawToClaw) {
+                    fromClawToClawTimer.reset();
+                }
+                if (startTimerFromClawToClaw && fromClawToClawTimer.milliseconds() >= 300) {
+                    state = State.FROM_CLAW_TO_CLAW;
+                    startedMovingExtendBack = false;
+                }
+                break;
+            case PICK_UP_THE_BLOCK_WITH_APPENDIX:
+
+                perkid.currentMode = Perkid.Mode.PICK_UP;
+                diff.currentMode = Differential.Mode.PICK_UP;
+                scorerDifferential.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
+
+                if (pickedUnpickedTimer.milliseconds() > 200) {
+                    claw.currentMode = Claw.Mode.TRANSFER;
                     if (pickedUnpickedTimer.milliseconds() >= PICKED_UNPICKED_PICK_BLOCK) {
                         perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSABLE;
                         if (gamepad2.right_stick_y != 0 || gamepad1.cross && !startForgetPosTimer) {
