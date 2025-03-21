@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Config
 @TeleOp(group = "util")
@@ -85,7 +86,7 @@ public class TrajectoryEditor extends LinearOpMode {
                             index += 1;
                         }
                     }
-                    chosenFileName = "traj" + index + ".json";
+                    chosenFileName = "tra_buffer.json";
                 } else {
                     chosenFileName = CUSTOM_FILE_NAME;
                 }

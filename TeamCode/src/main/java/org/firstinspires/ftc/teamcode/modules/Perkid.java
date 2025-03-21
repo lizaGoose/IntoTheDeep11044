@@ -129,7 +129,7 @@ public class Perkid {
         public static double VERTICAL_POS = 0.7;
         public static double STRAIGHT_POS = 0.47;
 
-        public static double TRANSFER_POS = 0.78;
+        public static double TRANSFER_POS = 0.76;
         public static double LOOK_POS = 0.48;
         public static double AIM_AT_SPIKE = 0.55;
         public static double TRANSFER_FROM_SUBMERSABLE = 0.53;

@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDi
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.GET_FROM_CLAW;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.LEBRON;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.MOVE_SPECIMENS;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.OLD_SCORE_SPEC;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.PICK_SPECIMEN;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.PUSH_INTO_SPECIMEN;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.SCORE_SAMP;
@@ -35,7 +36,8 @@ public class ScorerDifferential {
         TRANSFER_SPEC,
         RELAX,
         MOVE_SPECIMENS,
-        AIM_POS
+        AIM_POS,
+        OLD_SCORE_SPEC
     }
 
     Mode currentMode = Mode.PICK_SPEC;
@@ -75,6 +77,9 @@ public class ScorerDifferential {
                 break;
             case AFTER_SCORE_SPEC:
                 diff.setPosition(AFTER_SCORE_SPEC);
+                break;
+            case OLD_SCORE_SPEC:
+                diff.setPosition(OLD_SCORE_SPEC);
                 break;
         }
     }
@@ -122,11 +127,13 @@ public class ScorerDifferential {
         public static double PICK_SPECIMEN = 0.8;
         public static double PUSH_INTO_SPECIMEN = 0.8;
         public static double GET_FROM_CLAW = 0.3;
-        public static double SCORE_SAMP = 0.6;
+        public static double SCORE_SAMP = 0.55;
         public static double LEBRON = 0.4;
         public static double SCORE_SPEC = 0.87;
+        public static double OLD_SCORE_SPEC = 0.99;
         public static double AFTER_SCORE_SPEC = 0.83;
         public static double TRANSFER_SPEC = 0.82;
         public static double MOVE_SPECIMENS = 0.9;
+
     }
 }

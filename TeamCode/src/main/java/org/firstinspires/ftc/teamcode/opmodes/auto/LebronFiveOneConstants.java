@@ -72,7 +72,7 @@ public class LebronFiveOneConstants {
 
     public static double POINT_PERKID_TO_SCORE = 0.4;
     public static double POINT_START_RAISING_LIFT = 0.5;
-    public static double WAIT_AT_BASKET = 1000;
+    public static double WAIT_AT_BASKET = 200;
     public static double LIFT_SCORE = 820;
     public static double WAIT_DROP_SAMPLE = 50;
     public static double POINT_BASKET_SLOWDOWN = 0.8;

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules;
 
+import static org.firstinspires.ftc.teamcode.modules.ScorerLinkage.ScorerLinkageConstants.LEBRON;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,6 +14,7 @@ public class ScorerLinkage {
     @Config
     public static class ScorerLinkageConstants {
         public static double RETRACTED = 0.05;
+        public static double LEBRON = 0.445;
         public static double EXTENDED = 0.94;
     }
 
@@ -25,6 +28,10 @@ public class ScorerLinkage {
 
     public void extend() {
         servo.setPosition(ScorerLinkageConstants.EXTENDED);
+    }
+
+    public void lebron() {
+        servo.setPosition(LEBRON);
     }
 
     public void retract() {

@@ -30,8 +30,8 @@ public class ScorerPerkid {
         TRANSFER,
         SCORE_SAMP,
         TRANSFER_SPEC,
-        SCOR_SPEC
-
+        SCOR_SPEC,
+        OLD_SCOR_SPEC
     }
 
     Mode currentMode = Mode.PICK_SPEC;
@@ -66,6 +66,10 @@ public class ScorerPerkid {
             case SCOR_SPEC:
                 left.setPosition(ScorerPerkidConstants.SCOR_SPEC);
                 right.setPosition(ScorerPerkidConstants.SCOR_SPEC);
+                break;
+            case OLD_SCOR_SPEC:
+                left.setPosition(ScorerPerkidConstants.OLD_SCOR_SPEC);
+                right.setPosition(ScorerPerkidConstants.OLD_SCOR_SPEC);
                 break;
         }
     }
@@ -116,12 +120,13 @@ public class ScorerPerkid {
     @Config
     static
     class ScorerPerkidConstants {
+        public static double OLD_SCOR_SPEC = 0.97;
         public static double PICK_SPEC = 0.37;
         public static double EXTRA_PICK_SPEC = 0.36;
         public static double AIM_SPEC = 0.45;
         public static double DROP_SAMPLE_TO_HUMAN = 0.35;
         public static double TRANSFER_POS = 0.5;
-        public static double SCORE_SAMP = 0;
+        public static double SCORE_SAMP = 0.02;
         public static double TRANSFER_SPEC = 0.845;
         public static double SCOR_SPEC = 0.845;
     }
