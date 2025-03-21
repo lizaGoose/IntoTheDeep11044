@@ -300,7 +300,7 @@ public class TwoDriveClaw extends LinearOpMode {
                         drive.setForce(SLOWDOWN_FORCE);
                         scorerLinkage.lebron();
                     })
-                    .waitForAt(1, WAIT_AT_BASKET, -180)
+                    .waitForAt(1, WAIT_AT_BASKET, ANGLE_TO_BASKET)
                     .addTimeMarker(WAIT_DROP_SAMPLE, () -> {
                         scorerDifferential.slamDunkSample();
                     })

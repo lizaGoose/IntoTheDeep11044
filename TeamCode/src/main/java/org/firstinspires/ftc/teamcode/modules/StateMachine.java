@@ -392,9 +392,6 @@ public class StateMachine {
                     autoScoreState = AutoScoreState.INACTIVE;
                 }
 
-                if (gamepad2.square) {
-                    state = State.LOOK_FOR_BLOCK;
-                }
                 if (gamepad2.triangle || gamepad1.triangle) {
                     perekidTimer.reset();
                     state = State.SPECIMEN_TO_INITIAL;
