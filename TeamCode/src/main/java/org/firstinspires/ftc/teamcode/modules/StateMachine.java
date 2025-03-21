@@ -251,6 +251,7 @@ public class StateMachine {
                     if (initialTimer.milliseconds() > WAIT_FOR_INITIAL_STATE) {
                         perkid.currentMode = Perkid.Mode.RELAX;
                         hand.currentMode = Hand.Mode.RELAX;
+                        claw.currentMode = Claw.Mode.PICK;
                     } else {
                         perkid.currentMode = Perkid.Mode.RIGHT_SIDE_DROP_SAMPLE;
                         claw.currentMode = Claw.Mode.PICK;
@@ -299,6 +300,7 @@ public class StateMachine {
             case PICK_SPEC:
                 scorerClaw.currentMode = ScorerClaw.Mode.PICK;
                 scorerDifferential.currentMode = ScorerDifferential.Mode.AIM_POS;
+                claw.currentMode = Claw.Mode.DROP;
                 scorerLinkage.retract();
 
                 if (autoScoreState == AutoScoreState.SCORING && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
@@ -408,6 +410,7 @@ public class StateMachine {
                 }
                 break;
             case SPECIMEN_TO_INITIAL:
+                linkage.setZero();
                 scorerLinkage.retract();
                 scorerPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
 
@@ -483,15 +486,19 @@ public class StateMachine {
                 if (gamepad2.cross) {
                     startFromClawToClaw = true;
                 }
+//                if (gamepad1.triangle) {
+//                    scorerPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
+//                    scorerDifferential.currentMode = ScorerDifferential.Mode.PICK_SPEC;
+//                    if (distInClaw.getDistance(DistanceUnit.MM) >= 17) {
+//                        specimenPickedUp.reset();
+//                    }
+//                    if (specimenPickedUp.milliseconds() > WAIT_UNTIL_SPECIMEN_PICKUP) {
+//                        state = State.PICK_SPEC;
+//                    }
+//                }
                 if (gamepad1.triangle) {
-                    scorerPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
-                    scorerDifferential.currentMode = ScorerDifferential.Mode.PICK_SPEC;
-                    if (distInClaw.getDistance(DistanceUnit.MM) >= 17) {
-                        specimenPickedUp.reset();
-                    }
-                    if (specimenPickedUp.milliseconds() > WAIT_UNTIL_SPECIMEN_PICKUP) {
-                        state = State.PICK_SPEC;
-                    }
+                    perekidTimer.reset();
+                    state = State.SPECIMEN_TO_INITIAL;
                 }
                 if (startFromClawToClaw) {
                     claw.currentMode = Claw.Mode.PICK;
