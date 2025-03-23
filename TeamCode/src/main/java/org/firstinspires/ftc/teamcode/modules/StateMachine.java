@@ -12,6 +12,7 @@ import static org.firstinspires.ftc.teamcode.modules.StateMachine.TeleOpAutomati
 import static org.firstinspires.ftc.teamcode.modules.StateMachine.TeleOpAutomaticScoreConstants.SLOWDOWN_POINT_2;
 import static org.firstinspires.ftc.teamcode.modules.StateMachine.TeleOpAutomaticScoreConstants.WAIT_AT_RUNG;
 import static org.firstinspires.ftc.teamcode.modules.StateMachine.TeleOpAutomaticScoreConstants.WAIT_END;
+import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.DISTANCE;
 import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.OFFSET_CLAW_CLOSE;
 import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.PICKED_UNPICKED_PICK_BLOCK;
 import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.POSE_X;
@@ -69,6 +70,8 @@ class TeleOpConstants {
 
     public static double WAIT_SAMPLE_SCORER_FLIP = 1000;
     public static double WAIT_START_LINKAGE_RETRACT = 1600;
+
+    public static double DISTANCE = 22;
 }
 
 @Config
@@ -103,7 +106,7 @@ public class StateMachine {
     public DigitalChannel frontSensor;
     public FtcDashboard dashboard;
     private final StickyKeys stickyGamepad1;
-    AutoCamera cam;
+//    AutoCamera cam;
 
     private Trajectory[] fullCycle = new Trajectory[8];
     private int amountAutoscored = 0;
@@ -152,7 +155,7 @@ public class StateMachine {
         hang = new Hang(linearOpMode);
         driveModule = new DriveModule(linearOpMode.hardwareMap, new Pose2d(POSE_X, POSE_Y, Math.toRadians(270)));
         driveModule.drive.setForce(1);
-        cam = new AutoCamera(linearOpMode);
+//        cam = new AutoCamera(linearOpMode);
         scorerLinkage = new ScorerLinkage(linearOpMode.hardwareMap);
 
         gamepad1 = linearOpMode.gamepad1;
@@ -206,7 +209,6 @@ public class StateMachine {
         lift.teleop();
         diff.teleop(0);
         driveModule.update(gamepad1, linkage.getPosition() / linkage.getMaxPosition());
-        hang.control();
         stickyGamepad1.update(gamepad1);
         hang.discreteControl();
 
@@ -257,13 +259,21 @@ public class StateMachine {
                         claw.currentMode = Claw.Mode.PICK;
                         hand.currentMode = Hand.Mode.RIGHT_SIDE_DROP_SAMPLE;
                         diff.currentMode = Differential.Mode.TRANSFER;
-
+                        lift.setReferenceZero();
                     }
                     scorerPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
                     scorerDifferential.currentMode = ScorerDifferential.Mode.PICK_SPEC;
                     scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                     scorerLinkage.retract();
-                    lift.setReference(0);
+
+                    if (stickyGamepad1.dpad_up) {
+                        Lift.LiftConstants.MIN_POSITION += 10;
+                        lift.setReferenceZero();
+                    }
+                    if (stickyGamepad1.dpad_down) {
+                        Lift.LiftConstants.MIN_POSITION -= 10;
+                        lift.setReferenceZero();
+                    }
 
                     if (autoScoreState == AutoScoreState.SCORING && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
                         amountAutoscored += 1;
@@ -290,7 +300,7 @@ public class StateMachine {
                         fromTransferSpecimenToScore.reset();
                     }
 
-                    if (distInClaw.getDistance(DistanceUnit.MM) <= 22 && !gamepad1.triangle) {
+                    if (distInClaw.getDistance(DistanceUnit.MM) <= DISTANCE && !gamepad1.triangle) {
                         claw.currentMode = Claw.Mode.DROP;
                         specimenPickedUp.reset();
                         scorerDifferential.currentMode = ScorerDifferential.Mode.AIM_POS;
@@ -331,7 +341,7 @@ public class StateMachine {
                     fromTransferSpecimenToScore.reset();
                 }
 
-                if ((gamepad2.triangle || gamepad1.triangle) && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
+                if (( gamepad2.triangle || gamepad1.triangle ) && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
                     state = State.INITIAL;
                     initialTimer.reset();
                 }
@@ -340,7 +350,8 @@ public class StateMachine {
             case TRANSFER_SPEC:
                 scorerPerkid.currentMode = ScorerPerkid.Mode.TRANSFER_SPEC;
                 claw.currentMode = Claw.Mode.PICK;
-                lift.setSpecimen();
+                lift.setSpecimenTele();
+
                 if (fromTransferSpecimenToScore.milliseconds() > WAIT_FOR_LINKAGE) {
                     scorerDifferential.currentMode = ScorerDifferential.Mode.TRANSFER_SPEC;
                     scorerLinkage.extend();
@@ -356,6 +367,14 @@ public class StateMachine {
                     amountAutoscored = 0;
                     autoScoreState = AutoScoreState.INACTIVE;
                 }
+
+                if (stickyGamepad1.dpad_up) {
+                    Lift.LiftConstants.SPECIMEN_POS += 10;
+                }
+                if (stickyGamepad1.dpad_down) {
+                    Lift.LiftConstants.SPECIMEN_POS -= 10;
+                }
+
 
                 if (!gamepad2.circle || !gamepad1.options) {
                     if (!frontSensor.getState()) {
@@ -377,15 +396,22 @@ public class StateMachine {
                 }
 
                 scorerLinkage.extend();
-                lift.setSpecimen();
+                lift.setSpecimenTele();
 
                 if (gamepad2.right_bumper || gamepad1.circle) {
                     scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                     scorerDifferential.currentMode = ScorerDifferential.Mode.AFTER_SCORE_SPEC;
                 } else if (gamepad1.cross) {
                     scorerClaw.currentMode = ScorerClaw.Mode.PICK;
-                } else if (driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL){
+                } else if (driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
                     scorerClaw.currentMode = ScorerClaw.Mode.RELAX;
+                }
+
+                if (stickyGamepad1.dpad_up) {
+                    Lift.LiftConstants.SPECIMEN_POS += 10;
+                }
+                if (stickyGamepad1.dpad_down) {
+                    Lift.LiftConstants.SPECIMEN_POS -= 10;
                 }
 
                 if (stickyGamepad1.cross && driveModule.currentMode == DriveModule.Mode.FOLLOWING_TRAJECTORY) {
@@ -436,7 +462,7 @@ public class StateMachine {
                     state = State.PICK_UP_THE_BLOCK;
                     pickedUnpickedTimer.reset();
                 }
-                if(gamepad1.touchpad){
+                if (gamepad1.touchpad) {
 
                     state = State.PICK_UP_THE_BLOCK_WITH_APPENDIX;
                     pickedUnpickedTimer.reset();
@@ -868,7 +894,7 @@ public class StateMachine {
                     scorerPerkid.transferSpecimen();
                     scorerDifferential.transferSpecimen();
                     scorerClaw.close();
-                    lift.setSpecimen();
+                    lift.setSpecimenTele();
                     scorerLinkage.extend();
                 })
                 .addSpatialMarker(t + SLOWDOWN_POINT_1, () -> {

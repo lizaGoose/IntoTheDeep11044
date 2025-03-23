@@ -81,7 +81,7 @@ public class TwoDriveClaw extends LinearOpMode {
         public static double ANGLE_AT_RIGHT_SAMPLE = -107.5;
         public static double WAIT_FOR_INTAKE = 500;
 
-        public static double EXTEND_RIGHT_SAMPLE = 180;
+        public static double EXTEND_RIGHT_SAMPLE = 187;
         public static double HAND_POSITION = 0.25;
         public static double DIFFERENTIAL_ROTATION = 5;
 

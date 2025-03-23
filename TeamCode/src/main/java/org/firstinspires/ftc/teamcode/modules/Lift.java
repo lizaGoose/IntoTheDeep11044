@@ -41,9 +41,7 @@ public class Lift {
 
     public enum Mode {
         DEFAULT,
-        P_REGULATOR,
         NULL_POSE,
-        SPECIMEN_SCORE,
         PUSH_DOWN
     }
 
@@ -62,6 +60,36 @@ public class Lift {
         out = (COEFFICIENTS.p * error) + (COEFFICIENTS.i * integralSum) + (COEFFICIENTS.d * derivative) + COEFFICIENTS.f;
 
         leftMotor.setPower(out);
+        rightMotor.setPower(out);
+
+        lastError = error;
+
+        timer.reset();
+    }
+
+    public void PIDControlLEFT() {
+        double position = leftMotor.getCurrentPosition();
+        double error = reference - position;
+
+        double derivative = (error - lastError) / timer.seconds();
+        integralSum += error * timer.seconds();
+        out = (COEFFICIENTS.p * error) + (COEFFICIENTS.i * integralSum) + (COEFFICIENTS.d * derivative) + COEFFICIENTS.f;
+
+        leftMotor.setPower(out);
+
+        lastError = error;
+
+        timer.reset();
+    }
+
+    public void PIDControlRIGHT() {
+        double position = leftMotor.getCurrentPosition();
+        double error = reference - position;
+
+        double derivative = (error - lastError) / timer.seconds();
+        integralSum += error * timer.seconds();
+        out = (COEFFICIENTS.p * error) + (COEFFICIENTS.i * integralSum) + (COEFFICIENTS.d * derivative) + COEFFICIENTS.f;
+
         rightMotor.setPower(out);
 
         lastError = error;
@@ -94,9 +122,20 @@ public class Lift {
         this.reference = reference;
     }
 
+    public void setReferenceZero() {
+        reference = MIN_POSITION;
+        integralSum = 0;
+    }
+
     public void setSpecimen() {
         setReference(SPECIMEN_POS);
     }
+
+    // ?????????????????????????????
+    public void setSpecimenTele() {
+        setReference(SPECIMEN_POS);
+    }
+
 
     public void teleop() {
         double error = pos - leftMotor.getCurrentPosition();
@@ -136,22 +175,6 @@ public class Lift {
 
 
                 break;
-            case P_REGULATOR:
-                if (gamepad.left_stick_y != 0) {
-                    leftMotor.setPower(-gamepad.right_stick_y);
-                    rightMotor.setPower(-gamepad.right_stick_y);
-                    pos = rightMotor.getCurrentPosition();
-                } else {
-                    //  double error = pos - rightMotor.getCurrentPosition();
-                    leftMotor.setPower(-error);
-                    rightMotor.setPower(-error);
-                }
-                if (rightMotor.getCurrentPosition() >= 0) {
-                    if (gamepad.left_stick_y >= 0) {
-
-                    }
-                }
-                break;
             case PUSH_DOWN:
                 leftMotor.setPower(POWER_DOWN);
                 rightMotor.setPower(POWER_DOWN);
@@ -173,7 +196,7 @@ public class Lift {
         public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.005, 0.00001, 0.0);
         public static double d = 0.00047;
 
-        public static int SPECIMEN_POS = 500;
+        public static int SPECIMEN_POS = 400;
 
         public static int MAX_POSITION = 830;
         public static int MIN_POSITION = 0;
