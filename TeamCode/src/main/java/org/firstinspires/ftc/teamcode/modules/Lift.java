@@ -196,7 +196,7 @@ public class Lift {
         public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.005, 0.00001, 0.0);
         public static double d = 0.00047;
 
-        public static int SPECIMEN_POS = 400;
+        public static int SPECIMEN_POS = 380;
 
         public static int MAX_POSITION = 830;
         public static int MIN_POSITION = 0;

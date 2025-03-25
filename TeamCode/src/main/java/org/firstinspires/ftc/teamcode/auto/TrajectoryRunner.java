@@ -65,6 +65,7 @@ public class TrajectoryRunner {
     private double integralSumX = 0;
     private double lastErrorY = 0;
     private double integralSumY = 0;
+    private boolean reachedStopMarker = false;
 
     public TrajectoryRunner() {
         clock = new ElapsedTime();

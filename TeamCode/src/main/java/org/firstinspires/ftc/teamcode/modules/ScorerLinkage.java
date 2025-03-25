@@ -14,7 +14,7 @@ public class ScorerLinkage {
     @Config
     public static class ScorerLinkageConstants {
         public static double RETRACTED = 0.05;
-        public static double LEBRON = 0.445;
+        public static double LEBRON = 0.65;
         public static double EXTENDED = 0.94;
     }
 

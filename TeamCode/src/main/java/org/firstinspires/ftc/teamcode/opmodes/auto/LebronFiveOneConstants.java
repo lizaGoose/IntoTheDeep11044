@@ -76,7 +76,7 @@ public class LebronFiveOneConstants {
     public static double LIFT_SCORE = 820;
     public static double WAIT_DROP_SAMPLE = 50;
     public static double POINT_BASKET_SLOWDOWN = 0.8;
-    public static double ANGLE_TO_BASKET = -175;
+    public static double ANGLE_TO_BASKET = -170;
     public static double WAIT_FOR_SLOWDOWN = 200;
 
     public static double FORCE = 1;

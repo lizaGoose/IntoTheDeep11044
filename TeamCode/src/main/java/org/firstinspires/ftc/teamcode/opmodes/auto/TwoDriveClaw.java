@@ -79,9 +79,9 @@ public class TwoDriveClaw extends LinearOpMode {
     public static class LebronDriveClawConstants {
         public static double WAIT_AT_RIGHT_SAMPLE = 500 + 150 + 650;
         public static double ANGLE_AT_RIGHT_SAMPLE = -107.5;
-        public static double WAIT_FOR_INTAKE = 500;
+        public static double WAIT_FOR_INTAKE = 700;
 
-        public static double EXTEND_RIGHT_SAMPLE = 187;
+        public static double EXTEND_RIGHT_SAMPLE = 170;
         public static double HAND_POSITION = 0.25;
         public static double DIFFERENTIAL_ROTATION = 5;
 
@@ -89,10 +89,10 @@ public class TwoDriveClaw extends LinearOpMode {
 
         public static double POINT_RIGHT_SIDE_DROP = 0.3;
 
-        public static double SLOWDOWN_POINT_HUMAN = 0.65 + 0.06;
-        public static double SLOWDOWN_POINT_HUMAN_1 = 0.88 + 0.02;
+        public static double SLOWDOWN_POINT_HUMAN = 0.71;
+        public static double SLOWDOWN_POINT_HUMAN_1 = 0.9;
 
-        public static double POINT_START_RETRACTING_LIFT = 0.5;
+        public static double POINT_START_RETRACTING_LIFT = 0.35;
         public static double POINT_START_EXTENDING_LINKAGE = 0.2;
         public static double POINT_RETRACT_EXTEND = 0.8;
         public static double DEBUG_WAIT = 0;
@@ -313,7 +313,7 @@ public class TwoDriveClaw extends LinearOpMode {
                     })
                     .build();
             trajBasketToPark = drive.buildTrajectory("basket_to_park.json")
-                    .addTurnMarker(0, -180)
+                    .addTurnMarker(0, -180.5)
                     .addSpatialMarker(0, () -> {
                         drive.setForce(FORCE);
                     })
@@ -329,7 +329,7 @@ public class TwoDriveClaw extends LinearOpMode {
                     .addSpatialMarker(POINT_START_RETRACTING_LIFT + 0.1, () -> {
                         lift.setReference(0);
                     })
-                    .waitForAt(1, 500, -180)
+                    .waitForAt(1, 500, -180.5)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);

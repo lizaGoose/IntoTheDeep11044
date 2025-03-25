@@ -18,7 +18,7 @@ public class ScorerClaw {
     @Config
     public static class ScorerClawConstants {
         public static double PICK = 1;
-        public static double DROP = 0.49;
+        public static double DROP = 0.53;
     }
 
     enum Mode {
