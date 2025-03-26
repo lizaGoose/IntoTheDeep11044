@@ -133,14 +133,12 @@ public class TwoDriveClawSix extends LinearOpMode {
     private DistanceSensor distInClaw;
     private DigitalChannel frontSensor;
     private FtcDashboard dashboard;
+    /** @noinspection SuspiciousNameCombination*/
     private AnalyzedSample sample = new AnalyzedSample(Y, Z, 0, SampleColor.RED, 1);
 
     // Make this true somewhere to stop program
     private boolean DEBUG_END_FLAG = false;
     private boolean DETECTED = false;
-
-    // STATE
-    private boolean resettingLinkage = false;
 
     private ElapsedTime clock;
 
@@ -437,15 +435,7 @@ public class TwoDriveClawSix extends LinearOpMode {
 
             lift.PIDControl();
             drive.update();
-            if (resettingLinkage) {
-                linkage.setPower(-0.5);
-                if (linkage.getPosition() < 0) {
-                    linkage.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    linkage.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                }
-            } else {
-                linkage.PIDControl();
-            }
+            linkage.PIDControl();
         }
 
         clock.reset();

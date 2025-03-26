@@ -36,7 +36,7 @@ public class Claw {
         switch (currentMode) {
             case PICK:
                 claw.setPosition(ClawConstants.PICK);
-                appendix.setPosition(ClawConstants.DROP_APPENDIX);
+                appendix.setPosition(ClawConstants.SOME_APPENDIX);
                 break;
             case DROP:
                 claw.setPosition(ClawConstants.DROP);
@@ -65,7 +65,8 @@ public class Claw {
     class ClawConstants{
         public static double PICK = 0.7;
         public static double DROP = 0.31;
-        public static double DROP_APPENDIX = 0.24;
-        public static double PICK_APPENDIX = 0.76;// 0.26
+        public static double DROP_APPENDIX = 0.35;
+        public static double SOME_APPENDIX = 0.37;
+        public static double PICK_APPENDIX = 0.85;
     }
 }
