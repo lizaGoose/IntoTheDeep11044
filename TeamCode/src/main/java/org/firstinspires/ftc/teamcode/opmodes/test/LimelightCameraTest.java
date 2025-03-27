@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.camera.LimelightCamera;
 
+import java.util.Optional;
+
 @Config
 @TeleOp(group = "test")
 public class LimelightCameraTest extends LinearOpMode {
@@ -14,18 +16,34 @@ public class LimelightCameraTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         cam = new LimelightCamera(this);
-        cam.setPipeline(LimelightCamera.Pipeline.BLUE_THRESH);
+
+        telemetry.setMsTransmissionInterval(11);
+        cam.setPipeline(LimelightCamera.Pipeline.THRESHOLD_BLUE);
         cam.start();
 
         waitForStart();
 
-        while (opModeIsActive()) {
-            cam.getResult().ifPresent(result -> {
-                telemetry.addData("tx", result.getTx());
-                telemetry.addData("ty", result.getTy());
-                telemetry.addData("ta", result.getTa());
+        while (opModeInInit()) {
+            cam.getResult().ifPresent(llResult -> {
+                telemetry.addData("pipeline_index", llResult.getPipelineIndex());
+                telemetry.addData("latency", llResult.getTargetingLatency());
+                telemetry.addData("type", llResult.getPipelineType());
                 telemetry.update();
             });
         }
+
+        cam.setPipeline(LimelightCamera.Pipeline.PYTHON_BLUE_2);
+
+        while (opModeIsActive()) {
+            Optional<double[]> outputOpt = cam.getPythonOutput();
+            if (outputOpt.isPresent()) {
+                for (double el : outputOpt.get())
+                    telemetry.addLine(String.valueOf(el));
+            } else {
+                telemetry.addLine("ERROR!");
+            }
+            telemetry.update();
+        }
+        cam.stop();
     }
 }

@@ -44,7 +44,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
 
-/*
+/* (non-Javadoc)
  * This OpMode illustrates how to use the Limelight3A Vision Sensor.
  *
  * @see <a href="https://limelightvision.io/">Limelight</a>

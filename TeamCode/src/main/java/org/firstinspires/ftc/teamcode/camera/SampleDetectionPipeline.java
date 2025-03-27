@@ -294,15 +294,15 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         internalSampleList.add(analyzedSample);
 
         switch (sampleColor) {
-            case RED: {
+            case RED:
                 internalRedSample.add(analyzedSample);
-            }
-            case BLUE: {
+                break;
+            case BLUE:
                 internalBlueSample.add(analyzedSample);
-            }
-            case YELLOW: {
+                break;
+            case YELLOW:
                 internalYellowSample.add(analyzedSample);
-            }
+                break;
         }
     }
 
@@ -331,7 +331,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         Scalar colorScalar = getColorScalar(sampleColor);
 
         for (int i = 0; i < 4; ++i) {
-            Imgproc.line(drawOn, points[i], points[(i + 1) % 4], colorScalar, 2);
+            Imgproc.line(drawOn, points[i], points[( i + 1 ) % 4], colorScalar, 2);
         }
     }
 
