@@ -33,7 +33,8 @@ public class AutoCamera {
 
     public Vector3D L, P, point;
     public double ticksPerInchLift = 21.25 / 811, fromZeroToFrontOfExtendInches;//0=220/25.4*k+b
-    public double a, l, x1, y1, b = 38, k;// 285 = (544.599+220)/25.4*k+b k = 7.36 b = -63.75 k = 13.29 b = -115.11
+    public double a, l, x1, y1, b = 24, k;// 285 = (544.599+220)/25.4*k+b k = 7.36 b = -63.75 k = 13.29 b = -115.11
+    //
     public int Wp = 480, Hp = 640;//lHand = 125/25.4
     public Vector3D C, Current, vector;//0=
 
@@ -140,10 +141,10 @@ public class AutoCamera {
         AnalyzedSample sample = samples.get(0);
 
         a = scorerAngle * 310 - 179;
-        l = 113.5 / 25.4;
+        l = 116 / 25.4;
 
-        x1 = (sample.x - (double) Wp / 2) * 0.85 / Wp;
-        y1 = -(sample.y - (double) Hp / 2) * 1.2 / Hp;
+        x1 = (sample.x - (double) Wp / 2) * 0.77 / Wp;
+        y1 = -(sample.y - (double) Hp / 2) * 1.03 / Hp;
         L = new Vector3D(0, -liftPosition * ticksPerInchLift * Math.sin(Math.toRadians(10)), liftPosition * ticksPerInchLift * Math.cos(Math.toRadians(10)) + (422 / 25.4));
         P = new Vector3D(0, L.getY() + l * Math.sin(Math.toRadians(a)), L.getZ() - l * Math.cos(Math.toRadians(a)));
         C = new Vector3D(P.getX() + x1, P.getY() + Math.sin(Math.toRadians(a - b)) + y1 * Math.cos(Math.toRadians(a - b)), P.getZ() - Math.cos(Math.toRadians(a - b)) + y1 * Math.sin(Math.toRadians(a - b)));
@@ -162,7 +163,7 @@ public class AutoCamera {
 
         return getOptimalSample().map((sample) -> {
                     a = scorerAngle * 310 - 179;
-                    l = 113.5 / 25.4;
+                    l = 116 / 25.4;
 
                     x1 = (sample.x - (double) Wp / 2) * 0.85 / Wp;
                     y1 = -(sample.y - (double) Hp / 2) * 1.2 / Hp;

@@ -320,7 +320,7 @@ public class SampleStateMachine {
                 if (pickedUnpickedTimer.milliseconds() > 400) {
                     claw.currentMode = Claw.Mode.PICK;
                     if (pickedUnpickedTimer.milliseconds() >= PICKED_UNPICKED_PICK_BLOCK) {
-                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSABLE;
+                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSIBLE;
                         if (gamepad2.right_stick_y != 0 || gamepad1.cross && !startForgetPosTimer) {
                             startForgetPosTimer = true;
                         }

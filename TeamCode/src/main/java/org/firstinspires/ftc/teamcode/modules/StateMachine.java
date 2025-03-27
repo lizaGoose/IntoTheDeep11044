@@ -43,7 +43,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
-import org.firstinspires.ftc.teamcode.camera.AutoCamera;
 import org.firstinspires.ftc.teamcode.hardware.StickyKeys;
 
 import java.io.IOException;
@@ -496,7 +495,7 @@ public class StateMachine {
                 if (pickedUnpickedTimer.milliseconds() > 400) {
                     claw.currentMode = Claw.Mode.PICK;
                     if (pickedUnpickedTimer.milliseconds() >= PICKED_UNPICKED_PICK_BLOCK) {
-                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSABLE;
+                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSIBLE;
                         if (gamepad2.right_stick_y != 0 && !startForgetPosTimer) {
                             startForgetPosTimer = true;
                         }
@@ -624,7 +623,7 @@ public class StateMachine {
                 if (pickedUnpickedTimer.milliseconds() > 200) {
                     claw.currentMode = Claw.Mode.PICK;
                     if (pickedUnpickedTimer.milliseconds() >= PICKED_UNPICKED_PICK_BLOCK) {
-                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSABLE;
+                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSIBLE;
                         if (gamepad2.right_stick_y != 0 || gamepad1.cross && !startForgetPosTimer) {
                             startForgetPosTimer = true;
                         }
@@ -664,7 +663,7 @@ public class StateMachine {
                 if (pickedUnpickedTimer.milliseconds() > 200) {
                     claw.currentMode = Claw.Mode.TRANSFER;
                     if (pickedUnpickedTimer.milliseconds() >= PICKED_UNPICKED_PICK_BLOCK) {
-                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSABLE;
+                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSIBLE;
                         if (gamepad2.right_stick_y != 0 || gamepad1.cross && !startForgetPosTimer) {
                             startForgetPosTimer = true;
                         }

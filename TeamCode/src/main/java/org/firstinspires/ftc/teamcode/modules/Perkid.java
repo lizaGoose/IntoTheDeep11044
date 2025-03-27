@@ -29,7 +29,7 @@ public class Perkid {
         TRANSFER,
         LOOK,
         PICK_UP,
-        TRANSFER_FROM_SUBMERSABLE,
+        TRANSFER_FROM_SUBMERSIBLE,
         RIGHT_SIDE_DROP_SAMPLE,
         RELAX
     }
@@ -41,7 +41,7 @@ public class Perkid {
         gamepad1 = opMode.gamepad1;
         left = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "left_vertical_servo");
         right = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "right_vertical_servo");
-        right.setDirection(Servo.Direction.REVERSE);
+        left.setDirection(Servo.Direction.REVERSE);
         cam = new CameraTest();
     }
 
@@ -59,7 +59,7 @@ public class Perkid {
                 left.setPosition(PerkidConstants.PICK_UP);
                 right.setPosition(PerkidConstants.PICK_UP);
                 break;
-            case TRANSFER_FROM_SUBMERSABLE:
+            case TRANSFER_FROM_SUBMERSIBLE:
                 left.setPosition(PerkidConstants.TRANSFER_FROM_SUBMERSABLE);
                 right.setPosition(PerkidConstants.TRANSFER_FROM_SUBMERSABLE);
                 break;
@@ -127,15 +127,14 @@ public class Perkid {
     static
     class PerkidConstants {
         public static double VERTICAL_POS = 0.7;
-        public static double STRAIGHT_POS = 0.47;
+        public static double STRAIGHT_POS = 0.29;
 
-        public static double TRANSFER_POS = 0.76;
-        public static double LOOK_POS = 0.55;
-        public static double AIM_AT_SPIKE = 0.55;
-        public static double TRANSFER_FROM_SUBMERSABLE = 0.53;
+        public static double TRANSFER_POS = 1;
+        public static double LOOK_POS = 0.33;
+        public static double AIM_AT_SPIKE = 0.33;
+        public static double TRANSFER_FROM_SUBMERSABLE = 0.32;
 
-        public static double PICK_UP = 0.365;
-        public static double RIGHT_SIDE_DROP_SAMPLE = 0.76;
-        public static double RELAX_POSITION = 0.74;
+        public static double PICK_UP = 0.2;
+        public static double RIGHT_SIDE_DROP_SAMPLE = 0.85;
     }
 }

@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.modules;
 
 
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.DROP;
+import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.DROP_APPENDIX;
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.PICK;
+import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.PICK_APPENDIX;
+import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.SOME_APPENDIX;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -58,6 +61,14 @@ public class Claw {
 
     public void close() {
         claw.setPosition(PICK);
+    }
+
+    public void closeAppendix() {
+        appendix.setPosition(SOME_APPENDIX);
+    }
+
+    public void openAppendix() {
+        appendix.setPosition(PICK_APPENDIX);
     }
 
     @Config
