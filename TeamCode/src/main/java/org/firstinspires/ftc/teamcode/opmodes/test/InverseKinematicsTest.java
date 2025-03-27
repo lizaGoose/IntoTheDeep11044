@@ -28,7 +28,6 @@ public class InverseKinematicsTest extends OpMode {
     private Hand hand;
     private Lift lift;
     private ScorerPerkid scorerPerkid;
-    private AutoCamera camera;
 
     @Override
     public void init() {
@@ -36,7 +35,6 @@ public class InverseKinematicsTest extends OpMode {
         differential = new Differential(this);
         perkid = new Perkid(this);
         hand = new Hand(this);
-        camera = new AutoCamera(this);
         lift = new Lift(this);
         scorerPerkid = new ScorerPerkid(this);
     }
@@ -52,6 +50,9 @@ public class InverseKinematicsTest extends OpMode {
             differential.setAngleRotation(Math.toDegrees(res.get(3)), 0);
         }
 
+        lift.setSpecimen();
+        lift.PIDControl();
+        scorerPerkid.scoreSpecimen();
         linkage.PIDControl();
 
         telemetry.addData("extend", linkage.getPositionMillimeters());

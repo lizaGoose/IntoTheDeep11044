@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.modules.Linkage;
 
 @Config
 @TeleOp(group = "test")
-public class ExtendTest extends OpMode {
+public class LinkageTest extends OpMode {
     private Servo leftServo, rightServo;
     private Linkage linkage;
     private FtcDashboard dashboard;

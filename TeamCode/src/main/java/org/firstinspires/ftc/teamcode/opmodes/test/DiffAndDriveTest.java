@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.auto.Drive;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
 
 @Config
-@TeleOp
+@TeleOp(group = "test")
 public class DiffAndDriveTest extends LinearOpMode {
     public static double HAND_ANGLE = 0;
     public static double DIFF_ANGLE = -90;

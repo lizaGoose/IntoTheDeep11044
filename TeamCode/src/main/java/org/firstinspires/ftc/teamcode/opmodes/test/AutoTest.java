@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.auto.Drive;
 
 import java.io.IOException;
 
-@Autonomous
+@Autonomous(group = "test")
 public class AutoTest extends LinearOpMode {
     private Drive drive;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();

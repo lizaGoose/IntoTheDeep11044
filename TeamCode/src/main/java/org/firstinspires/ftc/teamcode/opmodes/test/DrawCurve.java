@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.math.BezierCurve;
 import java.io.File;
 import java.io.IOException;
 
-@Autonomous
+@Autonomous(group = "test")
 public class DrawCurve extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
