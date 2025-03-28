@@ -5,10 +5,10 @@ import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRAN
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.AIM_SPEC;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.DROP_SAMPLE_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.EXTRA_PICK_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.PICK_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.PICK_SPECIMEN;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCORE_SAMP;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCOR_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.TRANSFER_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCORE_SPECIMEN;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.TRANSFER_SPECIMEN;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -31,7 +31,6 @@ public class ScorerPerkid {
         SCORE_SAMP,
         TRANSFER_SPEC,
         SCOR_SPEC,
-        OLD_SCOR_SPEC
     }
 
     Mode currentMode = Mode.PICK_SPEC;
@@ -48,8 +47,8 @@ public class ScorerPerkid {
     public void teleop() {
         switch (currentMode) {
             case PICK_SPEC:
-                left.setPosition(ScorerPerkidConstants.PICK_SPEC);
-                right.setPosition(ScorerPerkidConstants.PICK_SPEC);
+                left.setPosition(ScorerPerkidConstants.PICK_SPECIMEN);
+                right.setPosition(ScorerPerkidConstants.PICK_SPECIMEN);
                 break;
             case TRANSFER:
                 left.setPosition(ScorerPerkidConstants.TRANSFER_POS);
@@ -60,16 +59,12 @@ public class ScorerPerkid {
                 right.setPosition(ScorerPerkidConstants.SCORE_SAMP);
                 break;
             case TRANSFER_SPEC:
-                left.setPosition(ScorerPerkidConstants.TRANSFER_SPEC);
-                right.setPosition(ScorerPerkidConstants.TRANSFER_SPEC);
+                left.setPosition(ScorerPerkidConstants.TRANSFER_SPECIMEN);
+                right.setPosition(ScorerPerkidConstants.TRANSFER_SPECIMEN);
                 break;
             case SCOR_SPEC:
-                left.setPosition(ScorerPerkidConstants.SCOR_SPEC);
-                right.setPosition(ScorerPerkidConstants.SCOR_SPEC);
-                break;
-            case OLD_SCOR_SPEC:
-                left.setPosition(ScorerPerkidConstants.OLD_SCOR_SPEC);
-                right.setPosition(ScorerPerkidConstants.OLD_SCOR_SPEC);
+                left.setPosition(ScorerPerkidConstants.SCORE_SPECIMEN);
+                right.setPosition(ScorerPerkidConstants.SCORE_SPECIMEN);
                 break;
         }
     }
@@ -80,13 +75,13 @@ public class ScorerPerkid {
     }
 
     public void transferSpecimen() {
-        left.setPosition(TRANSFER_SPEC);
-        right.setPosition(TRANSFER_SPEC);
+        left.setPosition(TRANSFER_SPECIMEN);
+        right.setPosition(TRANSFER_SPECIMEN);
     }
 
     public void pickSpecimen() {
-        left.setPosition(PICK_SPEC);
-        right.setPosition(PICK_SPEC);
+        left.setPosition(PICK_SPECIMEN);
+        right.setPosition(PICK_SPECIMEN);
     }
 
     public void pushIntoSpecimen() {
@@ -100,8 +95,8 @@ public class ScorerPerkid {
     }
 
     public void scoreSpecimen() {
-        left.setPosition(SCOR_SPEC);
-        right.setPosition(SCOR_SPEC);
+        left.setPosition(SCORE_SPECIMEN);
+        right.setPosition(SCORE_SPECIMEN);
     }
 
     public void dropSampleToHuman() {
@@ -121,13 +116,13 @@ public class ScorerPerkid {
     static
     class ScorerPerkidConstants {
         public static double OLD_SCOR_SPEC = 0.97;
-        public static double PICK_SPEC = 0.365;
+        public static double PICK_SPECIMEN = 0.365;
         public static double EXTRA_PICK_SPEC = 0.36;
         public static double AIM_SPEC = 0.45;
         public static double DROP_SAMPLE_TO_HUMAN = 0.35;
-        public static double TRANSFER_POS = 0.5;
+        public static double TRANSFER_POS = 0.45;
         public static double SCORE_SAMP = 0.02;
-        public static double TRANSFER_SPEC = 0.845;
-        public static double SCOR_SPEC = 0.845;
+        public static double TRANSFER_SPECIMEN = 0.845;
+        public static double SCORE_SPECIMEN = 0.845;
     }
 }

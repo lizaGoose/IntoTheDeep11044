@@ -13,7 +13,7 @@ import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDi
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.TRANSFER_SPEC;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -21,7 +21,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import org.firstinspires.ftc.teamcode.camera.CameraTest;
 
 public class ScorerDifferential {
-    LinearOpMode linearOpMode;
+    OpMode opMode;
     Gamepad gamepad1;
     CameraTest cam;
     ServoImplEx diff;
@@ -42,10 +42,10 @@ public class ScorerDifferential {
 
     Mode currentMode = Mode.PICK_SPEC;
 
-    public ScorerDifferential(LinearOpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        gamepad1 = linearOpMode.gamepad2;
-        diff = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "scoring_diff");
+    public ScorerDifferential(OpMode opMode) {
+        this.opMode = opMode;
+        gamepad1 = opMode.gamepad2;
+        diff = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "scoring_diff");
         cam = new CameraTest();
     }
 

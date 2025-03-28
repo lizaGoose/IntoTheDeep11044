@@ -18,6 +18,7 @@ import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.PICKED_UNPI
 import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.POSE_X;
 import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.POSE_Y;
 import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.REGISTER_MOVEMENT_AFTER;
+import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.REGISTER_MOVEMENT_AFTER_2;
 import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.SET_POS_TO_ZERO_SAMPLE;
 import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.WAIT_FOR_INITIAL_STATE;
 import static org.firstinspires.ftc.teamcode.modules.TeleOpConstants.WAIT_FOR_LINKAGE;
@@ -31,7 +32,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -56,6 +57,7 @@ class SensorsConstants {
 class TeleOpConstants {
     public static double WAIT_UNTIL_SPECIMEN_PICKUP = 1;
     public static double REGISTER_MOVEMENT_AFTER = 450;
+    public static double REGISTER_MOVEMENT_AFTER_2 = 450;
     public static double SET_POS_TO_ZERO_SAMPLE = 300;
     public static double PICKED_UNPICKED_PICK_BLOCK = 300;
 
@@ -67,7 +69,7 @@ class TeleOpConstants {
     public static double POSE_X = -17.939825444151644;
     public static double POSE_Y = 64.98661527894448;
 
-    public static double WAIT_SAMPLE_SCORER_FLIP = 1000;
+    public static double WAIT_SAMPLE_SCORER_FLIP = 900;
     public static double WAIT_START_LINKAGE_RETRACT = 1600;
 
     public static double DISTANCE = 22;
@@ -75,7 +77,7 @@ class TeleOpConstants {
 
 @Config
 public class StateMachine {
-    LinearOpMode linearOpMode;
+    OpMode opMode;
     Linkage linkage;
     Claw claw;
     Perkid perkid;
@@ -119,46 +121,61 @@ public class StateMachine {
 
     public enum State {
         INITIAL,
-        LOOK_FOR_BLOCK,
-        PICK_UP_THE_BLOCK,
+        LOOK_FOR_SAMPLE,
+        PICK_UP_SAMPLE,
         FROM_CLAW_TO_CLAW,
+        STATEFUL_FROM_CLAW_TO_CLAW,
         SCORE_SAMPLE,
         DROP_SPECIMEN_TO_HUMAN_ZONE,
         TRANSFER_SPEC,
-        SCORE_SPEC,
-        PICK_SPEC,
-        PICK_UP_THE_BLOCK_SCORSPEC,
-        LOOK_FOR_BLOCK_SCORSPEC,
+        SCORE_SPECIMEN,
+        PICK_SPECIMEN,
+        PICK_UP_SAMPLE_AFTER_SPECIMEN,
+        LOOK_FOR_SAMPLE_AFTER_SPECIMEN,
         EMPTY,
         RIGHT_SIDE_DROP_SAMPLE,
         RIGHT_SIDE_DROP_SAMPLE_PLUS_INIT_FUNCTIONS,
         SPECIMEN_TO_INITIAL,
         START,
-        PICK_UP_THE_BLOCK_WITH_APPENDIX
     }
 
     public State state = State.START;
 
-    public StateMachine(LinearOpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
+    public enum ElementState {
+        SPECIMEN,
+        SAMPLE
+    }
+    public ElementState element = ElementState.SPECIMEN;
 
-        linkage = new Linkage(linearOpMode);
-        claw = new Claw(linearOpMode);
-        perkid = new Perkid(linearOpMode);
-        scorerPerkid = new ScorerPerkid(linearOpMode);
-        scorerDifferential = new ScorerDifferential(linearOpMode);
-        hand = new Hand(linearOpMode);
-        scorerClaw = new ScorerClaw(linearOpMode);
-        diff = new Differential(linearOpMode);
-        lift = new Lift(linearOpMode);
-        hang = new Hang(linearOpMode);
-        driveModule = new DriveModule(linearOpMode.hardwareMap, new Pose2d(POSE_X, POSE_Y, Math.toRadians(270)));
+    private enum TransferState {
+        FLIP_PERKID,
+        RETRACT_LINKAGE,
+        RESET_ENCODER,
+        DO_OTHER
+    }
+
+    private TransferState transferState = TransferState.FLIP_PERKID;
+
+    public StateMachine(OpMode opMode) {
+        this.opMode = opMode;
+
+        linkage = new Linkage(opMode);
+        claw = new Claw(opMode);
+        perkid = new Perkid(opMode);
+        scorerPerkid = new ScorerPerkid(opMode);
+        scorerDifferential = new ScorerDifferential(opMode);
+        hand = new Hand(opMode);
+        scorerClaw = new ScorerClaw(opMode);
+        diff = new Differential(opMode);
+        lift = new Lift(opMode);
+        hang = new Hang(opMode);
+        driveModule = new DriveModule(opMode.hardwareMap, new Pose2d(POSE_X, POSE_Y, Math.toRadians(270)));
         driveModule.drive.setForce(1);
-//        cam = new AutoCamera(linearOpMode);
-        scorerLinkage = new ScorerLinkage(linearOpMode.hardwareMap);
+//        cam = new AutoCamera(opMode);
+        scorerLinkage = new ScorerLinkage(opMode.hardwareMap);
 
-        gamepad1 = linearOpMode.gamepad1;
-        gamepad2 = linearOpMode.gamepad2;
+        gamepad1 = opMode.gamepad1;
+        gamepad2 = opMode.gamepad2;
 
         stickyGamepad1 = new StickyKeys();
 
@@ -196,8 +213,8 @@ public class StateMachine {
 
     public void teleop() {
 //        distanceSensor = linearOpMode.hardwareMap.get(DistanceSensor.class, "Color");
-        distInClaw = linearOpMode.hardwareMap.get(DistanceSensor.class, "ScorClawDist");
-        frontSensor = linearOpMode.hardwareMap.get(DigitalChannel.class, "DistanceFront");
+        distInClaw = opMode.hardwareMap.get(DistanceSensor.class, "ScorClawDist");
+        frontSensor = opMode.hardwareMap.get(DigitalChannel.class, "DistanceFront");
         linkage.teleop();
         claw.teleop();
         perkid.teleop();
@@ -226,7 +243,7 @@ public class StateMachine {
         } else {
             lift.currentMode = Lift.Mode.DEFAULT;
         }
-        if (state != State.PICK_UP_THE_BLOCK) {
+        if (state != State.PICK_UP_SAMPLE) {
             startForgetPosTimer = false;
             stopForgetPosTimer = false;
         }
@@ -244,6 +261,7 @@ public class StateMachine {
                 break;
             case INITIAL:
                 if (rightSideDropSampleTimer.milliseconds() > 850) {
+                    element = ElementState.SPECIMEN;
                     sampleIsScored = false;
                     startTimer = false;
                     startTimerFromClawToClaw = false;
@@ -277,7 +295,7 @@ public class StateMachine {
                     if (autoScoreState == AutoScoreState.SCORING && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
                         amountAutoscored += 1;
                         if (amountAutoscored < AMOUNT_TO_SCORE) {
-                            state = State.PICK_SPEC;
+                            state = State.PICK_SPECIMEN;
                             driveModule.followTrajectory(fullCycle[amountAutoscored]);
                         } else {
                             autoScoreState = AutoScoreState.INACTIVE;
@@ -292,7 +310,7 @@ public class StateMachine {
                     }
 
                     if (gamepad2.square || stickyGamepad1.square) {
-                        state = State.LOOK_FOR_BLOCK;
+                        state = State.LOOK_FOR_SAMPLE;
                     }
                     if (gamepad2.cross) {
                         state = State.TRANSFER_SPEC;
@@ -303,12 +321,12 @@ public class StateMachine {
                         claw.currentMode = Claw.Mode.DROP;
                         specimenPickedUp.reset();
                         scorerDifferential.currentMode = ScorerDifferential.Mode.AIM_POS;
-                        state = State.PICK_SPEC;
+                        state = State.PICK_SPECIMEN;
                     }
                 }
                 break;
 
-            case PICK_SPEC:
+            case PICK_SPECIMEN:
                 scorerClaw.currentMode = ScorerClaw.Mode.PICK;
                 scorerDifferential.currentMode = ScorerDifferential.Mode.AIM_POS;
                 scorerLinkage.retract();
@@ -316,7 +334,7 @@ public class StateMachine {
                 if (autoScoreState == AutoScoreState.SCORING && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
                     amountAutoscored += 1;
                     if (amountAutoscored < AMOUNT_TO_SCORE) {
-                        state = State.PICK_SPEC;
+                        state = State.PICK_SPECIMEN;
                         driveModule.followTrajectory(fullCycle[amountAutoscored]);
                     } else {
                         autoScoreState = AutoScoreState.INACTIVE;
@@ -377,7 +395,7 @@ public class StateMachine {
 
                 if (!gamepad2.circle || !gamepad1.options) {
                     if (!frontSensor.getState()) {
-                        state = State.SCORE_SPEC;
+                        state = State.SCORE_SPECIMEN;
                         claw.currentMode = Claw.Mode.RELAX;
                         fromTransferSpecimenToScore.reset();
                     }
@@ -388,7 +406,7 @@ public class StateMachine {
                 }
                 break;
 
-            case SCORE_SPEC:
+            case SCORE_SPECIMEN:
                 scorerPerkid.currentMode = ScorerPerkid.Mode.SCOR_SPEC;
                 if (scorerDifferential.currentMode != ScorerDifferential.Mode.AFTER_SCORE_SPEC) {
                     scorerDifferential.currentMode = ScorerDifferential.Mode.PICK_SPEC;
@@ -428,7 +446,7 @@ public class StateMachine {
                 }
                 if (gamepad1.square) {
                     diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
-                    state = State.LOOK_FOR_BLOCK_SCORSPEC;
+                    state = State.LOOK_FOR_SAMPLE_AFTER_SPECIMEN;
                     hand.setRotation(0.5);
                     pickedUnpickedTimer.reset();
                 }
@@ -442,34 +460,30 @@ public class StateMachine {
                     initialTimer.reset();
                 }
                 break;
-            case LOOK_FOR_BLOCK:
+            case LOOK_FOR_SAMPLE:
                 perkid.currentMode = Perkid.Mode.LOOK;
                 diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
                 scorerPerkid.currentMode = ScorerPerkid.Mode.TRANSFER;
-                scorerClaw.currentMode = ScorerClaw.Mode.DROP;
+                scorerClaw.currentMode = ScorerClaw.Mode.HALF_DROP;
                 scorerDifferential.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
                 hand.currentMode = Hand.Mode.DRIVER_CONTROL;
                 claw.currentMode = Claw.Mode.DROP;
                 scorerLinkage.retract();
+                lift.setReference(0);
 
                 if (gamepad2.triangle || gamepad1.triangle) {
                     state = State.INITIAL;
                     initialTimer.reset();
                 }
-
-                if (gamepad2.cross || stickyGamepad1.square) {
-                    state = State.PICK_UP_THE_BLOCK;
+                if (stickyGamepad1.square || gamepad2.cross) {
+                    state = State.PICK_UP_SAMPLE;
                     pickedUnpickedTimer.reset();
                 }
                 if (gamepad1.touchpad) {
-
-                    state = State.PICK_UP_THE_BLOCK_WITH_APPENDIX;
-                    pickedUnpickedTimer.reset();
+                    element = ElementState.SAMPLE;
                 }
-
                 break;
-
-            case LOOK_FOR_BLOCK_SCORSPEC:
+            case LOOK_FOR_SAMPLE_AFTER_SPECIMEN:
                 perkid.currentMode = Perkid.Mode.LOOK;
                 diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
                 scorerClaw.currentMode = ScorerClaw.Mode.DROP;
@@ -481,13 +495,13 @@ public class StateMachine {
                     initialTimer.reset();
                 }
                 if (gamepad2.cross || stickyGamepad1.square) {
-                    state = State.PICK_UP_THE_BLOCK_SCORSPEC;
+                    state = State.PICK_UP_SAMPLE_AFTER_SPECIMEN;
                     pickedUnpickedTimer.reset();
                 }
 
                 break;
 
-            case PICK_UP_THE_BLOCK_SCORSPEC:
+            case PICK_UP_SAMPLE_AFTER_SPECIMEN:
                 perkid.currentMode = Perkid.Mode.PICK_UP;
                 diff.currentMode = Differential.Mode.PICK_UP;
 
@@ -509,7 +523,7 @@ public class StateMachine {
                 }
 
                 if (gamepad2.right_bumper || gamepad1.circle) {
-                    state = State.LOOK_FOR_BLOCK_SCORSPEC;
+                    state = State.LOOK_FOR_SAMPLE_AFTER_SPECIMEN;
                 }
                 if (gamepad2.cross) {
                     startFromClawToClaw = true;
@@ -518,16 +532,6 @@ public class StateMachine {
                     perekidTimer.reset();
                     state = State.SPECIMEN_TO_INITIAL;
                 }
-                /*if (gamepad1.triangle) {
-                    scorerPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
-                    scorerDifferential.currentMode = ScorerDifferential.Mode.PICK_SPEC;
-                    if (distInClaw.getDistance(DistanceUnit.MM) >= 17) {
-                        specimenPickedUp.reset();
-                    }
-                    if (specimenPickedUp.milliseconds() > WAIT_UNTIL_SPECIMEN_PICKUP) {
-                        state = State.PICK_SPEC;
-                    }
-                }*/
                 if (startFromClawToClaw) {
                     claw.currentMode = Claw.Mode.PICK;
                     perkid.currentMode = Perkid.Mode.LOOK;
@@ -586,7 +590,7 @@ public class StateMachine {
                     }
                     if (gamepad2.cross || gamepad1.square) {
 
-                        state = State.PICK_UP_THE_BLOCK_SCORSPEC;
+                        state = State.PICK_UP_SAMPLE_AFTER_SPECIMEN;
                         pickedUnpickedTimer.reset();
                     }
                 }
@@ -599,7 +603,7 @@ public class StateMachine {
                 }
 
                 if (gamepad2.square) {
-                    state = State.LOOK_FOR_BLOCK;
+                    state = State.LOOK_FOR_SAMPLE;
                 }
                 if (gamepad2.cross) {
                     state = State.TRANSFER_SPEC;
@@ -610,20 +614,34 @@ public class StateMachine {
                     specimenPickedUp.reset();
                 }
                 if (specimenPickedUp.milliseconds() > WAIT_UNTIL_SPECIMEN_PICKUP) {
-                    state = State.PICK_SPEC;
+                    state = State.PICK_SPECIMEN;
                 }
 
                 break;
-            case PICK_UP_THE_BLOCK:
+            case PICK_UP_SAMPLE:
 
                 perkid.currentMode = Perkid.Mode.PICK_UP;
                 diff.currentMode = Differential.Mode.PICK_UP;
                 scorerDifferential.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
+                lift.setReference(0);
 
                 if (pickedUnpickedTimer.milliseconds() > 200) {
-                    claw.currentMode = Claw.Mode.PICK;
+                    if (element == ElementState.SPECIMEN) {
+                        claw.currentMode = Claw.Mode.PICK;
+                    }
+                    else {
+                        claw.currentMode = Claw.Mode.TRANSFER;
+                    }
+
                     if (pickedUnpickedTimer.milliseconds() >= PICKED_UNPICKED_PICK_BLOCK) {
-                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSIBLE;
+                        if (element == ElementState.SPECIMEN) {
+                            perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSIBLE;
+                        } else {
+                            perkid.currentMode = Perkid.Mode.LIFT_AND_LOCK;
+                            diff.currentMode = Differential.Mode.LIFT_AND_LOCK;
+                            claw.currentMode = Claw.Mode.TRANSFER_LIGHT;
+                        }
+
                         if (gamepad2.right_stick_y != 0 || gamepad1.cross && !startForgetPosTimer) {
                             startForgetPosTimer = true;
                         }
@@ -637,62 +655,63 @@ public class StateMachine {
                 }
 
                 if (gamepad2.right_bumper || gamepad1.circle) {
-                    state = State.LOOK_FOR_BLOCK;
+                    state = State.LOOK_FOR_SAMPLE;
                 }
-                if (gamepad2.cross || gamepad1.touchpad) {
-                    startFromClawToClaw = true;
-                }
-                if (startFromClawToClaw) {
-                    claw.currentMode = Claw.Mode.PICK;
-                    startTimerFromClawToClaw = true;
-                }
-                if (!startTimerFromClawToClaw) {
+                if ((gamepad2.cross || stickyGamepad1.cross) && element == ElementState.SAMPLE) {
                     fromClawToClawTimer.reset();
-                }
-                if (startTimerFromClawToClaw && fromClawToClawTimer.milliseconds() >= 300) {
-                    state = State.FROM_CLAW_TO_CLAW;
-                    startedMovingExtendBack = false;
+                    transferState = TransferState.FLIP_PERKID;
+                    state = State.STATEFUL_FROM_CLAW_TO_CLAW;
                 }
                 break;
-            case PICK_UP_THE_BLOCK_WITH_APPENDIX:
+            case STATEFUL_FROM_CLAW_TO_CLAW:
+                switch (transferState) {
+                    case FLIP_PERKID:
+                        claw.currentMode = Claw.Mode.TRANSFER;
+                        scorerClaw.currentMode = ScorerClaw.Mode.DROP;
+                        hand.currentMode = Hand.Mode.FORWARD;
+                        scorerDifferential.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
+                        scorerPerkid.currentMode = ScorerPerkid.Mode.TRANSFER;
+                        diff.currentMode = Differential.Mode.TRANSFER;
+                        perkid.currentMode = Perkid.Mode.TRANSFER;
+                        linkage.currentMode = Linkage.Mode.PURE_PID;
 
-                perkid.currentMode = Perkid.Mode.PICK_UP;
-                diff.currentMode = Differential.Mode.PICK_UP;
-                scorerDifferential.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
-
-                if (pickedUnpickedTimer.milliseconds() > 200) {
-                    claw.currentMode = Claw.Mode.TRANSFER;
-                    if (pickedUnpickedTimer.milliseconds() >= PICKED_UNPICKED_PICK_BLOCK) {
-                        perkid.currentMode = Perkid.Mode.TRANSFER_FROM_SUBMERSIBLE;
-                        if (gamepad2.right_stick_y != 0 || gamepad1.cross && !startForgetPosTimer) {
-                            startForgetPosTimer = true;
+                        if (fromClawToClawTimer.milliseconds() > WAIT_SAMPLE_SCORER_FLIP) {
+                            linkage.currentMode = Linkage.Mode.POWER;
+                            transferState = TransferState.RETRACT_LINKAGE;
+                            fromClawToClawTimer.reset();
                         }
-                        if (!startForgetPosTimer) {
-                            forgetPosTimer.reset();
+                        break;
+                    case RETRACT_LINKAGE:
+                        linkage.currentMode = Linkage.Mode.POWER;
+                        if (linkage.getPosition() > 0 && linkage.getAmps() < EXTEND_AMPS) {
+                            linkage.setPower(-1);
+                        } else {
+                            transferState = TransferState.RESET_ENCODER;
+                            fromClawToClawTimer.reset();
                         }
-                        if (forgetPosTimer.milliseconds() >= SET_POS_TO_ZERO_SAMPLE) {
-                            diff.rotation = 0;
+                        break;
+                    case RESET_ENCODER:
+                        if (fromClawToClawTimer.milliseconds() < 100) {
+                            linkage.setPower(-1);
+                            linkage.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            linkage.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                        } else {
+                            linkage.setReference(0);
+                            linkage.currentMode = Linkage.Mode.PURE_PID;
+                            transferState = TransferState.DO_OTHER;
+                            scorerClaw.currentMode = ScorerClaw.Mode.PICK;
+                            fromClawToClawTimer.reset();
                         }
-                    }
+                        break;
+                    case DO_OTHER:
+                        if (fromClawToClawTimer.milliseconds() > 100) {
+                            claw.currentMode = Claw.Mode.DROP;
+                            state = State.SCORE_SAMPLE;
+                            linkage.currentMode = Linkage.Mode.DRIVER_CONTROL;
+                        }
+                        break;
                 }
-
-                if (gamepad2.right_bumper || gamepad1.circle) {
-                    state = State.LOOK_FOR_BLOCK;
-                }
-                if (gamepad2.cross || gamepad1.touchpad) {
-                    startFromClawToClaw = true;
-                }
-                if (startFromClawToClaw) {
-                    claw.currentMode = Claw.Mode.PICK;
-                    startTimerFromClawToClaw = true;
-                }
-                if (!startTimerFromClawToClaw) {
-                    fromClawToClawTimer.reset();
-                }
-                if (startTimerFromClawToClaw && fromClawToClawTimer.milliseconds() >= 300) {
-                    state = State.FROM_CLAW_TO_CLAW;
-                    startedMovingExtendBack = false;
-                }
+                opMode.telemetry.addData("transferState", transferState);
                 break;
             case FROM_CLAW_TO_CLAW:
                 startFromClawToClaw = false;
@@ -703,12 +722,13 @@ public class StateMachine {
                     scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                     hand.currentMode = Hand.Mode.FORWARD;
                     scorerDifferential.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
-                    scorerPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
+                    scorerPerkid.currentMode = ScorerPerkid.Mode.TRANSFER;
                     diff.currentMode = Differential.Mode.TRANSFER;
                     perkid.currentMode = Perkid.Mode.TRANSFER;
                 }
                 // START RECTRACTING THE LINKAGE
-                else if (fromClawToClawTimer.milliseconds() > WAIT_SAMPLE_SCORER_FLIP && fromClawToClawTimer.milliseconds() <= WAIT_START_LINKAGE_RETRACT && !startedMovingExtendBack) {
+                else if (fromClawToClawTimer.milliseconds() > WAIT_SAMPLE_SCORER_FLIP && !startedMovingExtendBack) {
+                    claw.currentMode = Claw.Mode.TRANSFER;
                     linkage.currentMode = Linkage.Mode.POWER;
                     linkage.setPower(-1);
                     fromClawToClawTimer.reset();
@@ -716,7 +736,7 @@ public class StateMachine {
                 }
                 if (startedMovingExtendBack && linkage.getAmps() < EXTEND_AMPS && !stoppedMovingExtendBack) {
                     fromClawToClawTimer.reset();
-                } else {
+                } else if (linkage.getAmps() > EXTEND_AMPS) {
                     linkage.setReference(linkage.getPosition());
                     stoppedMovingExtendBack = true;
                 }
@@ -738,30 +758,24 @@ public class StateMachine {
                 // OPEN THE SAMPLE CLAW
                 else if (startedMovingExtendBack
                         && stoppedMovingExtendBack) {
-                    claw.currentMode = Claw.Mode.DROP;
-                    if (gamepad2.left_stick_y != 0) {
-                        linkage.setReference(linkage.motor.getCurrentPosition());
-                    }
-                }
 
-                if (fromClawToClawTimer.milliseconds() > 1050 + OFFSET_CLAW_CLOSE
-                        && startedMovingExtendBack
-                        && linkage.currentMode == Linkage.Mode.PURE_PID) {
+                    claw.currentMode = Claw.Mode.DROP;
                     startPickUpBlock = false;
                     state = State.SCORE_SAMPLE;
                     linkage.currentMode = Linkage.Mode.DRIVER_CONTROL;
                 }
+                /*
+                if (fromClawToClawTimer.milliseconds() > 1050 + OFFSET_CLAW_CLOSE
+                        && startedMovingExtendBack
+                        && stoppedMovingExtendBack) {
 
-                if (gamepad2.circle || gamepad1.options) {
-                    dropSpecimenTimer.reset();
-                    state = State.DROP_SPECIMEN_TO_HUMAN_ZONE;
-                    linkage.currentMode = Linkage.Mode.DRIVER_CONTROL;
                 }
-                if (gamepad2.triangle || gamepad1.triangle) {
-                    state = State.INITIAL;
-                    initialTimer.reset();
-                    linkage.currentMode = Linkage.Mode.DRIVER_CONTROL;
-                }
+
+                 */
+
+                opMode.telemetry.addData("startedMovingExtendBack", startedMovingExtendBack);
+                opMode.telemetry.addData("stoppedMovingExtendBack", stoppedMovingExtendBack);
+                opMode.telemetry.addData("linkage_state", linkage.currentMode);
                 break;
             case DROP_SPECIMEN_TO_HUMAN_ZONE:
                 linkage.currentMode = Linkage.Mode.DRIVER_CONTROL;
@@ -786,70 +800,62 @@ public class StateMachine {
                     sampleIsScored = false;
                     startTimer = false;
                     startTimerFromClawToClaw = false;
-                    state = State.LOOK_FOR_BLOCK;
+                    state = State.LOOK_FOR_SAMPLE;
                 }
                 break;
             case SCORE_SAMPLE:
                 scorerPerkid.currentMode = ScorerPerkid.Mode.SCORE_SAMP;
                 scorerDifferential.currentMode = ScorerDifferential.Mode.SCORE_SAMP;
+
+                lift.setSample();
+
                 if (gamepad2.right_bumper || gamepad1.circle) {
                     sampleIsScored = true;
+                    goToInitialFromScoreSample.milliseconds();
                 }
                 if (gamepad2.triangle || gamepad1.triangle) {
                     state = State.INITIAL;
                     initialTimer.reset();
                 }
-                if (sampleIsScored && Math.abs(gamepad1.left_stick_y) >= 0.1 && !startPickUpBlock) {
-                    specimenToTransfer.reset();
-                    startPickUpBlock = true;
-                }
-                if (startPickUpBlock && sampleIsScored && specimenToTransfer.milliseconds() > 200 || gamepad1.square || gamepad2.circle) {
-                    pickedUnpickedTimer.reset();
-                    sampleIsScored = false;
-                    startTimer = false;
-                    startTimerFromClawToClaw = false;
-                    state = State.LOOK_FOR_BLOCK;
-                }
                 if (sampleIsScored) {
-                    scorerClaw.currentMode = ScorerClaw.Mode.DROP;
+                    scorerClaw.currentMode = ScorerClaw.Mode.HALF_DROP;
                     diff.rotation = 0;
-                    if (Math.abs(gamepad1.left_stick_y) >= 0.4) {
+                    if (gamepad1.left_stick_y > -0.1) {
                         goToInitialFromScoreSample.reset();
-                        startTimer = true;
                     }
 
-                    if (goToInitialFromScoreSample.milliseconds() >= 550 && startTimer) {
-                        //  lift.pos = 0;
+                    if (goToInitialFromScoreSample.milliseconds() >= REGISTER_MOVEMENT_AFTER_2) {
                         pickedUnpickedTimer.reset();
                         sampleIsScored = false;
                         startTimer = false;
                         startTimerFromClawToClaw = false;
-                        state = State.LOOK_FOR_BLOCK;
+                        state = State.LOOK_FOR_SAMPLE;
                     }
                 }
                 break;
         }
 
-        linearOpMode.telemetry.addData("Heading", driveModule.drive.getRawExternalHeading());
-        linearOpMode.telemetry.addData("distance", distInClaw.getDistance(DistanceUnit.MM));
-        linearOpMode.telemetry.addData("state", state);
-        linearOpMode.telemetry.addData("perkid_state", perkid.currentMode);
-        linearOpMode.telemetry.addData("diff_state", diff.currentMode);
-        linearOpMode.telemetry.addData("hand_state", hand.currentMode);
-        linearOpMode.telemetry.addData("hand_rotation", hand.rotation);
-        linearOpMode.telemetry.addData("scorDiff_state", scorerDifferential.currentMode);
-        linearOpMode.telemetry.addData("scorPerkid_state", scorerPerkid.currentMode);
-        linearOpMode.telemetry.addData("transfer_timer", fromClawToClawTimer);
-        linearOpMode.telemetry.addData("lift_left", lift.getPosition());
-        linearOpMode.telemetry.addData("lift_right", lift.getPosition());
-        linearOpMode.telemetry.addData("lift_ref", lift.getReference());
-        linearOpMode.telemetry.addData("extend", linkage.motor.getCurrentPosition());
-        linearOpMode.telemetry.addData("extend_reference", linkage.getReference());
-        linearOpMode.telemetry.addData("StartTimer", startTimer);
-        linearOpMode.telemetry.addData("hang", hang.hang.getCurrentPosition());
-        linearOpMode.telemetry.addData("extend_voltage", linkage.motor.getCurrent(CurrentUnit.AMPS));
-        linearOpMode.telemetry.addData("drive_state", driveModule.currentMode);
-        linearOpMode.telemetry.update();
+        opMode.telemetry.addData("Heading", driveModule.drive.getRawExternalHeading());
+        opMode.telemetry.addData("distance", distInClaw.getDistance(DistanceUnit.MM));
+        opMode.telemetry.addData("state", state);
+        opMode.telemetry.addData("element", element);
+        opMode.telemetry.addData("perkid_state", perkid.currentMode);
+        opMode.telemetry.addData("diff_state", diff.currentMode);
+        opMode.telemetry.addData("hand_state", hand.currentMode);
+        opMode.telemetry.addData("hand_rotation", hand.rotation);
+        opMode.telemetry.addData("scorDiff_state", scorerDifferential.currentMode);
+        opMode.telemetry.addData("scorPerkid_state", scorerPerkid.currentMode);
+        opMode.telemetry.addData("transfer_timer", fromClawToClawTimer);
+        opMode.telemetry.addData("lift_left", lift.getPosition());
+        opMode.telemetry.addData("lift_right", lift.getPosition());
+        opMode.telemetry.addData("lift_ref", lift.getReference());
+        opMode.telemetry.addData("extend", linkage.motor.getCurrentPosition());
+        opMode.telemetry.addData("extend_reference", linkage.getReference());
+        opMode.telemetry.addData("StartTimer", startTimer);
+        opMode.telemetry.addData("hang", hang.hang.getCurrentPosition());
+        opMode.telemetry.addData("extend_voltage", linkage.motor.getCurrent(CurrentUnit.AMPS));
+        opMode.telemetry.addData("drive_state", driveModule.currentMode);
+        opMode.telemetry.update();
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("left_motor_pos", lift.getPosition());
@@ -900,7 +906,7 @@ public class StateMachine {
                     driveModule.drive.setForce(SLOWDOWN_FORCE);
                 })
                 .addSpatialMarker(t + POINT_SPECIMEN_START_SCORE, () -> {
-                    state = State.SCORE_SPEC;
+                    state = State.SCORE_SPECIMEN;
                     scorerClaw.currentMode = ScorerClaw.Mode.PICK;
                     fromTransferSpecimenToScore.reset();
 
@@ -931,7 +937,7 @@ public class StateMachine {
                 })
                 .waitForAt(t + 2, WAIT_END, -90)
                 .addTimeMarker(WAIT_END - 100, () -> {
-                    state = State.PICK_SPEC;
+                    state = State.PICK_SPECIMEN;
                 });
     }
 }

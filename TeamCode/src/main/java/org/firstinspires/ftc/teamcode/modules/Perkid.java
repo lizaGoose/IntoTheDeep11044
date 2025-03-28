@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.modules;
 
 
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.AIM_AT_SPIKE;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.LIFT_AND_LOCK_SAMPLE;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.LOOK_POS;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.PICK_UP;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.RIGHT_SIDE_DROP_SAMPLE;
@@ -31,7 +32,8 @@ public class Perkid {
         PICK_UP,
         TRANSFER_FROM_SUBMERSIBLE,
         RIGHT_SIDE_DROP_SAMPLE,
-        RELAX
+        RELAX,
+        LIFT_AND_LOCK
     }
 
     Mode currentMode = Mode.SCORE_POSITION;
@@ -70,6 +72,10 @@ public class Perkid {
             case RELAX:
                 left.setPwmDisable();
                 right.setPwmDisable();
+                break;
+            case LIFT_AND_LOCK:
+                left.setPosition(LIFT_AND_LOCK_SAMPLE);
+                right.setPosition(LIFT_AND_LOCK_SAMPLE);
                 break;
         }
     }
@@ -127,12 +133,13 @@ public class Perkid {
     static
     class PerkidConstants {
         public static double VERTICAL_POS = 0.7;
-        public static double STRAIGHT_POS = 0.29;
+        public static double STRAIGHT_POS = 0.3;
 
-        public static double TRANSFER_POS = 1;
+        public static double TRANSFER_POS = 0.88;
         public static double LOOK_POS = 0.33;
         public static double AIM_AT_SPIKE = 0.33;
-        public static double TRANSFER_FROM_SUBMERSABLE = 0.32;
+        public static double TRANSFER_FROM_SUBMERSABLE = 0.35;
+        public static double LIFT_AND_LOCK_SAMPLE = 0.5;
 
         public static double PICK_UP = 0.2;
         public static double RIGHT_SIDE_DROP_SAMPLE = 0.85;

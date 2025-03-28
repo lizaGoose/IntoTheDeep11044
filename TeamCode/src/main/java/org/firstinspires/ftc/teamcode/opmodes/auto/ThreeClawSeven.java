@@ -168,7 +168,7 @@ public class ThreeClawSeven extends LinearOpMode {
     /**
      * @noinspection SuspiciousNameCombination
      */
-    private AnalyzedSample sample = new AnalyzedSample(Y, Z, 0, SampleColor.RED, 1);
+    private AnalyzedSample sample = new AnalyzedSample(Y, Z, 0, SampleColor.RED);
 
     // Make this true somewhere to stop program
     private boolean DEBUG_END_FLAG = false;

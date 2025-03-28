@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules;
 
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.LIFT_AND_LOCK;
 import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.PICK_UP;
 import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.ROTATION_SPEED;
 import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.DISCRETE_ROTATION;
@@ -51,11 +52,11 @@ public class Differential {
         STRAIGHT_DOWN_DISCRETE,
         SCORE_SAMP,
         ROTATION_FROM_DPAD,
-        VISION_HUYNYA,
         RIGHT_SIDE_DROP_SAMPLE,
         TRANSFER_ROT,
         RELAX,
-        ANGLE
+        ANGLE,
+        LIFT_AND_LOCK
     }
 
     public Mode currentMode = Mode.TRANSFER;
@@ -163,54 +164,6 @@ public class Differential {
                 left.setPosition(SCORE_SAMP);
                 right.setPosition(SCORE_SAMP);
                 break;
-            case VISION_HUYNYA:
-
-                   /* if((lastCamera <= 90) && (cameraAngle < 0) && (cameraAngle > -10) && (lastCamera > 0)){
-                        rotation = 0;
-                    }
-                    else if((lastCamera >= -90) && (cameraAngle > 0)&& (cameraAngle < 10) && (lastCamera < 0)){
-                        rotation = 0;
-                    }*/
-
-                //  if(!(cameraAngle > -10 && cameraAngle < 10)){
-                if (cameraAngle > 10 && left.getPosition() > 0.7) {
-                    rotation = -90;
-                } else if (left.getPosition() == 1 && cameraAngle > -10) {
-                    rotation = -90;
-                } else if (cameraAngle < -10 && left.getPosition() < 0.3) {
-                    rotation = 90;
-                } else if (left.getPosition() == 0 && cameraAngle > 10) {
-                    rotation = 90;
-                } else {
-                    if (timer.seconds() > wait) {
-                        if (cameraAngle == -95) {
-                            cameraAngle = lastCamera;
-                        }
-                        rotation = ClawCalculation.rotationFromAngle(DifferentialConstants.DOWN, left.getPosition()) + cameraAngle;
-                        if (rotation > 90) {
-                            rotation = -90 + rotation - 90;
-                        }
-                        if (rotation < -90) {
-                            rotation = 90 + rotation + 90;
-                        }
-                        if (gamepad2.dpad_left) {
-                            angle_config = 45;
-                        }
-                        diff = ClawCalculation.angleAndRotToDiffFix(DifferentialConstants.DOWN, rotation);
-                        lastCamera = cameraAngle;
-                        timer.reset();
-                    }
-                    //
-                }
-
-
-              /*  else if(left.getPosition() >= 0.6 || left.getPosition() <= 0.4) {
-                    diff = ClawCalculation.angleAndRotToDiffFix(angle_config, 90);
-                }*/
-
-                left.setPosition(diff.get(0));
-                right.setPosition(diff.get(1));
-                break;
             case RIGHT_SIDE_DROP_SAMPLE:
                 rotation = RIGHT_SIDE_DROP_SAMPLE_ROTATION;
                 rotation = Math.max(rotation, -0.5);
@@ -226,6 +179,10 @@ public class Differential {
             case ANGLE:
                 left.setPosition(leftPosition);
                 right.setPosition(rightPosition);
+                break;
+            case LIFT_AND_LOCK:
+                left.setPosition(LIFT_AND_LOCK);
+                right.setPosition(LIFT_AND_LOCK);
                 break;
         }
     }
@@ -309,7 +266,7 @@ public class Differential {
     class DifferentialConstants {
         public static double PICK_UP = 0.53;
         public static double PICK_UP_ANGLE = -45;
-        public static double TRANSFER = 0.98;
+        public static double TRANSFER = 0.96;
         public static double TRANSFER_ROTATION = 0;
         public static double SCORE_SAMP = 0.68;
 
@@ -318,6 +275,7 @@ public class Differential {
         public static double ROTATION_SPEED = 0.35;
         public static double FORWARD = 0.79; // IMPORTANT
         public static double DOWN = 0.395; // IMPORTANT
+        public static double LIFT_AND_LOCK = 0.6;
         public static double RIGHT_SIDE_DROP_SAMPLE = 0.975;
         public static double RIGHT_SIDE_DROP_SAMPLE_ROTATION = 0.3;
     }

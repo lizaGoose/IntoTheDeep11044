@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.camera.AnalyzedSample;
 import org.firstinspires.ftc.teamcode.camera.AutoCamera;
+import org.firstinspires.ftc.teamcode.camera.LimelightCamera;
 import org.firstinspires.ftc.teamcode.camera.SampleColor;
 import org.firstinspires.ftc.teamcode.hardware.StickyKeys;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
 import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +41,8 @@ public class InverseKinematicsCameraTest extends OpMode {
     private static final double X = 25.3 - 83.76641;
     private static final double Y = 0;
     private static final double Z = 127.45;
+
+    public static double SAMPLE_X = 0, SAMPLE_Y = 0;
     public static double PICK_UP_LIFT_OFFSET = 20;
     public static double HAND_COEFF = 0.01;
 
@@ -50,7 +54,7 @@ public class InverseKinematicsCameraTest extends OpMode {
     private Lift lift;
     private ScorerPerkid scorerPerkid;
     private FtcDashboard dashboard;
-    private AutoCamera camera;
+    private LimelightCamera camera;
     private StickyKeys stickyKeys;
     private ElapsedTime globalTimer;
     private ElapsedTime pickUpTimer;
@@ -61,10 +65,13 @@ public class InverseKinematicsCameraTest extends OpMode {
         AIM,
         PICKUP
     }
+
     private State state = State.IDLE;
     private double pickUpDelta = 0;
-
-    private AnalyzedSample targetSample = new AnalyzedSample(Y, Z, 0, SampleColor.RED, 1);
+    /**
+     * @noinspection SuspiciousNameCombination
+     */
+    private AnalyzedSample targetSample = new AnalyzedSample(Y, Z, 0, SampleColor.RED);
     private List<Double> kinematicsResult;
 
     @Override
@@ -74,9 +81,10 @@ public class InverseKinematicsCameraTest extends OpMode {
         perkid = new Perkid(this);
         hand = new Hand(this);
         claw = new Claw(this);
-        camera = new AutoCamera(this);
-        camera.operatorControlRed();
-        camera.startCamera();
+        camera = new LimelightCamera(this);
+        telemetry.setMsTransmissionInterval(11);
+        camera.setPipeline(LimelightCamera.Pipeline.THRESHOLD_BLUE);
+        camera.start();
         lift = new Lift(this);
         scorerPerkid = new ScorerPerkid(this);
         stickyKeys = new StickyKeys();
@@ -94,17 +102,28 @@ public class InverseKinematicsCameraTest extends OpMode {
 
     @Override
     public void init_loop() {
-       globalTimer.reset();
+        camera.getResult().ifPresent(llResult -> {
+            telemetry.addData("pipeline_index", llResult.getPipelineIndex());
+            telemetry.addData("latency", llResult.getTargetingLatency());
+            telemetry.addData("type", llResult.getPipelineType());
+            telemetry.addData("pythonOutput", Arrays.toString(llResult.getPythonOutput()));
+        });
+        globalTimer.reset();
+    }
+
+    @Override
+    public void start() {
+        camera.setPipeline(LimelightCamera.Pipeline.PYTHON_BLUE_2);
     }
 
     @Override
     public void loop() {
-        AnalyzedSample sample = camera.getOptimalSamplePosition(lift.getPosition(), scorerPerkid.getPos())
+        AnalyzedSample sample = camera.getSamplePose(lift.getPosition(), scorerPerkid.getPos())
                 .orElse(targetSample);
 
         if (stickyKeys.triangle) {
             state = State.AIMING;
-            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, sample.x, sample.y);
+            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, sample.x + SAMPLE_X, sample.y + SAMPLE_Y);
             if (!kinematicsResult.contains(Double.NaN)) {
                 linkage.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
@@ -116,7 +135,7 @@ public class InverseKinematicsCameraTest extends OpMode {
         }
 
         if (stickyKeys.circle) {
-            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, sample.x, sample.y);
+            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, sample.x + SAMPLE_X, sample.y + SAMPLE_Y);
             if (!kinematicsResult.contains(Double.NaN)) {
                 linkage.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
@@ -135,7 +154,7 @@ public class InverseKinematicsCameraTest extends OpMode {
         }
 
         if (gamepad1.cross) {
-            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, sample.x, sample.y);
+            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X, sample.x + SAMPLE_X, sample.y + SAMPLE_Y);
             if (!kinematicsResult.contains(Double.NaN)) {
                 linkage.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
@@ -151,7 +170,7 @@ public class InverseKinematicsCameraTest extends OpMode {
 
         if (state == State.AIM) {
             state = State.PICKUP;
-            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X - PICK_UP_OFFSET, targetSample.x, targetSample.y);
+            kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X - PICK_UP_OFFSET, targetSample.x + SAMPLE_X, targetSample.y + SAMPLE_Y);
             if (!kinematicsResult.contains(Double.NaN)) {
                 linkage.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
@@ -164,10 +183,10 @@ public class InverseKinematicsCameraTest extends OpMode {
             pickUpDelta += globalTimer.milliseconds();
             if (pickUpDelta < PICK_UP_CLOSE_AFTER) {
                 claw.open();
-            } else if (pickUpDelta < PICK_UP_LIFT_AFTER){
+            } else if (pickUpDelta < PICK_UP_LIFT_AFTER) {
                 claw.close();
             } else {
-                kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X + PICK_UP_LIFT_OFFSET, targetSample.x, targetSample.y);
+                kinematicsResult = ClawCalculation.inverseKinematics_noAngle(X + PICK_UP_LIFT_OFFSET, targetSample.x + SAMPLE_X, targetSample.y + SAMPLE_Y);
                 if (!kinematicsResult.contains(Double.NaN)) {
                     linkage.setPositionMillimeters(kinematicsResult.get(0));
                     perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
@@ -204,6 +223,13 @@ public class InverseKinematicsCameraTest extends OpMode {
 
         stickyKeys.update(gamepad1);
 
+        camera.getResult().ifPresent(llResult -> {
+            telemetry.addData("pipeline_index", llResult.getPipelineIndex());
+            telemetry.addData("latency", llResult.getTargetingLatency());
+            telemetry.addData("type", llResult.getPipelineType());
+            telemetry.addData("pythonOutput", Arrays.toString(Arrays.stream(llResult.getPythonOutput()).limit(8).toArray()));
+        });
+
         telemetry.addData("lift", lift.getPosition());
         telemetry.addData("lift_reference", lift.getReference());
         telemetry.addData("extend_mm", linkage.getPositionMillimeters());
@@ -214,11 +240,14 @@ public class InverseKinematicsCameraTest extends OpMode {
         telemetry.addData("theta1", Math.toDegrees(kinematicsResult.get(1)));
         telemetry.addData("theta2", Math.toDegrees(kinematicsResult.get(2)));
         telemetry.addData("theta3", Math.toDegrees(kinematicsResult.get(1)));
-        telemetry.addData("pure_sample", camera.getSample().flatMap(x -> Optional.of(x.toString())).orElse("none"));
         telemetry.addData("sample", sample);
         telemetry.addData("targetSample", targetSample);
         telemetry.addData("loop_time_ns", globalTimer.nanoseconds());
-        telemetry.addData("samples_list", camera.pip.getDetectedSamples());
         globalTimer.reset();
+    }
+
+    @Override
+    public void stop() {
+        camera.stop();
     }
 }

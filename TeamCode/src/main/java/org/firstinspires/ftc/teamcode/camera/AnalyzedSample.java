@@ -7,17 +7,15 @@ public class AnalyzedSample implements Cloneable {
     SampleColor sampleColor;
     public double x;
     public double y;
-    double area;
 
     AnalyzedSample() {
     }
 
-    public AnalyzedSample(double x, double y, double angle, SampleColor sampleColor, double area) {
+    public AnalyzedSample(double x, double y, double angle, SampleColor sampleColor) {
         this.x = x;
         this.y = y;
         this.angle = angle;
         this.sampleColor = sampleColor;
-        this.area = area;
     }
 
     @NonNull
@@ -28,10 +26,10 @@ public class AnalyzedSample implements Cloneable {
                 ", sampleColor=" + sampleColor +
                 ", x=" + x +
                 ", y=" + y +
-                ", area=" + area +
                 '}';
     }
 
+    /** @noinspection UnnecessaryLocalVariable*/
     @NonNull
     @Override
     public AnalyzedSample clone() {

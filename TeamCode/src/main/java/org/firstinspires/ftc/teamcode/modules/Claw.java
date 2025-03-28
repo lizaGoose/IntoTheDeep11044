@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.modules;
 
 
-import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.DROP;
-import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.DROP_APPENDIX;
-import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.PICK;
+import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.LIGHT;
+import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.OPEN;
+import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.CLOSED;
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.PICK_APPENDIX;
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.SOME_APPENDIX;
 
@@ -22,7 +22,9 @@ public class Claw {
     public enum Mode {
         PICK,
         DROP,
+        HALF_DROP,
         TRANSFER,
+        TRANSFER_LIGHT,
         RELAX
     }
 
@@ -38,16 +40,20 @@ public class Claw {
     public void teleop() {
         switch (currentMode) {
             case PICK:
-                claw.setPosition(ClawConstants.PICK);
+                claw.setPosition(ClawConstants.CLOSED);
                 appendix.setPosition(ClawConstants.SOME_APPENDIX);
                 break;
             case DROP:
-                claw.setPosition(ClawConstants.DROP);
+                claw.setPosition(ClawConstants.OPEN);
                 appendix.setPosition(ClawConstants.DROP_APPENDIX);
                 break;
             case TRANSFER:
-                claw.setPosition(ClawConstants.PICK);
+                claw.setPosition(ClawConstants.STRANGLE);
                 appendix.setPosition(ClawConstants.PICK_APPENDIX);
+                break;
+            case TRANSFER_LIGHT:
+                claw.setPosition(LIGHT);
+                appendix.setPosition(PICK_APPENDIX);
                 break;
             case RELAX:
                 claw.setPwmDisable();
@@ -56,11 +62,11 @@ public class Claw {
     }
 
     public void open() {
-        claw.setPosition(DROP);
+        claw.setPosition(OPEN);
     }
 
     public void close() {
-        claw.setPosition(PICK);
+        claw.setPosition(CLOSED);
     }
 
     public void closeAppendix() {
@@ -74,8 +80,10 @@ public class Claw {
     @Config
     static
     class ClawConstants{
-        public static double PICK = 0.7;
-        public static double DROP = 0.31;
+        public static double CLOSED = 0.7;
+        public static double LIGHT = 0.695;
+        public static double OPEN = 0.31;
+        public static double STRANGLE = 0.73;
         public static double DROP_APPENDIX = 0.35;
         public static double SOME_APPENDIX = 0.37;
         public static double PICK_APPENDIX = 0.85;

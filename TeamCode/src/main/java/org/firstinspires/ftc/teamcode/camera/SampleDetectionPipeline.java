@@ -289,7 +289,6 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         analyzedSample.sampleColor = sampleColor;
         analyzedSample.x = rotRectX;
         analyzedSample.y = rotRectY;
-        analyzedSample.area = rotatedRectFitToContour.size.area();
 
         internalSampleList.add(analyzedSample);
 
