@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.camera.AnalyzedSample;
-import org.firstinspires.ftc.teamcode.camera.AutoCamera;
 import org.firstinspires.ftc.teamcode.camera.LimelightCamera;
 import org.firstinspires.ftc.teamcode.camera.SampleColor;
 import org.firstinspires.ftc.teamcode.hardware.StickyKeys;
@@ -24,7 +23,6 @@ import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Config
 @TeleOp(group = "test")
@@ -33,8 +31,10 @@ public class InverseKinematicsCameraTest extends OpMode {
     // 345 - 240 = 105
     // 240 - 105 = 135
     // 135 345
-    public static double OFFSET = 60;
-    public static double PICK_UP_OFFSET = 60;
+    // 230 * k + b = 20
+    //
+    public static double OFFSET = 20;
+    public static double PICK_UP_OFFSET = 70;
     public static double PICK_UP_CLOSE_AFTER = 100;
     public static double PICK_UP_LIFT_AFTER = 200;
     public static double EXTEND_MIN_ERROR = 20;
@@ -42,7 +42,7 @@ public class InverseKinematicsCameraTest extends OpMode {
     private static final double Y = 0;
     private static final double Z = 127.45;
 
-    public static double SAMPLE_X = 0, SAMPLE_Y = 0;
+    public static double SAMPLE_X = -20, SAMPLE_Y = 0;
     public static double PICK_UP_LIFT_OFFSET = 20;
     public static double HAND_COEFF = 0.01;
 
@@ -113,12 +113,12 @@ public class InverseKinematicsCameraTest extends OpMode {
 
     @Override
     public void start() {
-        camera.setPipeline(LimelightCamera.Pipeline.PYTHON_BLUE_2);
+        camera.setPipeline(LimelightCamera.Pipeline.PYTHON_RED);
     }
 
     @Override
     public void loop() {
-        AnalyzedSample sample = camera.getSamplePose(lift.getPosition(), scorerPerkid.getPos())
+        AnalyzedSample sample = camera.getSamplePose(lift.getPosition(), scorerPerkid.getAngle())
                 .orElse(targetSample);
 
         if (stickyKeys.triangle) {

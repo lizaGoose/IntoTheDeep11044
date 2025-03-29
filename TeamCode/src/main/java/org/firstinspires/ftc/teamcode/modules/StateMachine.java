@@ -57,7 +57,7 @@ class SensorsConstants {
 class TeleOpConstants {
     public static double WAIT_UNTIL_SPECIMEN_PICKUP = 1;
     public static double REGISTER_MOVEMENT_AFTER = 450;
-    public static double REGISTER_MOVEMENT_AFTER_2 = 450;
+    public static double REGISTER_MOVEMENT_AFTER_2 = 300;
     public static double SET_POS_TO_ZERO_SAMPLE = 300;
     public static double PICKED_UNPICKED_PICK_BLOCK = 300;
 
@@ -69,7 +69,7 @@ class TeleOpConstants {
     public static double POSE_X = -17.939825444151644;
     public static double POSE_Y = 64.98661527894448;
 
-    public static double WAIT_SAMPLE_SCORER_FLIP = 900;
+    public static double WAIT_SAMPLE_SCORER_FLIP = 300;
     public static double WAIT_START_LINKAGE_RETRACT = 1600;
 
     public static double DISTANCE = 22;
@@ -658,6 +658,7 @@ public class StateMachine {
                     state = State.LOOK_FOR_SAMPLE;
                 }
                 if ((gamepad2.cross || stickyGamepad1.cross) && element == ElementState.SAMPLE) {
+                    linkage.setReference(linkage.getPosition());
                     fromClawToClawTimer.reset();
                     transferState = TransferState.FLIP_PERKID;
                     state = State.STATEFUL_FROM_CLAW_TO_CLAW;
@@ -808,6 +809,7 @@ public class StateMachine {
                 scorerDifferential.currentMode = ScorerDifferential.Mode.SCORE_SAMP;
 
                 lift.setSample();
+                //scorerLinkage.sample();
 
                 if (gamepad2.right_bumper || gamepad1.circle) {
                     sampleIsScored = true;

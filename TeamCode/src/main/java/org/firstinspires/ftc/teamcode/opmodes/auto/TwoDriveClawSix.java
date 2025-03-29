@@ -6,7 +6,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.IN
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_INTAKE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.POINT_MOVE_PERKID_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommonConstants.WAIT_START;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_1ST;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_2ND;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_3RD;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_4TH;
@@ -23,6 +22,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.WAIT_SPECIMEN_PICK_UP;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydWarshallConstants.ANGLE_AT_RIGHT_SAMPLE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydWarshallConstants.DEBUG_WAIT;
+import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydWarshallConstants.DELTA_1ST;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydWarshallConstants.DELTA_6TH;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydWarshallConstants.DIFFERENTIAL_ROTATION;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.TwoDriveClawSix.FloydWarshallConstants.EXTEND_RIGHT_SAMPLE;
@@ -59,7 +59,6 @@ import org.firstinspires.ftc.teamcode.auto.Drive;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.camera.AnalyzedSample;
-import org.firstinspires.ftc.teamcode.camera.AutoCamera;
 import org.firstinspires.ftc.teamcode.camera.LimelightCamera;
 import org.firstinspires.ftc.teamcode.camera.SampleColor;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
@@ -78,10 +77,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-@Autonomous(name = "Floyd Warshall Blue 6+0")
+@Autonomous(name = "Floyd Warshall Red 6+0")
 public class TwoDriveClawSix extends LinearOpMode {
     @Config
     public static class FloydWarshallConstants {
+        public static double DELTA_1ST = 0;
         public static double DELTA_6TH = -1.1;
 
         public static double WAIT_AT_RIGHT_SAMPLE = 500 + 150 + 650;
@@ -97,26 +97,28 @@ public class TwoDriveClawSix extends LinearOpMode {
         public static double POINT_RIGHT_SIDE_DROP = 0.3;
         public static double POINT_OPEN_CLAW_RIGHT = 0.9;
 
-        public static double SLOWDOWN_POINT_RUNG_0 = 0.82;
+        public static double SLOWDOWN_POINT_RUNG_0 = 0.72;
         public static double SLOWDOWN_POINT_HUMAN = 0.65;
         public static double SLOWDOWN_POINT_HUMAN_1 = 0.9;
         public static double SLOWDOWN_POINT_HUMAN_SIX = 0.9;
         public static double POINT_RETRACT_EXTEND = 0.8;
 
         public static double WAIT_PICK_UP_SUM = 2400;
-        public static double WAIT_FOR_DETECTION = 800;
-        public static double WAIT_AFTER_STOP_FOR_SUB_SAMPLE = 300;
-        public static double WAIT_FOR_LINKAGE_EXTEND = 1000;
+        public static double WAIT_FOR_DETECTION = 200;
+        public static double WAIT_AFTER_STOP_FOR_SUB_SAMPLE = 600;
+        public static double WAIT_FOR_LINKAGE_EXTEND = 300;
 
-        public static double LINKAGE_OFFSET = 60;
+        public static double LINKAGE_OFFSET = 0 ;
         public static double DEBUG_WAIT = 0;
     }
 
     private static final double X = 25.3 - 83.76641;
-    private static final double X_PICK = X - 60;
-    private static final double X_LIFT = X + 10;
+    private static final double X_PICK = X - 70;
+    private static final double X_LIFT = X + 20;
     private static final double Y = 0;
     private static final double Z = 127.45;
+    private static final double SAMPLE_X = -20;
+    private static final double SAMPLE_Y = 0;
 
     private Drive drive;
     private ScorerPerkid scorerPerkid;
@@ -173,9 +175,10 @@ public class TwoDriveClawSix extends LinearOpMode {
                     .addSpatialMarker(SLOWDOWN_POINT_RUNG_0, () -> {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
-                    .waitForAt(1, WAIT_PICK_UP_SUM, -90)
+                    //.waitForAt(1, WAIT_PICK_UP_SUM, -90)
+                    .waitForAt(1, WAIT_FOR_DETECTION + WAIT_AFTER_STOP_FOR_SUB_SAMPLE + WAIT_FOR_LINKAGE_EXTEND + 300, -90)
                     .addTimeMarker(WAIT_FOR_DETECTION, true, () -> {
-                        camera.getSamplePose(lift.getPosition(), scorerPerkid.getPos())
+                        camera.getSamplePose(lift.getPosition(), scorerPerkid.getAngle())
                                 .ifPresent(analyzedSample -> {
                                     DETECTED = true;
                                     sample = analyzedSample;
@@ -183,7 +186,7 @@ public class TwoDriveClawSix extends LinearOpMode {
                         camera.takeSnapshot();
                     })
                     .addTimeMarker(WAIT_AFTER_STOP_FOR_SUB_SAMPLE, true, () -> {
-                        List<Double> result = ClawCalculation.inverseKinematics(X, sample.x, sample.y, sample.angle);
+                        List<Double> result = ClawCalculation.inverseKinematics(X, sample.x + SAMPLE_X, sample.y + SAMPLE_Y, sample.angle);
                         if (!result.contains(Double.NaN)) {
                             linkage.setPositionMillimeters(result.get(0) - LINKAGE_OFFSET);
                             perkid.setAngle(result.get(1));
@@ -192,7 +195,7 @@ public class TwoDriveClawSix extends LinearOpMode {
                         }
                     })
                     .addTimeMarker(WAIT_FOR_LINKAGE_EXTEND, true, () -> {
-                        List<Double> result = ClawCalculation.inverseKinematics(X_PICK, sample.x, sample.y, sample.angle);
+                        List<Double> result = ClawCalculation.inverseKinematics(X_PICK, sample.x + SAMPLE_X, sample.y + SAMPLE_Y, sample.angle);
                         if (!result.contains(Double.NaN)) {
                             linkage.setPositionMillimeters(result.get(0) - LINKAGE_OFFSET);
                             perkid.setAngle(result.get(1));
@@ -207,18 +210,19 @@ public class TwoDriveClawSix extends LinearOpMode {
                         List<Double> result = ClawCalculation.inverseKinematics(X_LIFT, Y, Z, 0);
                         if (!result.contains(Double.NaN)) {
                             linkage.setPositionMillimeters(result.get(0));
-                            perkid.setAngle(result.get(1));
+                            //perkid.setAngle(result.get(1));
+                            perkid.liftSample();
                             hand.setAngle(result.get(2));
                             diff.setAngleRotation(-91, result.get(4));
                         }
                     })
-                    .plusPoint(2, new Vector2d(0, DELTA_1ST))
-                    .plusPoint(3, new Vector2d(0, DELTA_1ST))
+                    .plusPoint(2, new Vector2d(DELTA_1ST, 0))
+                    .plusPoint(3, new Vector2d(DELTA_1ST, 0))
                     .build();
             trajRungToHuman = drive.buildTrajectory("rung_to_observ.json")
                     .addTurnMarker(0, -90)
-                    .plusPoint(0, new Vector2d(0, DELTA_1ST))
-                    .plusPoint(1, new Vector2d(0, DELTA_1ST))
+                    .plusPoint(0, new Vector2d(DELTA_1ST, 0))
+                    .plusPoint(1, new Vector2d(DELTA_1ST, 0))
                     .addSpatialMarker(0, () -> {
                         drive.setForce(FORCE);
                         scorerClaw.open();
@@ -245,8 +249,8 @@ public class TwoDriveClawSix extends LinearOpMode {
                     .build();
             trajRungToThreeToThird = drive.buildTrajectory("auto_2_samp_drive.json")
                     .addTurnMarker(0, -90)
-                    .plusPoint(0, new Vector2d(0, DELTA_1ST))
-                    .plusPoint(1, new Vector2d(0, DELTA_1ST))
+                    .plusPoint(0, new Vector2d(DELTA_2ND, 0))
+                    .plusPoint(1, new Vector2d(DELTA_2ND, 0))
                     .addSpatialMarker(0, () -> {
                         drive.setForce(FORCE);
                         scorerDifferential.liftAfterScoreSpecimen();
@@ -420,7 +424,7 @@ public class TwoDriveClawSix extends LinearOpMode {
 
         waitForStart();
 
-        camera.setPipeline(LimelightCamera.Pipeline.PYTHON_BLUE_2);
+        camera.setPipeline(LimelightCamera.Pipeline.PYTHON_RED);
 
 
         // ********************* WAIT **************************************************
@@ -449,7 +453,7 @@ public class TwoDriveClawSix extends LinearOpMode {
                 telemetry.addData("pythonOutput", Arrays.toString(Arrays.stream(llResult.getPythonOutput()).limit(8).toArray()));
             });
 
-            camera.getSamplePose(lift.getPosition(), scorerPerkid.getPos()).ifPresent(sample -> {
+            camera.getSamplePose(lift.getPosition(), scorerPerkid.getPosition()).ifPresent(sample -> {
                 telemetry.addData("sample_X", sample.x);
                 telemetry.addData("sample_Y", sample.y);
                 telemetry.addData("sample_angle", sample.angle);

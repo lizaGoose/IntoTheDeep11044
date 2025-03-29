@@ -8,6 +8,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
+import java.time.Clock;
+import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 /*
 import cv2 as cv
@@ -170,7 +173,7 @@ public class LimelightCamera {
 
     public enum Pipeline {
         PYTHON_BLUE(0), PYTHON_SAMPLE(1), THRESHOLD_BLUE(2),
-        PYTHON_BLUE_2(3);
+        PYTHON_BLUE_2(3), PYTHON_RED(4);
 
         /**
          * @noinspection unused
@@ -192,7 +195,10 @@ public class LimelightCamera {
 
     public void setPipeline(Pipeline pipeline) {
         currentPipeline = pipeline;
-        limelight.pipelineSwitch(pipeline.index);
+        boolean result = false;
+        while (!result) {
+            result = limelight.pipelineSwitch(pipeline.index);
+        };
     }
 
     public void start() {
@@ -234,13 +240,13 @@ public class LimelightCamera {
 
     private final int WIDTH = 480;
     private final int HEIGHT = 640;
-    private final double b = 53.5;
+    private final double b = 69;
     private final double ticksPerInchLift = 21.25 / 811;
 
     public Optional<AnalyzedSample> getSamplePose(double liftPosition, double scorerAngle) {
         return getPythonOutput().map(output -> {
             // 0.5774195 * 310 - 179 = 0 ????????????????????
-            double a = scorerAngle * 310 - 179;
+            double a = scorerAngle;
             double l = 116 / 25.4;
 
             double x1 = ( output[2] - (double) WIDTH / 2 ) * 0.475 / WIDTH;
@@ -254,7 +260,11 @@ public class LimelightCamera {
             Vector3D Current = mul(C, k, P, ( 1 - k ));
 
             SampleColor color;
-            color = SampleColor.BLUE;
+            if (Objects.requireNonNull(currentPipeline) == Pipeline.PYTHON_RED) {
+                color = SampleColor.RED;
+            } else {
+                color = SampleColor.BLUE;
+            }
 
             return new AnalyzedSample(
                     Current.getX() * 25.4,

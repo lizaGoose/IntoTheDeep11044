@@ -11,6 +11,8 @@ public class TeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         StateMachine modules = new StateMachine(this);
 
+        telemetry.setMsTransmissionInterval(11);
+
         waitForStart();
         while (opModeIsActive()){
             modules.teleop();

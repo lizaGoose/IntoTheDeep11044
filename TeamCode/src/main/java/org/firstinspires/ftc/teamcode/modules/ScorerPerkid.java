@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.modules;
 
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRANSFER_POS;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.AIM_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.DOWN;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.DROP_SAMPLE_TO_HUMAN;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.EXTRA_PICK_SPEC;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.PICK_SPECIMEN;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCORE_SAMP;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCORE_SPECIMEN;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.STRAIGHT;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.TRANSFER_SPECIMEN;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -108,9 +110,29 @@ public class ScorerPerkid {
         left.setPosition(SCORE_SAMP);
         right.setPosition(SCORE_SAMP);
     }
-    public double getPos(){
-        return  left.getPosition();
+
+    public double getPosition() {
+        return left.getPosition();
     }
+
+    // 0.52 * k + b = 0
+    // 0.82 * k + b = 1
+    // 0.3 * K = 1
+    // K = 3
+    // b = -1.56
+
+    // D * k + b = 0
+    // S * k + b = 1
+    // (S - D) * K = 1
+    // K = 1 / (S - D)
+    // b =  D / (S - D)
+
+    public double getAngle() {
+        double position = getPosition();
+        double SD = 1 / (STRAIGHT - DOWN);
+        return (position * SD - DOWN * SD) * 90;
+    }
+
 
     @Config
     static
@@ -120,9 +142,12 @@ public class ScorerPerkid {
         public static double EXTRA_PICK_SPEC = 0.36;
         public static double AIM_SPEC = 0.45;
         public static double DROP_SAMPLE_TO_HUMAN = 0.35;
-        public static double TRANSFER_POS = 0.45;
+        public static double TRANSFER_POS = 0.46;
         public static double SCORE_SAMP = 0.02;
         public static double TRANSFER_SPECIMEN = 0.845;
         public static double SCORE_SPECIMEN = 0.845;
+
+        public static double DOWN = 0.52;
+        public static double STRAIGHT = 0.825;
     }
 }

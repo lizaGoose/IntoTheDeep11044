@@ -21,8 +21,6 @@ public class LimelightCameraTest extends LinearOpMode {
         cam.setPipeline(LimelightCamera.Pipeline.THRESHOLD_BLUE);
         cam.start();
 
-        waitForStart();
-
         while (opModeInInit()) {
             cam.getResult().ifPresent(llResult -> {
                 telemetry.addData("pipeline_index", llResult.getPipelineIndex());
@@ -31,6 +29,8 @@ public class LimelightCameraTest extends LinearOpMode {
                 telemetry.update();
             });
         }
+
+        waitForStart();
 
         cam.setPipeline(LimelightCamera.Pipeline.PYTHON_BLUE_2);
 

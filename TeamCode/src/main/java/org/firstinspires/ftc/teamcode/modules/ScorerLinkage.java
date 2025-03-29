@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules;
 
 import static org.firstinspires.ftc.teamcode.modules.ScorerLinkage.ScorerLinkageConstants.LEBRON;
+import static org.firstinspires.ftc.teamcode.modules.ScorerLinkage.ScorerLinkageConstants.SAMPLE;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,6 +17,7 @@ public class ScorerLinkage {
         public static double RETRACTED = 0.05;
         public static double LEBRON = 0.65;
         public static double EXTENDED = 0.94;
+        public static double SAMPLE = 0.65;
     }
 
     public ScorerLinkage(HardwareMap hardwareMap) {
@@ -32,6 +34,10 @@ public class ScorerLinkage {
 
     public void lebron() {
         servo.setPosition(LEBRON);
+    }
+
+    public void sample() {
+        servo.setPosition(SAMPLE);
     }
 
     public void retract() {

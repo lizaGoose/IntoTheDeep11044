@@ -72,7 +72,7 @@ public class InverseKinematicsTest extends OpMode {
     public void loop() {
         List<Double> res = ClawCalculation.inverseKinematics_noAngle(X, Y, Z);
 
-        Optional<AnalyzedSample> sampleOpt = camera.getSamplePose(lift.getPosition(), scorerPerkid.getPos());
+        Optional<AnalyzedSample> sampleOpt = camera.getSamplePose(lift.getPosition(), scorerPerkid.getPosition());
 
         if (!res.contains(null)) {
             linkage.setPositionMillimeters(res.get(0));
@@ -99,7 +99,8 @@ public class InverseKinematicsTest extends OpMode {
             telemetry.addData("sample_angle", sample.angle);
         });
 
-        telemetry.addData("scorerPerkid Angle", scorerPerkid.getPos() * 310 - 179);
+        telemetry.addData("scorerPerkid Angle", scorerPerkid.getPosition() * 310 - 179);
+        telemetry.addData("scorerPerkid True Angle", scorerPerkid.getAngle());
 //        telemetry.addData("extend", linkage.getPositionMillimeters());
 //        telemetry.addData("d0", res.get(0));
 //        telemetry.addData("theta1", Math.toDegrees(res.get(1)));

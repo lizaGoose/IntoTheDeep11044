@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.modules;
 import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.COEFFICIENTS;
 import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.MAX_POSITION;
 import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.MIN_POSITION;
+import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.SAMPLE_POS;
 import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.SPECIMEN_POS;
 import static org.firstinspires.ftc.teamcode.modules.Lift.LiftConstants.POWER_DOWN;
 
@@ -132,7 +133,7 @@ public class Lift {
     }
 
     public void setSample() {
-        setReference(MAX_POSITION);
+        setReference(SAMPLE_POS);
     }
 
     // ?????????????????????????????
@@ -201,6 +202,7 @@ public class Lift {
         public static double d = 0.00047;
 
         public static int SPECIMEN_POS = 380;
+        public static int SAMPLE_POS = 830;
 
         public static int MAX_POSITION = 830;
         public static int MIN_POSITION = 0;
