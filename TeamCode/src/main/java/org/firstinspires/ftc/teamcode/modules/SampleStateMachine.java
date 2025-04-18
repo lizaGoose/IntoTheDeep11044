@@ -152,7 +152,7 @@ public class SampleStateMachine {
             stopForgetPosTimer = false;
         }
         if (hang.hang.getCurrentPosition() >= 500) {
-            scorPerkid.currentMode = ScorerPerkid.Mode.TRANSFER;
+            scorPerkid.currentMode = ScorerPerkid.Mode.TRANSFER_SAMPLE;
             scorDiff.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
             linkage.setHang();
             state = State.EMPTY;
@@ -187,7 +187,7 @@ public class SampleStateMachine {
 
                     perkid.currentMode = Perkid.Mode.TRANSFER;
                     claw.currentMode = Claw.Mode.TRANSFER;
-                    scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
+                    scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPECIMEN;
                     scorDiff.currentMode = ScorerDifferential.Mode.PICK_SPEC;
                     hand.currentMode = Hand.Mode.FORWARD;
                     scorerClaw.currentMode = ScorerClaw.Mode.DROP;
@@ -221,7 +221,7 @@ public class SampleStateMachine {
                 lift.setReference(0);
                 //diff.currentMode = Differential.Mode.VISION_HUYNYA;
                 diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
-                scorPerkid.currentMode = ScorerPerkid.Mode.TRANSFER;
+                scorPerkid.currentMode = ScorerPerkid.Mode.TRANSFER_SAMPLE;
                 scorerClaw.currentMode = ScorerClaw.Mode.DROP;
                 scorDiff.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
                 hand.currentMode = Hand.Mode.DRIVER_CONTROL;
@@ -287,7 +287,7 @@ public class SampleStateMachine {
                         pickedUnpickedTimer.reset();
                     }
                 }
-                scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
+                scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPECIMEN;
                 scorDiff.currentMode = ScorerDifferential.Mode.PICK_SPEC;
                 scorerClaw.currentMode = ScorerClaw.Mode.DROP;
 
@@ -359,7 +359,7 @@ public class SampleStateMachine {
                     claw.currentMode = Claw.Mode.TRANSFER;
                     hand.currentMode = Hand.Mode.FORWARD;
                     scorDiff.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
-                    scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
+                    scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPECIMEN;
                     diff.currentMode = Differential.Mode.TRANSFER;
                     perkid.currentMode = Perkid.Mode.TRANSFER;
                 } else if (fromClawToClawTimer.milliseconds() >500 && fromClawToClawTimer.milliseconds() <= 800 && !startedMovingExtendBack) {
@@ -380,7 +380,7 @@ public class SampleStateMachine {
                 if (fromClawToClawTimer.milliseconds() > 0 && fromClawToClawTimer.milliseconds() <= 100 + OFFSET_CLAW_CLOSE
                         && startedMovingExtendBack
                         && stoppedMovingExtendBack) {
-                    scorPerkid.currentMode = ScorerPerkid.Mode.TRANSFER;
+                    scorPerkid.currentMode = ScorerPerkid.Mode.TRANSFER_SAMPLE;
                 } else if (fromClawToClawTimer.milliseconds() > 50 + OFFSET_CLAW_CLOSE && fromClawToClawTimer.milliseconds() <= 150 + OFFSET_CLAW_CLOSE
                         && startedMovingExtendBack
                         && stoppedMovingExtendBack) {
@@ -416,7 +416,7 @@ public class SampleStateMachine {
                 linkage.currentMode = Linkage.Mode.DRIVER_CONTROL;
                 perkid.currentMode = Perkid.Mode.TRANSFER;
                 claw.currentMode = Claw.Mode.TRANSFER;
-                scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPEC;
+                scorPerkid.currentMode = ScorerPerkid.Mode.PICK_SPECIMEN;
                 scorDiff.currentMode = ScorerDifferential.Mode.PICK_SPEC;
                 hand.currentMode = Hand.Mode.FORWARD;
                 diff.currentMode = Differential.Mode.TRANSFER;
@@ -456,7 +456,7 @@ public class SampleStateMachine {
                 break;
             case SCORE_SAMPLE:
                 startedMovingExtendBack = false;
-                scorPerkid.currentMode = ScorerPerkid.Mode.SCORE_SAMP;
+                scorPerkid.currentMode = ScorerPerkid.Mode.SCORE_SAMPLE;
                 scorDiff.currentMode = ScorerDifferential.Mode.SCORE_SAMP;
                 // lift.pos = 1330;
                 if (gamepad2.right_bumper || gamepad1.circle) {

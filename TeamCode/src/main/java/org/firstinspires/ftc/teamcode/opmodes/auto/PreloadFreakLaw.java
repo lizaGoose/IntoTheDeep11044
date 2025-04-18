@@ -116,7 +116,7 @@ public class PreloadFreakLaw extends LinearOpMode {
             trajToRungs = drive.buildTrajectory("traj10transposed.json")
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(POINT_MOVE_PERKID_0, () -> {
-                        scorerPerkid.transferSpecimen();
+                        scorerPerkid.scoreSpecimen();
                         scorerDifferential.pickSpecimen();
                         perkid.liftSample();
                         hand.setPosition(0.5);
@@ -328,7 +328,7 @@ public class PreloadFreakLaw extends LinearOpMode {
                     })
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(POINT_PERKID_START_0, () -> {
-                        scorerPerkid.transferSpecimen();
+                        scorerPerkid.scoreSpecimen();
                         scorerDifferential.pickSpecimen();
                         scorerClaw.close();
 

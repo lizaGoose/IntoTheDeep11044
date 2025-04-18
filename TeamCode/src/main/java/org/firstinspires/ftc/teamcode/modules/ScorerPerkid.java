@@ -1,20 +1,12 @@
 package org.firstinspires.ftc.teamcode.modules;
 
 
-import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRANSFER_POS;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.AIM_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.DOWN;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.DROP_SAMPLE_TO_HUMAN;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.EXTRA_PICK_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.PICK_SPECIMEN;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCORE_SAMP;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCORE_SPECIMEN;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.STRAIGHT;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.TRANSFER_SPECIMEN;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.UP;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -23,19 +15,17 @@ import org.firstinspires.ftc.teamcode.camera.CameraTest;
 public class ScorerPerkid {
     OpMode opMode;
     Gamepad gamepad1;
-    DcMotor extend;
     CameraTest cam;
     Servo left, right;
 
     enum Mode {
-        PICK_SPEC,
-        TRANSFER,
-        SCORE_SAMP,
-        TRANSFER_SPEC,
-        SCOR_SPEC,
+        PICK_SPECIMEN,
+        SCORE_SAMPLE,
+        SCORE_SPECIMEN,
+        TRANSFER_SAMPLE
     }
 
-    Mode currentMode = Mode.PICK_SPEC;
+    Mode currentMode = Mode.PICK_SPECIMEN;
 
     public ScorerPerkid(OpMode opMode) {
         this.opMode = opMode;
@@ -48,106 +38,78 @@ public class ScorerPerkid {
 
     public void teleop() {
         switch (currentMode) {
-            case PICK_SPEC:
-                left.setPosition(ScorerPerkidConstants.PICK_SPECIMEN);
-                right.setPosition(ScorerPerkidConstants.PICK_SPECIMEN);
+            case PICK_SPECIMEN:
+                setAngle(ScorerPerkidConstants.PICK_SPECIMEN);
                 break;
-            case TRANSFER:
-                left.setPosition(ScorerPerkidConstants.TRANSFER_POS);
-                right.setPosition(ScorerPerkidConstants.TRANSFER_POS);
+            case SCORE_SAMPLE:
+                setAngle(ScorerPerkidConstants.SCORE_SAMPLE);
                 break;
-            case SCORE_SAMP:
-                left.setPosition(ScorerPerkidConstants.SCORE_SAMP);
-                right.setPosition(ScorerPerkidConstants.SCORE_SAMP);
+            case SCORE_SPECIMEN:
+                setAngle(ScorerPerkidConstants.SCORE_SPECIMEN);
                 break;
-            case TRANSFER_SPEC:
-                left.setPosition(ScorerPerkidConstants.TRANSFER_SPECIMEN);
-                right.setPosition(ScorerPerkidConstants.TRANSFER_SPECIMEN);
-                break;
-            case SCOR_SPEC:
-                left.setPosition(ScorerPerkidConstants.SCORE_SPECIMEN);
-                right.setPosition(ScorerPerkidConstants.SCORE_SPECIMEN);
+            case TRANSFER_SAMPLE:
+                setAngle(ScorerPerkidConstants.TRANSFER_SAMPLE);
                 break;
         }
     }
 
-    public void transferSample() {
-        left.setPosition(TRANSFER_POS);
-        right.setPosition(TRANSFER_POS);
-    }
-
-    public void transferSpecimen() {
-        left.setPosition(TRANSFER_SPECIMEN);
-        right.setPosition(TRANSFER_SPECIMEN);
-    }
-
     public void pickSpecimen() {
-        left.setPosition(PICK_SPECIMEN);
-        right.setPosition(PICK_SPECIMEN);
+        setAngle(ScorerPerkidConstants.PICK_SPECIMEN);
     }
 
+    @Deprecated
     public void pushIntoSpecimen() {
-        left.setPosition(EXTRA_PICK_SPEC);
-        right.setPosition(EXTRA_PICK_SPEC);
+        setAngle(ScorerPerkidConstants.PICK_SPECIMEN);
     }
 
+    @Deprecated
     public void aimAtSpecimen() {
-        left.setPosition(AIM_SPEC);
-        right.setPosition(AIM_SPEC);
+        setAngle(ScorerPerkidConstants.PICK_SPECIMEN);
     }
 
     public void scoreSpecimen() {
-        left.setPosition(SCORE_SPECIMEN);
-        right.setPosition(SCORE_SPECIMEN);
-    }
-
-    public void dropSampleToHuman() {
-        left.setPosition(DROP_SAMPLE_TO_HUMAN);
-        right.setPosition(DROP_SAMPLE_TO_HUMAN);
+        setAngle(SCORE_SPECIMEN);
     }
 
     public void scoreSample() {
-        left.setPosition(SCORE_SAMP);
-        right.setPosition(SCORE_SAMP);
+        setAngle(ScorerPerkidConstants.SCORE_SAMPLE);
     }
 
     public double getPosition() {
         return left.getPosition();
     }
 
-    // 0.52 * k + b = 0
-    // 0.82 * k + b = 1
-    // 0.3 * K = 1
-    // K = 3
-    // b = -1.56
+    public void setAngle(double angle) {
+        double position = ( angle / 90 ) * ( UP - STRAIGHT ) - ( UP - 2 * STRAIGHT );
 
-    // D * k + b = 0
-    // S * k + b = 1
-    // (S - D) * K = 1
-    // K = 1 / (S - D)
-    // b =  D / (S - D)
+        left.setPosition(position);
+        right.setPosition(position);
+    }
+
+    public double setAngleDebug(double angle) {
+        return ( angle / 90 ) * ( UP - STRAIGHT ) - ( UP - 2 * STRAIGHT );
+    }
+
+    // U * k + b = 2
 
     public double getAngle() {
         double position = getPosition();
-        double SD = 1 / (STRAIGHT - DOWN);
-        return (position * SD - DOWN * SD) * 90;
+        double US = 1 / ( UP - STRAIGHT );
+        return ( position * US - ( UP - 2 * STRAIGHT ) * US ) * 90;
     }
 
 
     @Config
     static
     class ScorerPerkidConstants {
-        public static double OLD_SCOR_SPEC = 0.97;
-        public static double PICK_SPECIMEN = 0.365;
-        public static double EXTRA_PICK_SPEC = 0.36;
-        public static double AIM_SPEC = 0.45;
-        public static double DROP_SAMPLE_TO_HUMAN = 0.35;
-        public static double TRANSFER_POS = 0.46;
-        public static double SCORE_SAMP = 0.02;
-        public static double TRANSFER_SPECIMEN = 0.845;
-        public static double SCORE_SPECIMEN = 0.845;
+        // ANGLES
+        public static double PICK_SPECIMEN = 325;
+        public static double SCORE_SAMPLE = 225;
+        public static double SCORE_SPECIMEN = 110;
+        public static double TRANSFER_SAMPLE = 80;
 
-        public static double DOWN = 0.52;
-        public static double STRAIGHT = 0.825;
+        // POSITIONS
+        public static double UP = 0.56;
+        public static double STRAIGHT = 0.82;
     }
 }
