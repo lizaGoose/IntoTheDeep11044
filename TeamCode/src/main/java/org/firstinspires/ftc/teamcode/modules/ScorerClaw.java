@@ -53,7 +53,6 @@ public class ScorerClaw {
                 claw.setPosition(HALF_OPEN);
                 break;
         }
-
     }
 
     public void open() {

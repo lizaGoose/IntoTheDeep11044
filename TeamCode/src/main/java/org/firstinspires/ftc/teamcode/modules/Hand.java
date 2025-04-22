@@ -100,9 +100,11 @@ public class Hand {
 
     @Config
     static class HandConstants {
-        public static double RANGE_START = 0.36;
-        public static double RANGE_END = 0.7;
-        public static double RANGE = 45;
+        public static final double RANGE_CENTER = 0.52;
+        public static final double RANGE_SPAN = 0.18;
+        public static final double RANGE_START = RANGE_CENTER - RANGE_SPAN;
+        public static final double RANGE_END = RANGE_CENTER + RANGE_SPAN;
+        public static double RANGE = 40;
 
         public static double RIGHT_SIDE_DROP_SAMPLE = 0.1;
         public static double FORWARD = 0.5;

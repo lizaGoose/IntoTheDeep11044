@@ -266,7 +266,7 @@ public class Differential {
     class DifferentialConstants {
         public static double PICK_UP = 0.53;
         public static double PICK_UP_ANGLE = -45;
-        public static double TRANSFER = 0.96;
+        public static double TRANSFER = 0.86;
         public static double TRANSFER_ROTATION = 0;
         public static double SCORE_SAMP = 0.68;
 

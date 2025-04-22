@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
+import org.firstinspires.ftc.teamcode.modules.Hand;
 
 @Config
 @TeleOp(group = "test")
@@ -13,14 +13,14 @@ public class HandTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        ScorerPerkid perkid = new ScorerPerkid(this);
+        Hand hand = new Hand(this);
 
         waitForStart();
 
         while (opModeIsActive()) {
-            telemetry.addData("position", perkid.setAngleDebug(angle));
+            telemetry.addData("position", hand.getAngle());
             telemetry.update();
-            perkid.setAngle(angle);
+            hand.setAngle(angle);
         }
     }
 }

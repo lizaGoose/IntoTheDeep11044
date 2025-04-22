@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.modules;
 
 
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCORE_SPECIMEN;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.STRAIGHT;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.TAKE_SAMPLE;
 import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.UP;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -10,12 +10,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.camera.CameraTest;
-
 public class ScorerPerkid {
     OpMode opMode;
     Gamepad gamepad1;
-    CameraTest cam;
     Servo left, right;
 
     enum Mode {
@@ -33,7 +30,6 @@ public class ScorerPerkid {
         left = opMode.hardwareMap.get(Servo.class, "left_scor_perkid");
         right = opMode.hardwareMap.get(Servo.class, "right_scor_perkid");
         right.setDirection(Servo.Direction.REVERSE);
-        cam = new CameraTest();
     }
 
     public void teleop() {
@@ -45,7 +41,7 @@ public class ScorerPerkid {
                 setAngle(ScorerPerkidConstants.SCORE_SAMPLE);
                 break;
             case SCORE_SPECIMEN:
-                setAngle(ScorerPerkidConstants.SCORE_SPECIMEN);
+                setAngle(ScorerPerkidConstants.SCORE_SPECIMEN_1);
                 break;
             case TRANSFER_SAMPLE:
                 setAngle(ScorerPerkidConstants.TRANSFER_SAMPLE);
@@ -67,12 +63,24 @@ public class ScorerPerkid {
         setAngle(ScorerPerkidConstants.PICK_SPECIMEN);
     }
 
+    public void posBetween() {
+        setAngle(ScorerPerkidConstants.SCORE_SPECIMEN_0);
+    }
+
     public void scoreSpecimen() {
-        setAngle(SCORE_SPECIMEN);
+        setAngle(ScorerPerkidConstants.SCORE_SPECIMEN_1);
     }
 
     public void scoreSample() {
         setAngle(ScorerPerkidConstants.SCORE_SAMPLE);
+    }
+
+    public void transferSample() {
+        setAngle(ScorerPerkidConstants.TRANSFER_SAMPLE);
+    }
+
+    public void takeSample() {
+        setAngle(ScorerPerkidConstants.TAKE_SAMPLE);
     }
 
     public double getPosition() {
@@ -90,8 +98,6 @@ public class ScorerPerkid {
         return ( angle / 90 ) * ( UP - STRAIGHT ) - ( UP - 2 * STRAIGHT );
     }
 
-    // U * k + b = 2
-
     public double getAngle() {
         double position = getPosition();
         double US = 1 / ( UP - STRAIGHT );
@@ -100,13 +106,14 @@ public class ScorerPerkid {
 
 
     @Config
-    static
-    class ScorerPerkidConstants {
+    static class ScorerPerkidConstants {
         // ANGLES
-        public static double PICK_SPECIMEN = 325;
-        public static double SCORE_SAMPLE = 225;
-        public static double SCORE_SPECIMEN = 110;
-        public static double TRANSFER_SAMPLE = 80;
+        public static double PICK_SPECIMEN = 324;
+        public static double SCORE_SAMPLE = 205;
+        public static double SCORE_SPECIMEN_0 = 270;
+        public static double SCORE_SPECIMEN_1 = 105;
+        public static double TRANSFER_SAMPLE = 85;
+        public static double TAKE_SAMPLE = 60;
 
         // POSITIONS
         public static double UP = 0.56;

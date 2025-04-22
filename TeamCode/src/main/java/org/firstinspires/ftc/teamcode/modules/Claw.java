@@ -25,6 +25,7 @@ public class Claw {
         HALF_DROP,
         TRANSFER,
         TRANSFER_LIGHT,
+        PICK_LIGHT,
         RELAX
     }
 
@@ -55,6 +56,9 @@ public class Claw {
                 claw.setPosition(LIGHT);
                 appendix.setPosition(PICK_APPENDIX);
                 break;
+            case PICK_LIGHT:
+                claw.setPosition(LIGHT);
+                appendix.setPosition(SOME_APPENDIX);
             case RELAX:
                 claw.setPwmDisable();
                 break;

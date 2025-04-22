@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.modules;
 
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.AFTER_SCORE_SPEC;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.AIM_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.GET_FROM_CLAW;
+import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.TRANSFER_SAMPLE;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.LEBRON;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.MOVE_SPECIMENS;
 import static org.firstinspires.ftc.teamcode.modules.ScorerDifferential.ScorerDifferentialConstants.OLD_SCORE_SPEC;
@@ -55,7 +55,7 @@ public class ScorerDifferential {
                 diff.setPosition(ScorerDifferentialConstants.PICK_SPECIMEN);
                 break;
             case GET_FROM_CLAW:
-                diff.setPosition(GET_FROM_CLAW);
+                diff.setPosition(TRANSFER_SAMPLE);
                 break;
             case SCORE_SAMP:
                 diff.setPosition(ScorerDifferentialConstants.SCORE_SAMP);
@@ -125,14 +125,14 @@ public class ScorerDifferential {
     class ScorerDifferentialConstants {
         public static double AIM_SPEC = 0.86;
         public static double PICK_SPECIMEN = 0.8;
-        public static double PUSH_INTO_SPECIMEN = 0.8;
-        public static double GET_FROM_CLAW = 0.3;
+        public static double PUSH_INTO_SPECIMEN = 0.88;
+        public static double TRANSFER_SAMPLE = 0.88;
         public static double SCORE_SAMP = 0.55;
         public static double LEBRON = 0.4;
-        public static double SCORE_SPEC = 0.87;
+        public static double SCORE_SPEC = 0.88;
         public static double OLD_SCORE_SPEC = 0.99;
         public static double AFTER_SCORE_SPEC = 0.83;
-        public static double TRANSFER_SPEC = 0.82;
+        public static double TRANSFER_SPEC = 0.88;
         public static double MOVE_SPECIMENS = 0.9;
 
     }
