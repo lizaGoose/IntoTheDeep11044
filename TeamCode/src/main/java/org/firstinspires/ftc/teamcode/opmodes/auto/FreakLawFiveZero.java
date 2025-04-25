@@ -53,6 +53,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -75,6 +76,7 @@ import org.firstinspires.ftc.teamcode.auto.Drive;
 
 import java.io.IOException;
 
+@Disabled
 @Autonomous(name = "FreakLaw 5+0")
 public class FreakLawFiveZero extends LinearOpMode {
     private Drive drive;

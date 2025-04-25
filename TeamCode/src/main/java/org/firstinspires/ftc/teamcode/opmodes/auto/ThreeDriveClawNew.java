@@ -51,6 +51,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -73,6 +74,7 @@ import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
 
 import java.io.IOException;
 
+@Disabled
 @Autonomous(name = "Lebron Three Drive 5+1")
 public class ThreeDriveClawNew extends LinearOpMode {
     @Config

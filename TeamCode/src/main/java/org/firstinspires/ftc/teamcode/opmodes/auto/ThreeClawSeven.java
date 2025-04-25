@@ -61,6 +61,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -101,8 +102,8 @@ public class ThreeClawSeven extends LinearOpMode {
 
         public static double SLOWDOWN_POINT_RUNG_0 = 0.82;
         public static double SLOWDOWN_POINT_HUMAN = 0.65;
-        public static double SLOWDOWN_POINT_HUMAN_1 = 0.9;
-        public static double SLOWDOWN_POINT_HUMAN_SIX = 0.9;
+        public static double SLOWDOWN_POINT_HUMAN_1 = 0.88;
+        public static double SLOWDOWN_POINT_HUMAN_SIX = 0.86;
         public static double POINT_RETRACT_EXTEND = 0.8;
 
         public static double WAIT_PICK_UP_SUM = 900;
@@ -262,8 +263,8 @@ public class ThreeClawSeven extends LinearOpMode {
                         scorerDifferential.liftAfterScoreSpecimen();
                     })
                     .addSpatialMarker(INITIAL, () -> {
-                        scorerPerkid.pushIntoSpecimen();
-                        scorerDifferential.pushIntoSpecimen();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
                         scorerLinkage.retract();
                     })
                     .addSpatialMarker(INITIAL + INITIAL_OFFSET, () -> {
@@ -430,7 +431,7 @@ public class ThreeClawSeven extends LinearOpMode {
                         hand.dropOverRightSide();
                         perkid.dropOverRightSide();
                         diff.dropOverRightSide();
-                        scorerPerkid.pushIntoSpecimen();
+                        scorerPerkid.pickSpecimen();
                         scorerDifferential.pickSpecimen();
                         scorerClaw.open();
                     })
@@ -490,8 +491,8 @@ public class ThreeClawSeven extends LinearOpMode {
                         scorerDifferential.liftAfterScoreSpecimen();
                     })
                     .addSpatialMarker(INITIAL, () -> {
-                        scorerPerkid.pushIntoSpecimen();
-                        scorerDifferential.pushIntoSpecimen();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
                         scorerClaw.open();
                         scorerLinkage.retract();
                     })
@@ -526,8 +527,8 @@ public class ThreeClawSeven extends LinearOpMode {
         drive.setForce(FORCE);
 
         scorerClaw.close();
-        scorerDifferential.aimSpecimen();
-        scorerPerkid.aimAtSpecimen();
+        scorerDifferential.pickSpecimen();
+        scorerPerkid.pickSpecimen();
         scorerLinkage.retract();
 
         TelemetryPacket packet = new TelemetryPacket();
@@ -541,7 +542,7 @@ public class ThreeClawSeven extends LinearOpMode {
         // ********************* WAIT **************************************************
         clock.reset();
 
-        while (clock.seconds() < WAIT_START) {
+        while (clock.seconds() < WAIT_START && opModeIsActive()) {
             telemetry.update();
         }
 

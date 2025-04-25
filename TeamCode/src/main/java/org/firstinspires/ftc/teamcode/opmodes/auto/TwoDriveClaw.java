@@ -204,8 +204,8 @@ public class TwoDriveClaw extends LinearOpMode {
                         hand.dropOverRightSide();
                         perkid.dropOverRightSide();
                         diff.dropOverRightSide();
-                        scorerPerkid.pushIntoSpecimen();
-                        scorerDifferential.pushIntoSpecimen();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
                         scorerClaw.open();
                     })
                     .addSpatialMarker(5 + SLOWDOWN_POINT_HUMAN, () -> {
@@ -260,8 +260,8 @@ public class TwoDriveClaw extends LinearOpMode {
                         scorerDifferential.liftAfterScoreSpecimen();
                     })
                     .addSpatialMarker(INITIAL, () -> {
-                        scorerPerkid.pushIntoSpecimen();
-                        scorerDifferential.pushIntoSpecimen();
+                        scorerPerkid.pickSpecimen();
+                        scorerDifferential.pickSpecimen();
                         scorerClaw.open();
                         scorerLinkage.retract();
                     })
@@ -339,8 +339,6 @@ public class TwoDriveClaw extends LinearOpMode {
         drive.setForce(FORCE);
 
         scorerClaw.close();
-        scorerDifferential.aimSpecimen();
-        scorerPerkid.aimAtSpecimen();
         scorerLinkage.retract();
 
         TelemetryPacket packet = new TelemetryPacket();
@@ -352,10 +350,13 @@ public class TwoDriveClaw extends LinearOpMode {
 
         /* ************************************************************************************* */
 
+        scorerPerkid.scoreSpecimen();
+        scorerDifferential.scoreSpecimen();
+
         /* *** WAIT *** */
         clock.reset();
 
-        while (clock.seconds() < WAIT_START) {
+        while (clock.seconds() < WAIT_START && opModeIsActive()) {
             telemetry.update();
         }
 
