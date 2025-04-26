@@ -3,15 +3,15 @@ package org.firstinspires.ftc.teamcode.camera;
 import androidx.annotation.NonNull;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
-import java.time.Clock;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 /*
 import cv2 as cv
 import numpy as np
@@ -171,13 +171,13 @@ def runPipeline(image, llrobot):
 public class LimelightCamera {
     private final Limelight3A limelight;
 
+    /**
+     * @noinspection unused
+     */
     public enum Pipeline {
         PYTHON_BLUE(0), PYTHON_SAMPLE(1), THRESHOLD_BLUE(2),
         PYTHON_BLUE_2(3), PYTHON_RED(4);
 
-        /**
-         * @noinspection unused
-         */
         final int index;
 
         Pipeline(int index) {
@@ -185,7 +185,7 @@ public class LimelightCamera {
         }
     }
 
-    private Pipeline currentPipeline = Pipeline.PYTHON_BLUE_2;
+    private volatile Pipeline currentPipeline = Pipeline.PYTHON_BLUE_2;
 
 
     public LimelightCamera(OpMode opMode) {
@@ -193,13 +193,29 @@ public class LimelightCamera {
         limelight.pipelineSwitch(currentPipeline.index);
     }
 
+    public CompletableFuture<Void> asyncSetPipeline(Pipeline pipeline) {
+        return CompletableFuture.runAsync(() -> {
+            boolean result = false;
+            while (!result) {
+                result = limelight.pipelineSwitch(pipeline.index);
+            }
+            currentPipeline = pipeline;
+        });
+    }
+
     public void setPipeline(Pipeline pipeline) {
         currentPipeline = pipeline;
         boolean result = false;
         while (!result) {
             result = limelight.pipelineSwitch(pipeline.index);
-        };
+        }
     }
+
+    public void setPipelineSingle(Pipeline pipeline) {
+        currentPipeline = pipeline;
+        limelight.pipelineSwitch(pipeline.index);
+    }
+
 
     public void start() {
         limelight.start();
@@ -218,11 +234,15 @@ public class LimelightCamera {
     }
 
     public void takeSnapshot() {
-        limelight.captureSnapshot("snap " + System.currentTimeMillis());
+        takeSnapshot("snap " + System.currentTimeMillis());
     }
 
     public void takeSnapshot(String name) {
         limelight.captureSnapshot(name);
+    }
+
+    public LLStatus getStatus() {
+        return limelight.getStatus();
     }
 
     // Ема

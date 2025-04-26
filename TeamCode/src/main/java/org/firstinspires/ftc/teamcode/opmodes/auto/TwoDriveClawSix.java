@@ -10,7 +10,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_3RD;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_4TH;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DELTA_5TH;
-import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.DIST_SCOR_CLAW;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.FORCE;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.POINT_PERKID_START_0;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.LebronFiveOneConstants.SLOWDOWN_FORCE;
@@ -98,8 +97,8 @@ public class TwoDriveClawSix extends LinearOpMode {
 
         public static double SLOWDOWN_POINT_RUNG_0 = 0.72;
         public static double SLOWDOWN_POINT_HUMAN = 0.65;
-        public static double SLOWDOWN_POINT_HUMAN_1 = 0.82;
-        public static double SLOWDOWN_POINT_HUMAN_SIX = 0.85;
+        public static double SLOWDOWN_POINT_HUMAN_1 = 0.9;
+        public static double SLOWDOWN_POINT_HUMAN_SIX = 0.9;
         public static double POINT_RETRACT_EXTEND = 0.8;
 
         public static double WAIT_PICK_UP_SUM = 2400;
@@ -422,7 +421,7 @@ public class TwoDriveClawSix extends LinearOpMode {
 
         waitForStart();
 
-        camera.setPipeline(LimelightCamera.Pipeline.PYTHON_RED);
+        camera.asyncSetPipeline(LimelightCamera.Pipeline.PYTHON_RED);
 
 
         // ********************* WAIT **************************************************
@@ -431,7 +430,7 @@ public class TwoDriveClawSix extends LinearOpMode {
 
         clock.reset();
 
-        while (clock.seconds() < WAIT_START && opModeIsActive()) {
+        while (clock.seconds() < WAIT_START && opModeIsActive() && !DEBUG_END_FLAG) {
             telemetry.update();
         }
 
@@ -462,12 +461,17 @@ public class TwoDriveClawSix extends LinearOpMode {
 
             telemetry.addData("DETECTED", DETECTED);
             telemetry.addData("sample", sample);
+            telemetry.addData("Limelight_Temp", camera.getStatus().getTemp());
             telemetry.update();
 
             lift.PIDControl();
             drive.update();
             linkage.PIDControl();
         }
+
+        //
+        camera.stop();
+        //
 
         clock.reset();
 
@@ -510,20 +514,14 @@ public class TwoDriveClawSix extends LinearOpMode {
         /* ***************** START 3ND SPECIMEN CYCLE ***************** */
 
         clock.reset();
-        boolean pickedUp = false;
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG && opModeIsActive()) {
-            if (distInClaw.getDistance(DistanceUnit.MM) <= DIST_SCOR_CLAW) {
-                pickedUp = true;
-            }
-        }
+
+        sleep(WAIT_SPECIMEN_PICK_UP);
 
         scorerClaw.close();
 
         drive.setForce(FORCE);
 
         drive.followTrajectory(trajThirdToRung);
-
-        boolean resetX = true;
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
@@ -544,12 +542,8 @@ public class TwoDriveClawSix extends LinearOpMode {
         // ********************* START 4ND SPECIMEN CYCLE **************************************************
 
         clock.reset();
-        pickedUp = false;
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG && opModeIsActive()) {
-            if (distInClaw.getDistance(DistanceUnit.MM) <= DIST_SCOR_CLAW) {
-                pickedUp = true;
-            }
-        }
+
+        sleep(WAIT_SPECIMEN_PICK_UP);
 
         scorerClaw.close();
 
@@ -557,14 +551,7 @@ public class TwoDriveClawSix extends LinearOpMode {
 
         drive.followTrajectory(trajFourthToRung);
 
-        resetX = true;
-
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            if (resetX && !frontSensor.getState()) {
-                Pose2d poseEstimate = drive.getPoseEstimate();
-                //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
-                resetX = false;
-            }
             lift.PIDControl();
             drive.update();
             linkage.PIDControl();
@@ -583,12 +570,8 @@ public class TwoDriveClawSix extends LinearOpMode {
         // ********************* START 5TH SPECIMEN CYCLE **************************************************
 
         clock.reset();
-        pickedUp = false;
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG && opModeIsActive()) {
-            if (distInClaw.getDistance(DistanceUnit.MM) <= DIST_SCOR_CLAW) {
-                pickedUp = true;
-            }
-        }
+
+        sleep(WAIT_SPECIMEN_PICK_UP);
 
         scorerClaw.close();
 
@@ -596,14 +579,7 @@ public class TwoDriveClawSix extends LinearOpMode {
 
         drive.followTrajectory(trajFifthToRung);
 
-        resetX = true;
-
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            if (resetX && !frontSensor.getState()) {
-                Pose2d poseEstimate = drive.getPoseEstimate();
-                //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
-                resetX = false;
-            }
             lift.PIDControl();
             drive.update();
             linkage.PIDControl();
@@ -622,12 +598,8 @@ public class TwoDriveClawSix extends LinearOpMode {
         // ********************* START 6TH SPECIMEN CYCLE **************************************************
 
         clock.reset();
-        pickedUp = false;
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG && opModeIsActive()) {
-            if (distInClaw.getDistance(DistanceUnit.MM) <= DIST_SCOR_CLAW) {
-                pickedUp = true;
-            }
-        }
+
+        sleep(WAIT_SPECIMEN_PICK_UP);
 
         scorerClaw.close();
 
@@ -635,14 +607,7 @@ public class TwoDriveClawSix extends LinearOpMode {
 
         drive.followTrajectory(trajSixthToRung);
 
-        resetX = true;
-
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
-            if (resetX && !frontSensor.getState()) {
-                Pose2d poseEstimate = drive.getPoseEstimate();
-                //drive.setPoseEstimate(new Pose2d(-31.362, poseEstimate.getY(), poseEstimate.getHeading()));
-                resetX = false;
-            }
             lift.PIDControl();
             drive.update();
             linkage.PIDControl();
@@ -657,8 +622,6 @@ public class TwoDriveClawSix extends LinearOpMode {
             drive.update();
             linkage.PIDControl();
         }
-
-        camera.stop();
     }
 
     private void initRobot() {
