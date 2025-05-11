@@ -54,7 +54,7 @@ public class AutoCamera {
         //operatorControlRed();
     }
 
-    public void startCamera() {
+    public void start() {
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -68,7 +68,7 @@ public class AutoCamera {
         });
     }
 
-    public void stopCamera() {
+    public void stop() {
         cam.closeCameraDeviceAsync(() -> {});
     }
 

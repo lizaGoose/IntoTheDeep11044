@@ -71,6 +71,8 @@ import org.firstinspires.ftc.teamcode.auto.Drive;
 import org.firstinspires.ftc.teamcode.auto.Trajectory;
 import org.firstinspires.ftc.teamcode.auto.TrajectoryBuilder;
 import org.firstinspires.ftc.teamcode.camera.AnalyzedSample;
+import org.firstinspires.ftc.teamcode.camera.AutoCamera;
+import org.firstinspires.ftc.teamcode.camera.LimelightCamera;
 import org.firstinspires.ftc.teamcode.camera.SampleColor;
 import org.firstinspires.ftc.teamcode.math.ClawCalculation;
 import org.firstinspires.ftc.teamcode.modules.Claw;
@@ -83,12 +85,17 @@ import org.firstinspires.ftc.teamcode.modules.ScorerClaw;
 import org.firstinspires.ftc.teamcode.modules.ScorerDifferential;
 import org.firstinspires.ftc.teamcode.modules.ScorerLinkage;
 import org.firstinspires.ftc.teamcode.modules.ScorerPerkid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Autonomous(name = "Floyd Warshall 7+0")
 public class ThreeClawSeven extends LinearOpMode {
+    private static final Logger log = LoggerFactory.getLogger(ThreeClawSeven.class);
+
     @Config
     public static class FloydThreeClawConstants {
         public static double DELTA_6TH = -1.1;
@@ -103,7 +110,7 @@ public class ThreeClawSeven extends LinearOpMode {
         public static double SLOWDOWN_POINT_RUNG_0 = 0.82;
         public static double SLOWDOWN_POINT_HUMAN = 0.65;
         public static double SLOWDOWN_POINT_HUMAN_1 = 0.88;
-        public static double SLOWDOWN_POINT_HUMAN_SIX = 0.86;
+        public static double SLOWDOWN_POINT_HUMAN_SIX = 0.9;
         public static double POINT_RETRACT_EXTEND = 0.8;
 
         public static double WAIT_PICK_UP_SUM = 900;
@@ -121,31 +128,33 @@ public class ThreeClawSeven extends LinearOpMode {
         public static double WAIT_RELEASE_SAMPLE_2 = 90;
 
         public static double EXTEND_MIDDLE_SAMPLE = 180;
-        public static double WAIT_MIDDLE_PICKUP = 500 + 150 + 650;
+        public static double WAIT_MIDDLE_PICKUP = 1160;
         // ANGLE MIDDLE 0
         public static double WAIT_MIDDLE_HUMAN = 500;
         public static double HAND_MIDDLE = 0.5;
 
-        public static double EXTEND_LEFT_SAMPLE = 200;
-        public static double WAIT_LEFT_PICKUP = 500 + 150 + 650;
+        public static double EXTEND_LEFT_SAMPLE = 190;
+        public static double WAIT_LEFT_PICKUP = 1160;
         public static double ANGLE_LEFT = -70;
-        public static double WAIT_LEFT_HUMAN = 500;
+        public static double WAIT_LEFT_HUMAN = 700;
         public static double HAND_LEFT = 0.5;
 
         public static double DIFF_ROTATION = 20;
 
-        public static double EXTEND_RIGHT_SAMPLE = 240;
-        public static double WAIT_RIGHT_PICKUP = 500 + 150 + 650;
+        public static double EXTEND_RIGHT_SAMPLE = 320;
+        public static double WAIT_RIGHT_PICKUP = 1160;
         public static double ANGLE_RIGHT = -120;
-        public static double WAIT_RIGHT_HUMAN = 500;
+        public static double WAIT_RIGHT_HUMAN = 700;
         public static double HAND_RIGHT = 0.25;
     }
 
     private static final double X = 25.3 - 83.76641;
-    private static final double X_PICK = X - 60;
-    private static final double X_LIFT = X + 30;
+    private static final double X_PICK = X - 70;
+    private static final double X_LIFT = X + 20;
     private static final double Y = 0;
     private static final double Z = 127.45;
+    private static final double SAMPLE_X = -20;
+    private static final double SAMPLE_Y = 0;
 
     private Drive drive;
     private ScorerPerkid scorerPerkid;
@@ -159,7 +168,7 @@ public class ThreeClawSeven extends LinearOpMode {
     private Linkage linkage;
     private Lift lift;
     private ScorerLinkage scorerLinkage;
-//    private AutoCamera camera;
+    private LimelightCamera camera;
     /**
      * @noinspection FieldCanBeLocal
      */
@@ -174,6 +183,7 @@ public class ThreeClawSeven extends LinearOpMode {
     // Make this true somewhere to stop program
     private boolean DEBUG_END_FLAG = false;
     private boolean DETECTED = false;
+    private boolean POWER_LINKAGE_STATE = false;
 
     private ElapsedTime clock;
 
@@ -195,11 +205,11 @@ public class ThreeClawSeven extends LinearOpMode {
             trajFirstToRung = drive.buildTrajectory("first_to_rung6.json")
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(POINT_MOVE_PERKID_0, () -> {
+                        POWER_LINKAGE_STATE = true;
                         scorerPerkid.scoreSpecimen();
                         scorerDifferential.scoreSpecimen();
                         lift.setSpecimen();
                         scorerLinkage.extend();
-//                        camera.startCamera();
                     })
                     .addSpatialMarker(POINT_MOVE_INTAKE, () -> {
                         hand.setPosition(0.5);
@@ -213,14 +223,16 @@ public class ThreeClawSeven extends LinearOpMode {
                     .waitForAt(1, WAIT_FOR_DETECTION + WAIT_AFTER_STOP_FOR_SUB_SAMPLE +
                             WAIT_FOR_LINKAGE_EXTEND + 100 + 150 + 100, -90)
                     .addTimeMarker(WAIT_FOR_DETECTION, true, () -> {
-//                        camera.getOptimalSamplePosition(lift.getPosition(), scorerPerkid.getPos())
+//                        camera.getSamplePose(lift.getPosition(), scorerPerkid.getAngle())
 //                                .ifPresent(analyzedSample -> {
 //                                    DETECTED = true;
 //                                    sample = analyzedSample;
 //                                });
+//                        camera.takeSnapshot();
+                        POWER_LINKAGE_STATE = false;
                     })
                     .addTimeMarker(WAIT_AFTER_STOP_FOR_SUB_SAMPLE, true, () -> {
-                        List<Double> result = ClawCalculation.inverseKinematics(X, sample.x, sample.y, sample.angle);
+                        List<Double> result = ClawCalculation.inverseKinematics(X, sample.x + SAMPLE_X, sample.y + SAMPLE_Y, sample.angle);
                         if (!result.contains(Double.NaN)) {
                             linkage.setPositionMillimeters(result.get(0) - LINKAGE_OFFSET);
                             perkid.setAngle(result.get(1));
@@ -229,7 +241,7 @@ public class ThreeClawSeven extends LinearOpMode {
                         }
                     })
                     .addTimeMarker(WAIT_FOR_LINKAGE_EXTEND, true, () -> {
-                        List<Double> result = ClawCalculation.inverseKinematics(X_PICK, sample.x, sample.y, sample.angle);
+                        List<Double> result = ClawCalculation.inverseKinematics(X_PICK, sample.x + SAMPLE_X, sample.y + SAMPLE_Y, sample.angle);
                         if (!result.contains(Double.NaN)) {
                             linkage.setPositionMillimeters(result.get(0) - LINKAGE_OFFSET);
                             perkid.setAngle(result.get(1));
@@ -244,11 +256,10 @@ public class ThreeClawSeven extends LinearOpMode {
                         List<Double> result = ClawCalculation.inverseKinematics(X_LIFT, Y, Z, 0);
                         if (!result.contains(Double.NaN)) {
                             linkage.setPositionMillimeters(result.get(0));
-                            perkid.setAngle(result.get(1));
+                            perkid.liftSample();
                             hand.setAngle(result.get(2));
                             diff.setAngleRotation(-91, result.get(4));
                         }
-//                        camera.stopCamera();
                     })
                     .plusPoint(2, new Vector2d(0, DELTA_1ST))
                     .plusPoint(3, new Vector2d(0, DELTA_1ST))
@@ -304,6 +315,7 @@ public class ThreeClawSeven extends LinearOpMode {
                     .addSpatialMarker(0.9, () -> {
                         claw.open();
                     })
+
                     // AT OBSERVATION ZONE
                     // MIDDLE SAMPLE -----------------------------
                     .waitForAt(1, WAIT_MIDDLE_PICKUP, -90)
@@ -318,7 +330,7 @@ public class ThreeClawSeven extends LinearOpMode {
                     .addTimeMarker(200, true, () -> {
                         claw.open();
 
-                        scorerPerkid.scoreSample();
+                        scorerPerkid.setAngle(300);
                     })
                     .addTimeMarker(WAIT_FOR_INTAKE, true, () -> {
                         perkid.pickUp();
@@ -327,18 +339,29 @@ public class ThreeClawSeven extends LinearOpMode {
                         double rotation = hand.getAngle();
                         diff.pickUpAngle(rotation);
                     })
-                    .addTimeMarker(100, true, () -> {
+                    .addTimeMarker(200, true, () -> {
                         claw.close();
                     })
                     .addTimeMarker(150, true, () -> {
-                        diff.aim();
-                        perkid.liftSample();
+                        diff.throwThoughCenter();
+                        perkid.throwThoughCenter();
                     })
                     .waitForAt(1, WAIT_MIDDLE_HUMAN)
+//                    .addTimeMarker(0, true, () -> {
+//                        perkid.dropOverRightSide();
+//                        hand.dropOverRightSide();
+//                        diff.dropOverRightSide();
+//                    })
+//                    .addTimeMarker(WAIT_START_RETRACT_0, true, () -> {
+//                        linkage.setReference(0);
+//                    })
+//                    .addTimeMarker(WAIT_RELEASE_SAMPLE_0, true, () -> {
+//                        claw.open();
+//                    })
                     .addTimeMarker(0, true, () -> {
-                        perkid.transfer();
+                        perkid.throwThoughCenter();
                         hand.setPosition(0.5);
-                        diff.transfer();
+                        diff.throwThoughCenter();
                     })
                     .addTimeMarker(WAIT_START_RETRACT_0, true, () -> {
                         linkage.setReference(0);
@@ -346,6 +369,7 @@ public class ThreeClawSeven extends LinearOpMode {
                     .addTimeMarker(WAIT_RELEASE_SAMPLE_0, true, () -> {
                         claw.open();
                     })
+
                     // LEFT SAMPLE -------------------------------
                     .waitForAt(1, WAIT_LEFT_PICKUP, ANGLE_LEFT)
                     .addTimeMarker(0, true, () -> {
@@ -366,18 +390,18 @@ public class ThreeClawSeven extends LinearOpMode {
                         double rotation = ANGLE_LEFT + 90 + hand.getAngle();
                         diff.pickUpAngle(rotation);
                     })
-                    .addTimeMarker(100, true, () -> {
+                    .addTimeMarker(200, true, () -> {
                         claw.close();
                     })
                     .addTimeMarker(150, true, () -> {
-                        diff.aim();
-                        perkid.liftSample();
+                        diff.throwThoughCenter();
+                        perkid.throwThoughCenter();
                     })
                     .waitForAt(1, WAIT_LEFT_HUMAN)
                     .addTimeMarker(0, true, () -> {
-                        perkid.dropOverRightSide();
-                        hand.dropOverRightSide();
-                        diff.dropOverRightSide();
+                        perkid.throwThoughCenter();
+                        hand.setPosition(0.5);
+                        diff.throwThoughCenter();
                     })
                     .addTimeMarker(WAIT_START_RETRACT_1, true, () -> {
                         linkage.setReference(0);
@@ -385,6 +409,19 @@ public class ThreeClawSeven extends LinearOpMode {
                     .addTimeMarker(WAIT_RELEASE_SAMPLE_1, true, () -> {
                         claw.open();
                     })
+//                    .addTimeMarker(0, true, () -> {
+//                        perkid.dropOverRightSide();
+//                        hand.dropOverRightSide();
+//                        diff.dropOverRightSide();
+//                    })
+//                    .addTimeMarker(WAIT_START_RETRACT_1, true, () -> {
+//                        linkage.setReference(0);
+//                    })
+//                    .addTimeMarker(WAIT_RELEASE_SAMPLE_1, true, () -> {
+//                        claw.open();
+//                    })
+
+
                     // RIGHT SAMPLE --------------------------------
                     .waitForAt(1, WAIT_RIGHT_PICKUP, ANGLE_RIGHT)
                     .addTimeMarker(0, true, () -> {
@@ -405,18 +442,18 @@ public class ThreeClawSeven extends LinearOpMode {
                         double rotation = ANGLE_RIGHT + 90 + hand.getAngle() + DIFF_ROTATION;
                         diff.pickUpAngle(rotation);
                     })
-                    .addTimeMarker(100, true, () -> {
+                    .addTimeMarker(200, true, () -> {
                         claw.close();
                     })
                     .addTimeMarker(150, true, () -> {
-                        diff.aim();
-                        perkid.liftSample();
+                        diff.throwThoughCenter();
+                        perkid.throwThoughCenter();
                     })
                     .waitForAt(1, WAIT_RIGHT_HUMAN)
                     .addTimeMarker(0, true, () -> {
-                        perkid.dropOverRightSide();
-                        hand.dropOverRightSide();
-                        diff.dropOverRightSide();
+                        perkid.throwThoughCenter();
+                        hand.setPosition(0.5);
+                        diff.throwThoughCenter();
                     })
                     .addTimeMarker(WAIT_START_RETRACT_2, true, () -> {
                         linkage.setReference(0);
@@ -424,6 +461,18 @@ public class ThreeClawSeven extends LinearOpMode {
                     .addTimeMarker(WAIT_RELEASE_SAMPLE_2, true, () -> {
                         claw.open();
                     })
+//                    .addTimeMarker(0, true, () -> {
+//                        perkid.dropOverRightSide();
+//                        hand.dropOverRightSide();
+//                        diff.dropOverRightSide();
+//                    })
+//                    .addTimeMarker(WAIT_START_RETRACT_2, true, () -> {
+//                        linkage.setReference(0);
+//                    })
+//                    .addTimeMarker(WAIT_RELEASE_SAMPLE_2, true, () -> {
+//                        claw.open();
+//                    })
+
                     // GO TO HUMAN
                     .addTurnMarker(1, -90)
                     .addSpatialMarker(1 + POINT_RIGHT_SIDE_DROP, () -> {
@@ -527,24 +576,35 @@ public class ThreeClawSeven extends LinearOpMode {
         drive.setForce(FORCE);
 
         scorerClaw.close();
-        scorerDifferential.pickSpecimen();
-        scorerPerkid.pickSpecimen();
-        scorerLinkage.retract();
+        scorerPerkid.setAngle(50);
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("extend_reference", linkage.getReference());
         packet.put("extend_position", linkage.getPosition());
         dashboard.sendTelemetryPacket(packet);
 
+        camera.start();
+
+        while (opModeInInit()) {
+            camera.getResult().ifPresent(llResult -> {
+                telemetry.addData("pipeline_index", llResult.getPipelineIndex());
+                telemetry.addData("latency", llResult.getTargetingLatency());
+                telemetry.addData("type", llResult.getPipelineType());
+                telemetry.addData("pythonOutput", Arrays.toString(llResult.getPythonOutput()));
+            });
+        }
+
         waitForStart();
 
+        camera.asyncSetPipeline(LimelightCamera.Pipeline.PYTHON_RED);
 
         // ********************* WAIT **************************************************
+        scorerPerkid.scoreSpecimen();
+        scorerDifferential.scoreSpecimen();
+
         clock.reset();
 
-        while (clock.seconds() < WAIT_START && opModeIsActive()) {
-            telemetry.update();
-        }
+        sleep((long) (WAIT_START * 1000));
 
         // ********************* START 1TH SPECIMEN CYCLE **************************************************
 
@@ -558,14 +618,35 @@ public class ThreeClawSeven extends LinearOpMode {
             packet.put("sample", sample);
             dashboard.sendTelemetryPacket(packet);
 
+            camera.getResult().ifPresent(llResult -> {
+                telemetry.addData("pipeline_index", llResult.getPipelineIndex());
+                telemetry.addData("latency", llResult.getTargetingLatency());
+                telemetry.addData("type", llResult.getPipelineType());
+                telemetry.addData("pythonOutput", Arrays.toString(Arrays.stream(llResult.getPythonOutput()).limit(8).toArray()));
+            });
+
+            camera.getSamplePose(lift.getPosition(), scorerPerkid.getPosition()).ifPresent(sample -> {
+                telemetry.addData("sample_X", sample.x);
+                telemetry.addData("sample_Y", sample.y);
+                telemetry.addData("sample_angle", sample.angle);
+            });
+
             telemetry.addData("DETECTED", DETECTED);
             telemetry.addData("sample", sample);
+            telemetry.addData("Limelight_Temp", camera.getStatus().getTemp());
             telemetry.update();
 
             lift.PIDControl();
             drive.update();
-            linkage.PIDControl();
+            if (POWER_LINKAGE_STATE)
+                linkage.setDirectPower(-0.5);
+            else
+                linkage.PIDControl();
         }
+
+        //
+//        camera.stop();
+        //
 
         clock.reset();
 
@@ -608,10 +689,8 @@ public class ThreeClawSeven extends LinearOpMode {
         /* ***************** START 3ND SPECIMEN CYCLE ***************** */
 
         clock.reset();
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
-            telemetry.addLine("Waiting!");
-            telemetry.update();
-        }
+
+        sleep(WAIT_SPECIMEN_PICK_UP);
 
         scorerClaw.close();
 
@@ -638,17 +717,14 @@ public class ThreeClawSeven extends LinearOpMode {
         // ********************* START 4ND SPECIMEN CYCLE **************************************************
 
         clock.reset();
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
-            telemetry.addLine("Waiting!");
-            telemetry.update();
-        }
+
+        sleep(WAIT_SPECIMEN_PICK_UP);
 
         scorerClaw.close();
 
         drive.setForce(FORCE);
 
         drive.followTrajectory(trajFourthToRung);
-
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             lift.PIDControl();
@@ -669,10 +745,8 @@ public class ThreeClawSeven extends LinearOpMode {
         // ********************* START 5TH SPECIMEN CYCLE **************************************************
 
         clock.reset();
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
-            telemetry.addLine("Waiting!");
-            telemetry.update();
-        }
+
+        sleep(WAIT_SPECIMEN_PICK_UP);
 
         scorerClaw.close();
 
@@ -699,10 +773,8 @@ public class ThreeClawSeven extends LinearOpMode {
         // ********************* START 6TH SPECIMEN CYCLE **************************************************
 
         clock.reset();
-        while (clock.milliseconds() < WAIT_SPECIMEN_PICK_UP && !DEBUG_END_FLAG) {
-            telemetry.addLine("wait");
-            telemetry.update();
-        }
+
+        sleep(WAIT_SPECIMEN_PICK_UP);
 
         scorerClaw.close();
 
@@ -741,9 +813,9 @@ public class ThreeClawSeven extends LinearOpMode {
         diff = new Differential(this);
         claw = new Claw(this);
 
-//        camera = new AutoCamera(this);
-//
-//        camera.operatorControlRed();
+        camera = new LimelightCamera(this);
+
+        camera.setPipeline(LimelightCamera.Pipeline.THRESHOLD_BLUE);
 
         linkage = new Linkage(this);
         distInClaw = hardwareMap.get(DistanceSensor.class, "ScorClawDist");

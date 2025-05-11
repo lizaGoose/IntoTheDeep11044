@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.LOOK
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.PICK_UP;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.RIGHT_SIDE_DROP_SAMPLE;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.STRAIGHT_POS;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.THROW_POS;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRANSFER_FROM_SUBMERSABLE;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRANSFER_POS;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.VERTICAL_POS;
@@ -80,6 +81,16 @@ public class Perkid {
         }
     }
 
+    public void liftAndLock() {
+        left.setPosition(LIFT_AND_LOCK_SAMPLE);
+        right.setPosition(LIFT_AND_LOCK_SAMPLE);
+    }
+
+    public void throwThoughCenter() {
+        left.setPosition(THROW_POS);
+        right.setPosition(THROW_POS);
+    }
+
     public void aimAtSpike() {
         left.setPosition(AIM_AT_SPIKE);
         right.setPosition(AIM_AT_SPIKE);
@@ -136,6 +147,7 @@ public class Perkid {
         public static double STRAIGHT_POS = 0.3;
 
         public static double TRANSFER_POS = 0.7;
+        public static double THROW_POS = 0.9;
         public static double LOOK_POS = 0.33;
         public static double AIM_AT_SPIKE = 0.33;
         public static double TRANSFER_FROM_SUBMERSABLE = 0.4;

@@ -144,6 +144,7 @@ public class StateMachine {
         SPECIMEN,
         SAMPLE
     }
+
     public ElementState element = ElementState.SPECIMEN;
 
     private enum TransferState {
@@ -347,7 +348,7 @@ public class StateMachine {
                     autoScoreState = AutoScoreState.SCORING;
                 }
 
-                if (!( gamepad1.left_stick_y <= -0.1 )) {
+                if (!(gamepad1.left_stick_y <= -0.1)) {
                     specimenToTransfer.reset();
                 }
 
@@ -356,7 +357,7 @@ public class StateMachine {
                     fromTransferSpecimenToScore.reset();
                 }
 
-                if (( gamepad2.triangle || gamepad1.triangle ) && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
+                if ((gamepad2.triangle || gamepad1.triangle) && driveModule.currentMode == DriveModule.Mode.DRIVER_CONTROL) {
                     state = State.INITIAL;
                     initialTimer.reset();
                 }
@@ -459,34 +460,6 @@ public class StateMachine {
                 if (perekidTimer.milliseconds() > WAIT_FOR_PERKID) {
                     state = State.INITIAL;
                     initialTimer.reset();
-                }
-                break;
-            case LOOK_FOR_SAMPLE:
-                perkid.currentMode = Perkid.Mode.LOOK;
-                diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
-                scorerClaw.currentMode = ScorerClaw.Mode.HALF_DROP;
-                scorerDifferential.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
-                hand.currentMode = Hand.Mode.DRIVER_CONTROL;
-                claw.currentMode = Claw.Mode.DROP;
-                scorerLinkage.retract();
-                lift.setReference(0);
-
-                if (element == ElementState.SPECIMEN) {
-                    scorerPerkid.pickSpecimen();
-                } else {
-                    scorerPerkid.transferSample();
-                }
-
-                if (gamepad2.triangle || gamepad1.triangle) {
-                    state = State.INITIAL;
-                    initialTimer.reset();
-                }
-                if (stickyGamepad1.square || gamepad2.cross) {
-                    state = State.PICK_UP_SAMPLE;
-                    pickedUnpickedTimer.reset();
-                }
-                if (gamepad1.touchpad) {
-                    element = ElementState.SAMPLE;
                 }
                 break;
             case LOOK_FOR_SAMPLE_AFTER_SPECIMEN:
@@ -624,9 +597,35 @@ public class StateMachine {
                 }
 
                 break;
+            case LOOK_FOR_SAMPLE:
+                perkid.currentMode = Perkid.Mode.LOOK;
+                diff.currentMode = Differential.Mode.STRAIGHT_DOWN_DISCRETE;
+                scorerClaw.currentMode = ScorerClaw.Mode.HALF_DROP;
+                scorerDifferential.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
+                hand.currentMode = Hand.Mode.DRIVER_CONTROL;
+                claw.currentMode = Claw.Mode.DROP;
+                scorerLinkage.retract();
+                lift.setReference(0);
+
+                if (element == ElementState.SPECIMEN) {
+                    scorerPerkid.pickSpecimen();
+                } else {
+                    scorerPerkid.transferSample();
+                }
+
+                if (gamepad2.triangle || gamepad1.triangle) {
+                    state = State.INITIAL;
+                    initialTimer.reset();
+                }
+                if (stickyGamepad1.square || gamepad2.cross) {
+                    state = State.PICK_UP_SAMPLE;
+                    pickedUnpickedTimer.reset();
+                }
+                if (gamepad1.touchpad) {
+                    element = ElementState.SAMPLE;
+                }
+                break;
             case PICK_UP_SAMPLE:
-
-
                 scorerDifferential.currentMode = ScorerDifferential.Mode.GET_FROM_CLAW;
                 lift.setReference(0);
                 if (pickedUnpickedTimer.milliseconds() >= PICKED_UNPICKED_PICK_BLOCK + 50) {
@@ -658,8 +657,7 @@ public class StateMachine {
                 } else if (pickedUnpickedTimer.milliseconds() > 200) {
                     if (element == ElementState.SPECIMEN) {
                         claw.currentMode = Claw.Mode.PICK;
-                    }
-                    else {
+                    } else {
                         claw.currentMode = Claw.Mode.TRANSFER;
                     }
                 } else {

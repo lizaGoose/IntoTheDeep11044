@@ -88,6 +88,10 @@ public class ScorerDifferential {
         diff.setPosition(TRANSFER_SPEC);
     }
 
+    public void transferSample() {
+        diff.setPosition(TRANSFER_SAMPLE);
+    }
+
     public void scoreSpecimen() {
         diff.setPosition(SCORE_SPEC);
     }

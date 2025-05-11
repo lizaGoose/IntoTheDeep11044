@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.modules;
 
 
+import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.DROP_APPENDIX;
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.LIGHT;
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.OPEN;
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.CLOSED;
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.PICK_APPENDIX;
 import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.SOME_APPENDIX;
+import static org.firstinspires.ftc.teamcode.modules.Claw.ClawConstants.STRANGLE;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -67,10 +69,22 @@ public class Claw {
 
     public void open() {
         claw.setPosition(OPEN);
+        appendix.setPosition(DROP_APPENDIX);
     }
 
     public void close() {
         claw.setPosition(CLOSED);
+        appendix.setPosition(SOME_APPENDIX);
+    }
+
+    public void transfer() {
+        claw.setPosition(STRANGLE);
+        appendix.setPosition(PICK_APPENDIX);
+    }
+
+    public void transferLight() {
+        claw.setPosition(LIGHT);
+        appendix.setPosition(PICK_APPENDIX);
     }
 
     public void closeAppendix() {
@@ -84,12 +98,12 @@ public class Claw {
     @Config
     static
     class ClawConstants{
-        public static double CLOSED = 0.7;
-        public static double LIGHT = 0.695;
-        public static double OPEN = 0.31;
-        public static double STRANGLE = 0.73;
-        public static double DROP_APPENDIX = 0.35;
+        public static double CLOSED = 0.6;
+        public static double LIGHT = 0.585;
+        public static double OPEN = 0.1;
+        public static double STRANGLE = 0.63;
+        public static double DROP_APPENDIX = 0.325;
         public static double SOME_APPENDIX = 0.37;
-        public static double PICK_APPENDIX = 0.85;
+        public static double PICK_APPENDIX = 0.845;
     }
 }

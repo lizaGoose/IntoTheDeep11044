@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialCo
 import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.RIGHT_SIDE_DROP_SAMPLE;
 import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.RIGHT_SIDE_DROP_SAMPLE_ROTATION;
 import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.SCORE_SAMP;
+import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.THROW_THOUGH_CENTER;
 import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.TRANSFER;
 import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.FORWARD;
 import static org.firstinspires.ftc.teamcode.modules.Differential.DifferentialConstants.TRANSFER_ROTATION;
@@ -220,6 +221,16 @@ public class Differential {
         right.setPosition(TRANSFER);
     }
 
+    public void liftAndLock() {
+        left.setPosition(LIFT_AND_LOCK);
+        right.setPosition(LIFT_AND_LOCK);
+    }
+
+    public void throwThoughCenter() {
+        left.setPosition(THROW_THOUGH_CENTER);
+        right.setPosition(THROW_THOUGH_CENTER);
+    }
+
     public void transferAngle() {
         double angle = 90 * ((TRANSFER - DifferentialConstants.DOWN) / (FORWARD - DifferentialConstants.DOWN) - 1);
         setAngleRotation(angle, TRANSFER_ROTATION);
@@ -267,6 +278,7 @@ public class Differential {
         public static double PICK_UP = 0.53;
         public static double PICK_UP_ANGLE = -45;
         public static double TRANSFER = 0.86;
+        public static double THROW_THOUGH_CENTER = 0.79;
         public static double TRANSFER_ROTATION = 0;
         public static double SCORE_SAMP = 0.68;
 
