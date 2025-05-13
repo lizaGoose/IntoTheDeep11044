@@ -746,8 +746,8 @@ public class StateMachine {
                 // START RECTRACTING THE LINKAGE
                 else if (fromClawToClawTimer.milliseconds() > WAIT_SAMPLE_SCORER_FLIP && !startedMovingExtendBack) {
                     claw.currentMode = Claw.Mode.TRANSFER;
-                    linkage.currentMode = Linkage.Mode.POWER;
-                    linkage.setPower(-1);
+                    //linkage.currentMode = Linkage.Mode.POWER;
+                    //linkage.setPower(-1);
                     fromClawToClawTimer.reset();
                     startedMovingExtendBack = true;
                 }
@@ -758,13 +758,13 @@ public class StateMachine {
                     stoppedMovingExtendBack = true;
                 }
                 // MOVE THE SPECIMEN SCORER
-                if (fromClawToClawTimer.milliseconds() > 0 && fromClawToClawTimer.milliseconds() <= 300
+                if (fromClawToClawTimer.milliseconds() > 0 && fromClawToClawTimer.milliseconds() <= 150
                         && startedMovingExtendBack
                         && stoppedMovingExtendBack) {
                     scorerPerkid.transferSample();
                 }
                 // CLOSE THE SPECIMEN CLAW
-                else if (fromClawToClawTimer.milliseconds() > 300 && fromClawToClawTimer.milliseconds() <= 550
+                else if (fromClawToClawTimer.milliseconds() > 150 && fromClawToClawTimer.milliseconds() <= 350
                         && startedMovingExtendBack
                         && stoppedMovingExtendBack) {
                     scorerClaw.currentMode = ScorerClaw.Mode.PICK;
