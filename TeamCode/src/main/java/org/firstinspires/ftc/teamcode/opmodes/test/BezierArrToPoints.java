@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.math.BezierCurve;
 import java.io.IOException;
 
 @Config
-@TeleOp
+@TeleOp(group = "test")
 public class BezierArrToPoints extends LinearOpMode {
     public static String FILENAME = "traj.json";
 

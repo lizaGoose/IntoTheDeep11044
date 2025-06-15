@@ -34,7 +34,7 @@ public class IntakeSubsystem {
         double y = 0.0243;
         double z = 0.12745;
 
-        List<Double> result = ClawCalculation.inverseKinematics(x, y, z);
+        List<Double> result = ClawCalculation.inverseKinematics_noAngle(x, y, z);
 
         double theta1 = result.get(1);
         double theta2 = result.get(2);

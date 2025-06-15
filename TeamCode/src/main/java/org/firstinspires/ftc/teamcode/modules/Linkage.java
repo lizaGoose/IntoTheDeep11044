@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.modules;
 
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.AUTO_COEFFICIENTS;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.COEFFICIENTS;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.HANG;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.MAX_POSITION;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.MIN_POSITION;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.TRANSFER;
-import static org.firstinspires.ftc.teamcode.modules.Extend.ExtendConstants.TRANSFER_CLOSER;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.AUTO_COEFFICIENTS;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.COEFFICIENTS;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.HANG;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.MAX_POSITION;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.MIN_POSITION;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.TRANSFER;
+import static org.firstinspires.ftc.teamcode.modules.Linkage.ExtendConstants.TRANSFER_CLOSER;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -18,8 +18,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-public class Extend {
-    OpMode linearOpMode;
+public class Linkage {
+    OpMode opMode;
     Gamepad gamepad, gamepad2;
     public final DcMotorEx motor;
     private final ElapsedTime timer;
@@ -34,13 +34,13 @@ public class Extend {
         POWER
     }
 
-    Extend.Mode currentMode = Mode.DRIVER_CONTROL;
+    Linkage.Mode currentMode = Mode.DRIVER_CONTROL;
 
-    public Extend(OpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        gamepad = linearOpMode.gamepad1;
-        gamepad2 = linearOpMode.gamepad2;
-        motor = linearOpMode.hardwareMap.get(DcMotorEx.class, "extend_motor");
+    public Linkage(OpMode opMode) {
+        this.opMode = opMode;
+        gamepad = opMode.gamepad1;
+        gamepad2 = opMode.gamepad2;
+        motor = opMode.hardwareMap.get(DcMotorEx.class, "extend_motor");
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -50,28 +50,6 @@ public class Extend {
     public void teleop() {
         switch (currentMode) {
             case DRIVER_CONTROL:
-              /*  if (gamepad.triangle && !lastTriangleState) {
-                    // setReference(motor.getCurrentPosition() + TICKS_PER_TAP);
-                    setNewReference = motor.getCurrentPosition() + TICKS_PER_TAP;
-                }
-
-                lastTriangleState = gamepad.triangle;
-                if (gamepad.cross && !lastCrossState) {
-                    // setReference(motor.getCurrentPosition() - TICKS_PER_TAP);
-                    setNewReference = motor.getCurrentPosition() - TICKS_PER_TAP;
-                }
-
-                lastTriangleState = gamepad.cross;*/
-
-             /*  if (gamepad2.right_stick_y != 0) {
-                    motor.setPower(-gamepad2.right_stick_y);
-                    //setReference(motor.getCurrentPosition());
-                    setNewReference = motor.getCurrentPosition();
-                } else {
-                    if (!( gamepad.triangle && !lastTriangleState ) && !( gamepad.cross && !lastCrossState ))
-                        setReference(setNewReference);
-                    PIDControl();
-                }*/
                 if (gamepad.right_stick_y != 0) {
                     motor.setPower(-gamepad.right_stick_y);
                     //setReference(motor.getCurrentPosition());
@@ -87,7 +65,6 @@ public class Extend {
                 PIDControl();
                 break;
             case VISION_CONTROL:
-                //itor.setPower(cam.extendingError);
                 PIDControl();
                 break;
             case CLOSE:
@@ -110,7 +87,7 @@ public class Extend {
 
     public double PIDControl() {
         int position = motor.getCurrentPosition();
-        double error = position - reference;
+        double error = reference - position;
 
         double derivative = ( error - lastError ) / timer.seconds();
         integralSum += error * timer.seconds();
@@ -126,7 +103,7 @@ public class Extend {
 
     public double AutoPIDControl() {
         int position = motor.getCurrentPosition();
-        double error = position - reference;
+        double error = reference - position;
 
         double derivative = ( error - lastError ) / timer.seconds();
         integralSum += error * timer.seconds();
@@ -150,6 +127,11 @@ public class Extend {
         this.reference = reference;
     }
 
+    public void setPositionMillimeters(double mm) {
+        double reference = 253.0 / 360 * mm;
+        setReference(reference);
+    }
+
     double power = 0;
 
     public void setPower(double power) {
@@ -169,8 +151,20 @@ public class Extend {
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    public void setMode(DcMotor.RunMode mode) {
+        motor.setMode(mode);
+    }
+
+    public DcMotor.RunMode getMode() {
+        return motor.getMode();
+    }
+
     public double getPosition() {
         return motor.getCurrentPosition();
+    }
+
+    public double getPositionMillimeters() {
+        return getPosition() * 360 / 253.0;
     }
 
     public double getMaxPosition() {
@@ -200,8 +194,8 @@ public class Extend {
     @Config
     static
     class ExtendConstants {
-        public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(-0.018, 0.0, -0.000004, 0.015);
-        public static PIDFCoefficients AUTO_COEFFICIENTS = new PIDFCoefficients(-0.012, 0, -0.0005, 0);
+        public static PIDFCoefficients COEFFICIENTS = new PIDFCoefficients(0.01, 0.0, 1e-5, 0);
+        public static PIDFCoefficients AUTO_COEFFICIENTS = new PIDFCoefficients(0.012, 0, 0.0005, 0);
         public static double TICKS_PER_TAP = 30;
 
         public static int MAX_POSITION = 260;

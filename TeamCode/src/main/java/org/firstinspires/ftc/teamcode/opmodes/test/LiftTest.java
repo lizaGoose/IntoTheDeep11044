@@ -29,9 +29,8 @@ public class LiftTest extends OpMode {
     @Override
     public void loop() {
         if (gamepad1.left_stick_y != 0) {
-            hangLift.leftMotor.setPower(-gamepad1.left_stick_y);
-            hangLift.rightMotor.setPower(-gamepad1.left_stick_y);
-            reference = hangLift.rightMotor.getCurrentPosition();
+            hangLift.setPower(-gamepad1.left_stick_y);
+            reference = hangLift.getPosition();
         }
         else {
             if (lastReference != reference) {
@@ -42,13 +41,13 @@ public class LiftTest extends OpMode {
         }
 
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("left_motor_pos", hangLift.leftMotor.getCurrentPosition());
-        packet.put("right_motor_pos", hangLift.rightMotor.getCurrentPosition());
+        packet.put("left_motor_pos", hangLift.getPosition());
+        packet.put("right_motor_pos", hangLift.getPosition());
         packet.put("reference", hangLift.getReference());
         dashboard.sendTelemetryPacket(packet);
 
-        mulTelemetry.addData("left_motor_pos", hangLift.leftMotor.getCurrentPosition());
-        mulTelemetry.addData("right_motor_pos", hangLift.rightMotor.getCurrentPosition());
+        mulTelemetry.addData("left_motor_pos", hangLift.getPosition());
+        mulTelemetry.addData("right_motor_pos", hangLift.getPosition());
         mulTelemetry.addData("reference", hangLift.getReference());
         mulTelemetry.update();
     }

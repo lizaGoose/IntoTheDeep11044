@@ -39,27 +39,24 @@ public class LebronFiveOneConstants {
     public static double DIFF_ROTATION_RIGHT = 5;
     public static double HAND_RIGHT = 0.64;
 
-    public static int EXTEND_RIGHT_TO_HUMAN = 350;
-    public static double ANGLE_RIGHT_TO_HUMAN = -235;
-    public static int WAIT_FOR_RIGHT_ROTATION = 500;
-
     public static int WAIT_PICK_UP = 150;
 
     public static int EXTEND_CLOSED = 20;
     public static int EXTEND_TEMP_CLOSED = 100;
 
-    public static double SLOWDOWN_FORCE = 0.1;
-    public static double SLOWDOWN_POINT_RUNG_0 = 0.66;
-    public static double SLOWDOWN_POINT_RUNG_1 = 0.8;
+    public static double SLOWDOWN_FORCE = 0;
+    public static double SLOWDOWN_POINT_RUNG_0 = 0.87;
+    public static double SLOWDOWN_POINT_RUNG_1 = 0.885;
     public static double SLOWDOWN_POINT_HUMAN_0 = 0.48;
-    public static double SLOWDOWN_POINT_HUMAN_1 = 0.8;
+    public static double SLOWDOWN_POINT_HUMAN_1 = 0.85;
 
     public static int WAIT_FOR_CLAW_RELEASE = 50;
     public static int WAIT_FOR_HUMAN_ADJUST = 0;
+    public static int WAIT_AFTER_PICK_UP = 100;
 
-    public static int WAIT_SPECIMEN_PICK_UP = 150;
+    public static int WAIT_SPECIMEN_PICK_UP = 50;
 
-    public static int WAIT_HOLD_POS_AT_RUNG = 200;
+    public static int WAIT_HOLD_POS_AT_RUNG = 100;
 
     public static double WAIT_RELAX_CLAW = 0;
 
@@ -75,11 +72,11 @@ public class LebronFiveOneConstants {
 
     public static double POINT_PERKID_TO_SCORE = 0.4;
     public static double POINT_START_RAISING_LIFT = 0.5;
-    public static double WAIT_AT_BASKET = 1000;
+    public static double WAIT_AT_BASKET = 200;
     public static double LIFT_SCORE = 820;
-    public static double WAIT_DROP_SAMPLE = 200;
+    public static double WAIT_DROP_SAMPLE = 50;
     public static double POINT_BASKET_SLOWDOWN = 0.8;
-    public static double ANGLE_TO_BASKET = -175;
+    public static double ANGLE_TO_BASKET = -170;
     public static double WAIT_FOR_SLOWDOWN = 200;
 
     public static double FORCE = 1;

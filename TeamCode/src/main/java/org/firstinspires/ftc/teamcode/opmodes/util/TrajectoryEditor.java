@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Config
 @TeleOp(group = "util")
@@ -45,7 +46,7 @@ public class TrajectoryEditor extends LinearOpMode {
         while (chosenFileName == null && opModeIsActive()) {
 
             telemetry.addLine("Choose one of the following trajectories");
-            telemetry.addLine("Use dpad to navigate and A to confirm");
+            telemetry.addLine("Use dpad to navigate and A/Cross to confirm");
             telemetry.addLine("-------------------------------------");
             for (int i = 0; i < filesList.length; i += 1) {
                 if (chosenFileIndex == i) {
@@ -55,7 +56,7 @@ public class TrajectoryEditor extends LinearOpMode {
                 }
             }
             telemetry.addLine("-------------------------------------");
-            telemetry.addLine("Or create a new file by pressing B");
+            telemetry.addLine("Or create a new file by pressing B/Circle");
             telemetry.update();
 
             if (gamepad1.dpad_up) {
@@ -85,7 +86,7 @@ public class TrajectoryEditor extends LinearOpMode {
                             index += 1;
                         }
                     }
-                    chosenFileName = "traj" + index + ".json";
+                    chosenFileName = "tra_buffer.json";
                 } else {
                     chosenFileName = CUSTOM_FILE_NAME;
                 }
@@ -138,12 +139,12 @@ public class TrajectoryEditor extends LinearOpMode {
 
             dashboard.sendTelemetryPacket(packet);
 
-            telemetry.addLine("Add new curves by pressing A");
-            telemetry.addLine("Remove curves by pressing B");
-            telemetry.addLine("Edit the X and Y variables and then press X to apply them to selected point");
+            telemetry.addLine("Add new curves by pressing A/Cross");
+            telemetry.addLine("Remove curves by pressing B/Circle");
+            telemetry.addLine("Edit the X and Y variables and then press X/Square to apply them to selected point");
             telemetry.addLine("Move points with right stick");
             telemetry.addLine("Change point with dpad up and down");
-            telemetry.addLine("Save trajectory to file by pressing left bumper");
+            telemetry.addLine("Save trajectory to file by pressing Left Bumper");
             telemetry.addData("point X coordinate", points.get(currentPoint).getX());
             telemetry.addData("point Y coordinate", points.get(currentPoint).getY());
             telemetry.update();
@@ -151,14 +152,14 @@ public class TrajectoryEditor extends LinearOpMode {
             if (gamepad1.dpad_up) {
                 currentPoint = (currentPoint + 1) % points.size();
                 while (gamepad1.dpad_up) {
-                    telemetry.addLine("Yes");
+                    telemetry.addLine("Up");
                     telemetry.update();
                 }
             }
             if (gamepad1.dpad_down) {
                 currentPoint = (((currentPoint - 1) % points.size()) + points.size()) % points.size();
                 while (gamepad1.dpad_down) {
-                    telemetry.addLine("Yes");
+                    telemetry.addLine("Down");
                     telemetry.update();
                 }
             }
@@ -178,7 +179,7 @@ public class TrajectoryEditor extends LinearOpMode {
                 points.add(point.plus(new Vector2d(0, 10)));
                 points.add(point.plus(new Vector2d(0, 15)));
                 while (gamepad1.cross || gamepad1.a) {
-                    telemetry.addLine("Yes");
+                    telemetry.addLine("Added a curve");
                     telemetry.update();
                 }
             }
@@ -190,14 +191,14 @@ public class TrajectoryEditor extends LinearOpMode {
                     points.remove(points.size() - 1);
                 }
                 while (gamepad1.circle || gamepad1.b) {
-                    telemetry.addLine("Yes");
+                    telemetry.addLine("Deleted a curve");
                     telemetry.update();
                 }
             }
             if (gamepad1.square || gamepad1.x) {
                 points.set(currentPoint, new Vector2d(X, Y));
                 while (gamepad1.square || gamepad1.x) {
-                    telemetry.addLine("Yes");
+                    telemetry.addLine("Applied new coordinates");
                     telemetry.update();
                 }
             }
@@ -208,7 +209,7 @@ public class TrajectoryEditor extends LinearOpMode {
                     throw new RuntimeException(e);
                 }
                 while (gamepad1.left_bumper) {
-                    telemetry.addLine("Yes");
+                    telemetry.addLine("Trajectory " + chosenFileName + " saved");
                     telemetry.update();
                 }
             }

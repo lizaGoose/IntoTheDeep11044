@@ -1,134 +1,122 @@
 package org.firstinspires.ftc.teamcode.modules;
 
 
-import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRANSFER_POS;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.AIM_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.DROP_SAMPLE_TO_HUMAN;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.PICK_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCORE_SAMP;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.SCOR_SPEC;
-import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.TRANSFER_SPEC;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.STRAIGHT;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.TAKE_SAMPLE;
+import static org.firstinspires.ftc.teamcode.modules.ScorerPerkid.ScorerPerkidConstants.UP;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.camera.CameraTest;
-
 public class ScorerPerkid {
-    LinearOpMode linearOpMode;
+    OpMode opMode;
     Gamepad gamepad1;
-    DcMotor extend;
-    CameraTest cam;
     Servo left, right;
 
     enum Mode {
-        SPECIMEN,
-        PICK,
-        SAMPLE,
-        PICK_SPEC,
-        TRANSFER,
-        SCORE_SAMP,
-        TRANSFER_SPEC,
-        SCOR_SPEC
-
+        PICK_SPECIMEN,
+        SCORE_SAMPLE,
+        SCORE_SPECIMEN,
+        TRANSFER_SAMPLE
     }
 
-    Mode currentMode = Mode.PICK_SPEC;
+    Mode currentMode = Mode.PICK_SPECIMEN;
 
-    public ScorerPerkid(LinearOpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        gamepad1 = linearOpMode.gamepad1;
-        left = linearOpMode.hardwareMap.get(Servo.class, "left_scor_perkid");
-        right = linearOpMode.hardwareMap.get(Servo.class, "right_scor_perkid");
+    public ScorerPerkid(OpMode opMode) {
+        this.opMode = opMode;
+        gamepad1 = opMode.gamepad1;
+        left = opMode.hardwareMap.get(Servo.class, "left_scor_perkid");
+        right = opMode.hardwareMap.get(Servo.class, "right_scor_perkid");
         right.setDirection(Servo.Direction.REVERSE);
-        cam = new CameraTest();
     }
 
     public void teleop() {
         switch (currentMode) {
-            /*case SPECIMEN:
-                left.setPosition(ScoringPerkidConstants.SPEC_POS);
-                right.setPosition(ScoringPerkidConstants.SPEC_POS);
+            case PICK_SPECIMEN:
+                setAngle(ScorerPerkidConstants.PICK_SPECIMEN);
                 break;
-            case SAMPLE:
-                left.setPosition(ScoringPerkidConstants.SAMP_POS);
-                right.setPosition(ScoringPerkidConstants.SAMP_POS);
+            case SCORE_SAMPLE:
+                setAngle(ScorerPerkidConstants.SCORE_SAMPLE);
                 break;
-            case PICK:
-                left.setPosition(ScoringPerkidConstants.PICK_POS);
-                right.setPosition(ScoringPerkidConstants.PICK_POS);
-                break;*/
-            case PICK_SPEC:
-                left.setPosition(ScorerPerkidConstants.PICK_SPEC);
-                right.setPosition(ScorerPerkidConstants.PICK_SPEC);
+            case SCORE_SPECIMEN:
+                setAngle(ScorerPerkidConstants.SCORE_SPECIMEN_1);
                 break;
-            case TRANSFER:
-                left.setPosition(ScorerPerkidConstants.TRANSFER_POS);
-                right.setPosition(ScorerPerkidConstants.TRANSFER_POS);
+            case TRANSFER_SAMPLE:
+                setAngle(ScorerPerkidConstants.TRANSFER_SAMPLE);
                 break;
-            case SCORE_SAMP:
-                left.setPosition(ScorerPerkidConstants.SCORE_SAMP);
-                right.setPosition(ScorerPerkidConstants.SCORE_SAMP);
-                break;
-            case TRANSFER_SPEC:
-                left.setPosition(ScorerPerkidConstants.TRANSFER_SPEC);
-                right.setPosition(ScorerPerkidConstants.TRANSFER_SPEC);
-                break;
-            case SCOR_SPEC:
-                left.setPosition(ScorerPerkidConstants.SCOR_SPEC);
-                right.setPosition(ScorerPerkidConstants.SCOR_SPEC);
-                break;
-
         }
     }
 
-    public void transferSample() {
-        left.setPosition(TRANSFER_POS);
-        right.setPosition(TRANSFER_POS);
-    }
-
-    public void transferSpecimen() {
-        left.setPosition(TRANSFER_SPEC);
-        right.setPosition(TRANSFER_SPEC);
-    }
-
     public void pickSpecimen() {
-        left.setPosition(PICK_SPEC);
-        right.setPosition(PICK_SPEC);
+        setAngle(ScorerPerkidConstants.PICK_SPECIMEN);
     }
 
+    @Deprecated
+    public void pushIntoSpecimen() {
+        setAngle(ScorerPerkidConstants.PICK_SPECIMEN);
+    }
+
+    @Deprecated
     public void aimAtSpecimen() {
-        left.setPosition(AIM_SPEC);
-        right.setPosition(AIM_SPEC);
+        setAngle(ScorerPerkidConstants.PICK_SPECIMEN);
+    }
+
+    public void posBetween() {
+        setAngle(ScorerPerkidConstants.SCORE_SPECIMEN_0);
     }
 
     public void scoreSpecimen() {
-        left.setPosition(SCOR_SPEC);
-        right.setPosition(SCOR_SPEC);
-    }
-
-    public void dropSampleToHuman() {
-        left.setPosition(DROP_SAMPLE_TO_HUMAN);
-        right.setPosition(DROP_SAMPLE_TO_HUMAN);
+        setAngle(ScorerPerkidConstants.SCORE_SPECIMEN_1);
     }
 
     public void scoreSample() {
-        left.setPosition(SCORE_SAMP);
-        right.setPosition(SCORE_SAMP);
+        setAngle(ScorerPerkidConstants.SCORE_SAMPLE);
     }
 
+    public void transferSample() {
+        setAngle(ScorerPerkidConstants.TRANSFER_SAMPLE);
+    }
+
+    public void takeSample() {
+        setAngle(ScorerPerkidConstants.TAKE_SAMPLE);
+    }
+
+    public double getPosition() {
+        return left.getPosition();
+    }
+
+    public void setAngle(double angle) {
+        double position = ( angle / 90 ) * ( UP - STRAIGHT ) - ( UP - 2 * STRAIGHT );
+
+        left.setPosition(position);
+        right.setPosition(position);
+    }
+
+    public double setAngleDebug(double angle) {
+        return ( angle / 90 ) * ( UP - STRAIGHT ) - ( UP - 2 * STRAIGHT );
+    }
+
+    public double getAngle() {
+        double position = getPosition();
+        double US = 1 / ( UP - STRAIGHT );
+        return ( position * US - ( UP - 2 * STRAIGHT ) * US ) * 90;
+    }
+
+
     @Config
-    static
-    class ScorerPerkidConstants {
-        public static double PICK_SPEC = 0.35;
-        public static double AIM_SPEC = 0.45;
-        public static double DROP_SAMPLE_TO_HUMAN = 0.35;
-        public static double TRANSFER_POS = 0.52;
-        public static double SCORE_SAMP = 0;
-        public static double TRANSFER_SPEC = 0.81;
-        public static double SCOR_SPEC = 0.81;
+    static class ScorerPerkidConstants {
+        // ANGLES
+        public static double PICK_SPECIMEN = 324;
+        public static double SCORE_SAMPLE = 205;
+        public static double SCORE_SPECIMEN_0 = 270;
+        public static double SCORE_SPECIMEN_1 = 105;
+        public static double TRANSFER_SAMPLE = 85;
+        public static double TAKE_SAMPLE = 60;
+
+        // POSITIONS
+        public static double UP = 0.56;
+        public static double STRAIGHT = 0.82;
     }
 }

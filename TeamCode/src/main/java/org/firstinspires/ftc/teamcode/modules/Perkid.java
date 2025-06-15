@@ -2,15 +2,18 @@ package org.firstinspires.ftc.teamcode.modules;
 
 
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.AIM_AT_SPIKE;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.LIFT_AND_LOCK_SAMPLE;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.LOOK_POS;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.PICK_UP;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.RIGHT_SIDE_DROP_SAMPLE;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.STRAIGHT_POS;
+import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.THROW_POS;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRANSFER_FROM_SUBMERSABLE;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.TRANSFER_POS;
 import static org.firstinspires.ftc.teamcode.modules.Perkid.PerkidConstants.VERTICAL_POS;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -18,7 +21,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import org.firstinspires.ftc.teamcode.camera.CameraTest;
 
 public class Perkid {
-    LinearOpMode linearOpMode;
+    OpMode opMode;
     Gamepad gamepad1;
     CameraTest cam;
     ServoImplEx left, right;
@@ -28,19 +31,20 @@ public class Perkid {
         TRANSFER,
         LOOK,
         PICK_UP,
-        TRANSFER_FROM_SUBMERSABLE,
+        TRANSFER_FROM_SUBMERSIBLE,
         RIGHT_SIDE_DROP_SAMPLE,
-        RELAX
+        RELAX,
+        LIFT_AND_LOCK
     }
 
     Mode currentMode = Mode.SCORE_POSITION;
 
-    public Perkid(LinearOpMode linearOpMode) {
-        this.linearOpMode = linearOpMode;
-        gamepad1 = linearOpMode.gamepad1;
-        left = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "left_vertical_servo");
-        right = (ServoImplEx) linearOpMode.hardwareMap.get(Servo.class, "right_vertical_servo");
-        right.setDirection(Servo.Direction.REVERSE);
+    public Perkid(OpMode opMode) {
+        this.opMode = opMode;
+        gamepad1 = opMode.gamepad1;
+        left = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "left_vertical_servo");
+        right = (ServoImplEx) opMode.hardwareMap.get(Servo.class, "right_vertical_servo");
+        left.setDirection(Servo.Direction.REVERSE);
         cam = new CameraTest();
     }
 
@@ -51,14 +55,14 @@ public class Perkid {
                 right.setPosition(PerkidConstants.TRANSFER_POS);
                 break;
             case LOOK:
-                left.setPosition(PerkidConstants.LOOK_POS);
-                right.setPosition(PerkidConstants.LOOK_POS);
+                left.setPosition(LOOK_POS);
+                right.setPosition(LOOK_POS);
                 break;
             case PICK_UP:
                 left.setPosition(PerkidConstants.PICK_UP);
                 right.setPosition(PerkidConstants.PICK_UP);
                 break;
-            case TRANSFER_FROM_SUBMERSABLE:
+            case TRANSFER_FROM_SUBMERSIBLE:
                 left.setPosition(PerkidConstants.TRANSFER_FROM_SUBMERSABLE);
                 right.setPosition(PerkidConstants.TRANSFER_FROM_SUBMERSABLE);
                 break;
@@ -70,7 +74,21 @@ public class Perkid {
                 left.setPwmDisable();
                 right.setPwmDisable();
                 break;
+            case LIFT_AND_LOCK:
+                left.setPosition(LIFT_AND_LOCK_SAMPLE);
+                right.setPosition(LIFT_AND_LOCK_SAMPLE);
+                break;
         }
+    }
+
+    public void liftAndLock() {
+        left.setPosition(LIFT_AND_LOCK_SAMPLE);
+        right.setPosition(LIFT_AND_LOCK_SAMPLE);
+    }
+
+    public void throwThoughCenter() {
+        left.setPosition(THROW_POS);
+        right.setPosition(THROW_POS);
     }
 
     public void aimAtSpike() {
@@ -81,6 +99,10 @@ public class Perkid {
     public void pickUp() {
         left.setPosition(PICK_UP);
         right.setPosition(PICK_UP);
+    }
+    public void look() {
+        left.setPosition(LOOK_POS);
+        right.setPosition(LOOK_POS);
     }
 
     public void transfer() {
@@ -121,15 +143,17 @@ public class Perkid {
     @Config
     static
     class PerkidConstants {
-        public static double VERTICAL_POS = 0.63;
-        public static double STRAIGHT_POS = 0.39;
+        public static double VERTICAL_POS = 0.7;
+        public static double STRAIGHT_POS = 0.3;
 
-        public static double TRANSFER_POS = 0.705;
-        public static double LOOK_POS = 0.48;
-        public static double AIM_AT_SPIKE = 0.55;
-        public static double TRANSFER_FROM_SUBMERSABLE = 0.53;
+        public static double TRANSFER_POS = 0.7;
+        public static double THROW_POS = 0.9;
+        public static double LOOK_POS = 0.33;
+        public static double AIM_AT_SPIKE = 0.33;
+        public static double TRANSFER_FROM_SUBMERSABLE = 0.4;
+        public static double LIFT_AND_LOCK_SAMPLE = 0.5;
 
-        public static double PICK_UP = 0.37;
-        public static double RIGHT_SIDE_DROP_SAMPLE = 0.67;
+        public static double PICK_UP = 0.2;
+        public static double RIGHT_SIDE_DROP_SAMPLE = 0.85;
     }
 }

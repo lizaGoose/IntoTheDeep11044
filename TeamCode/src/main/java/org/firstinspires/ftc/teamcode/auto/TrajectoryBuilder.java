@@ -70,7 +70,7 @@ public class TrajectoryBuilder {
     }
 
     public TrajectoryBuilder waitForAt(double t, double milliseconds) {
-        return waitForAt(t, milliseconds, 0);
+        return waitForAt(t, milliseconds, -90);
     }
 
     public TrajectoryBuilder addTimeMarker(double millisecond, MarkerRunnable runnable) {

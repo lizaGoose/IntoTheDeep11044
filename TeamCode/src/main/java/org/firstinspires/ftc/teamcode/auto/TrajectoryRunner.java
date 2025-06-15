@@ -65,6 +65,7 @@ public class TrajectoryRunner {
     private double integralSumX = 0;
     private double lastErrorY = 0;
     private double integralSumY = 0;
+    private boolean reachedStopMarker = false;
 
     public TrajectoryRunner() {
         clock = new ElapsedTime();
@@ -197,6 +198,11 @@ public class TrajectoryRunner {
 //                }
 //            }
 
+            if (!markers.isEmpty() && t + curveIndex >= markers.get(0).t) {
+                markers.get(0).getRunnable().onMarkerReached();
+                markers.remove(0);
+            }
+
             timeMarkerTimer.reset();
             integralSumHeading = 0;
 
@@ -249,10 +255,6 @@ public class TrajectoryRunner {
             packet.put("curve", true);
         }
 
-        if (!markers.isEmpty() && t + curveIndex >= markers.get(0).t) {
-            markers.get(0).getRunnable().onMarkerReached();
-            markers.remove(0);
-        }
 
         poseHistory.add(poseEstimate);
 

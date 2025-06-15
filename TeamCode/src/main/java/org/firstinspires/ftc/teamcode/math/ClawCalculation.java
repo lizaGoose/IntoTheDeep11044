@@ -7,9 +7,9 @@ import java.util.List;
 
 @Config
 public class ClawCalculation {
-    public static final double d1 = 0.0243;
-    public static final double d2 = 0.12745;
-    public static final double d3 = 0.05;
+    public static final double d1 = 25.3;
+    public static final double d2 = 127.45;
+    public static final double d3 = 83.76641;
 
     @Deprecated
     public static List<Double> DEPRECATED_inverseKinematics(double x, double y, double z) {
@@ -22,14 +22,24 @@ public class ClawCalculation {
         return Arrays.asList(d0, theta1, theta2, theta3);
     }
 
-    public static List<Double> inverseKinematics(double x, double y, double z) {
-        double theta2 = Math.asin(Math.toRadians(y / d2));//horizontal
-        double fi1 = Math.asin(Math.toRadians(( x + d3 ) / ( Math.sqrt(Math.pow(d1, 2) + Math.pow(d2 * Math.cos(theta2), 2)) )));
-        double fi = Math.atan(Math.toRadians(d1 / ( d2 + Math.cos(theta2) )));
+    public static List<Double> inverseKinematics_noAngle(double x, double y, double z) {
+        double theta2 = Math.asin(y / d2);//horizontal
+        double fi1 = Math.asin(( x + d3 ) / ( Math.sqrt(Math.pow(d1, 2) + Math.pow(d2 * Math.cos(theta2), 2)) ));
+        double fi = Math.atan(d1 / ( d2 + Math.cos(theta2) ));
         double theta1 = fi1 - fi;//
         double d0 = z - ( d2 * Math.cos(theta2) * Math.cos(theta1) ) + d1 * Math.sin(theta1);//extend
-        double theta3 = -Math.PI / 2 + theta1;
+        double theta3 = -Math.PI / 2 - theta1;
         return Arrays.asList(d0, theta1, theta2, theta3);
+    }
+
+    public static List<Double> inverseKinematics(double x, double y, double z, double angle) {
+        double theta2 = Math.asin(y / d2);//horizontal
+        double fi1 = Math.asin(( x + d3 ) / ( Math.sqrt(Math.pow(d1, 2) + Math.pow(d2 * Math.cos(theta2), 2)) ));
+        double fi = Math.atan(d1 / ( d2 + Math.cos(theta2) ));
+        double theta1 = fi1 - fi;//
+        double d0 = z - ( d2 * Math.cos(theta2) * Math.cos(theta1) ) + d1 * Math.sin(theta1);//extend
+        double theta3 = -Math.PI / 2 - theta1;
+        return Arrays.asList(d0, Math.toDegrees(theta1), Math.toDegrees(theta2), Math.toDegrees(theta3), angle - Math.toDegrees(theta2));
     }
 
     public static List<Double> inverseKinematicsFix(double x, double y, double z) {

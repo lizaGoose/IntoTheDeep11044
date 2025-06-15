@@ -53,6 +53,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -61,7 +62,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.modules.Claw;
 import org.firstinspires.ftc.teamcode.modules.Differential;
-import org.firstinspires.ftc.teamcode.modules.Extend;
+import org.firstinspires.ftc.teamcode.modules.Linkage;
 import org.firstinspires.ftc.teamcode.modules.Hand;
 import org.firstinspires.ftc.teamcode.modules.Lift;
 import org.firstinspires.ftc.teamcode.modules.Perkid;
@@ -75,6 +76,7 @@ import org.firstinspires.ftc.teamcode.auto.Drive;
 
 import java.io.IOException;
 
+@Disabled
 @Autonomous(name = "FreakLaw 5+0")
 public class FreakLawFiveZero extends LinearOpMode {
     private Drive drive;
@@ -86,7 +88,7 @@ public class FreakLawFiveZero extends LinearOpMode {
     private Hand hand;
     private Differential diff;
     private Claw claw;
-    private Extend extend;
+    private Linkage linkage;
     private Lift lift;
     private ScorerLinkage scorerLinkage;
     private DistanceSensor distInClaw;
@@ -151,12 +153,12 @@ public class FreakLawFiveZero extends LinearOpMode {
                     // PICK UP LEFT
                     .waitForAt(1, WAIT_AT_LEFT + WAIT_PICK_UP + 650, ANGLE_TO_LEFT)
                     .addTimeMarker(WAIT_AT_LEFT, () -> {
-                        extend.setReference(EXTEND_TO_LEFT);
+                        linkage.setReference(EXTEND_TO_LEFT);
                         hand.setPosition(HAND_LEFT);
                         double rotation = ANGLE_TO_LEFT + hand.getAngle() + 90 + DIFF_ROTATION_LEFT;
                         diff.aimAngle(rotation);
                         perkid.aimAtSpike();
-                        claw.transfer();
+                        claw.close();
                     })
                     .addTimeMarker(WAIT_AT_LEFT + 200, () -> {
                         claw.open();
@@ -186,7 +188,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                     // LEFT TO HUMAN
                     .waitForAt(MIDDLE_STOP_POINT, WAIT_FOR_LEFT_ROTATION + 100, ANGLE_LEFT_TO_HUMAN)
                     .addTimeMarker(0, () -> {
-                        extend.setReference(EXTEND_LEFT_TO_HUMAN);
+                        linkage.setReference(EXTEND_LEFT_TO_HUMAN);
                     })
                     .addTimeMarker(WAIT_FOR_LEFT_ROTATION, () -> {
                         claw.open();
@@ -194,7 +196,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                     // PICK UP MIDDLE
                     .waitForAt(MIDDLE_STOP_POINT, WAIT_AT_MIDDLE + WAIT_PICK_UP + 650, ANGLE_TO_MIDDLE)
                     .addTimeMarker(0, () -> {
-                        extend.setReference(EXTEND_TO_MIDDLE);
+                        linkage.setReference(EXTEND_TO_MIDDLE);
                         double rotation = ANGLE_TO_MIDDLE + hand.getAngle() + 90 + DIFF_ROTATION_MIDDLE;
                         diff.aimAngle(rotation);
                     })
@@ -223,7 +225,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                     // MIDDLE TO HUMAN
                     .waitForAt(RIGHT_STOP_POINT, WAIT_FOR_MIDDLE_ROTATION + 200, ANGLE_MIDDLE_TO_HUMAN)
                     .addTimeMarker(WAIT_FOR_MIDDLE_ROTATION / 2, () -> {
-                        extend.setReference(EXTEND_MIDDLE_TO_HUMAN);
+                        linkage.setReference(EXTEND_MIDDLE_TO_HUMAN);
                     })
                     .addTimeMarker(WAIT_FOR_MIDDLE_ROTATION, () -> {
                         claw.open();
@@ -232,7 +234,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                     .waitForAt(RIGHT_STOP_POINT, WAIT_EXTEND_HALF_CLOSE, ANGLE_MIDDLE_TO_HUMAN)
                     .addTimeMarker(0, () -> {
                         claw.open();
-                        extend.setReference(EXTEND_CLOSED);
+                        linkage.setReference(EXTEND_CLOSED);
                     })
                     .waitForAt(RIGHT_STOP_POINT, WAIT_AT_RIGHT + WAIT_PICK_UP + 650, ANGLE_TO_RIGHT)
                     .addTimeMarker(0, () -> {
@@ -242,7 +244,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                     .addTimeMarker(WAIT_AT_RIGHT, () -> {
                         hand.setPosition(HAND_RIGHT);
                         double rotation = ANGLE_TO_RIGHT + hand.getAngle() + 90 + DIFF_ROTATION_RIGHT;
-                        extend.setReference(EXTEND_TO_RIGHT);
+                        linkage.setReference(EXTEND_TO_RIGHT);
                         diff.aimAngle(rotation);
                         perkid.aimAtSpike();
                         claw.open();
@@ -268,7 +270,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                         scorerClaw.open();
                     })
                     .addSpatialMarker(2.1, () -> {
-                        extend.setReference(EXTEND_TEMP_CLOSED);
+                        linkage.setReference(EXTEND_TEMP_CLOSED);
                         hand.dropOverRightSide();
                         perkid.dropOverRightSide();
                         diff.dropOverRightSide();
@@ -280,7 +282,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                         drive.setForce(SLOWDOWN_FORCE);
                     })
                     .addSpatialMarker(2.8, () -> {
-                        extend.setReference(0);
+                        linkage.setReference(0);
                     })
                     .waitForAt(3, WAIT_FOR_HUMAN_ADJUST + 100, -90)
                     .addTimeMarker(WAIT_FOR_CLAW_RELEASE, () -> {
@@ -323,7 +325,7 @@ public class FreakLawFiveZero extends LinearOpMode {
             buildRungToSpecimen = drive.buildTrajectory("traj11transposed.json")
                     .addTurnMarker(0, -90)
                     .addSpatialMarker(0, () -> {
-                        drive.setForce(0.65);
+                        drive.setForce(FORCE);
                         scorerClaw.open();
                         scorerDifferential.liftAfterScoreSpecimen();
                     })
@@ -380,8 +382,8 @@ public class FreakLawFiveZero extends LinearOpMode {
         scorerLinkage.retract();
 
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("extend_reference", extend.getReference());
-        packet.put("extend_position", extend.getPosition());
+        packet.put("extend_reference", linkage.getReference());
+        packet.put("extend_position", linkage.getPosition());
         packet.put("lift_reference", lift.getReference());
         packet.put("lift_position", lift.getPosition());
         dashboard.sendTelemetryPacket(packet);
@@ -403,13 +405,13 @@ public class FreakLawFiveZero extends LinearOpMode {
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
 
             packet = new TelemetryPacket();
-            packet.put("extend_reference", extend.getReference());
-            packet.put("extend_position", extend.getPosition());
+            packet.put("extend_reference", linkage.getReference());
+            packet.put("extend_position", linkage.getPosition());
             packet.put("lift_reference", lift.getReference());
             packet.put("lift_position", lift.getPosition());
             dashboard.sendTelemetryPacket(packet);
 
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
             drive.update();
         }
@@ -422,12 +424,12 @@ public class FreakLawFiveZero extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             packet = new TelemetryPacket();
-            packet.put("extend_reference", extend.getReference());
-            packet.put("extend_position", extend.getPosition());
+            packet.put("extend_reference", linkage.getReference());
+            packet.put("extend_position", linkage.getPosition());
             dashboard.sendTelemetryPacket(packet);
 
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
 
@@ -456,7 +458,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                 resetX = false;
             }
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
 
@@ -466,7 +468,7 @@ public class FreakLawFiveZero extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
 
@@ -495,7 +497,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                 resetX = false;
             }
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
 
@@ -505,7 +507,7 @@ public class FreakLawFiveZero extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
 
@@ -534,7 +536,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                 resetX = false;
             }
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
 
@@ -544,7 +546,7 @@ public class FreakLawFiveZero extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
 
@@ -573,7 +575,7 @@ public class FreakLawFiveZero extends LinearOpMode {
                 resetX = false;
             }
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
 
@@ -585,7 +587,7 @@ public class FreakLawFiveZero extends LinearOpMode {
 
         while (drive.isBusy() && opModeIsActive() && !DEBUG_END_FLAG) {
             drive.update();
-            extend.PIDControl();
+            linkage.PIDControl();
             lift.PIDControl();
         }
     }
@@ -604,7 +606,7 @@ public class FreakLawFiveZero extends LinearOpMode {
         diff = new Differential(this);
         claw = new Claw(this);
 
-        extend = new Extend(this);
+        linkage = new Linkage(this);
         distInClaw = hardwareMap.get(DistanceSensor.class, "ScorClawDist");
         frontSensor = hardwareMap.get(DigitalChannel.class, "DistanceFront");
 
