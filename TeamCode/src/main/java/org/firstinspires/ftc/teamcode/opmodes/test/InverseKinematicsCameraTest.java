@@ -33,7 +33,7 @@ public class InverseKinematicsCameraTest extends OpMode {
     // 135 345
     // 230 * k + b = 20
     //
-    public static double OFFSET = 20;
+    public static double OFFSET = 80;
     public static double PICK_UP_OFFSET = 70;
     public static double PICK_UP_CLOSE_AFTER = 100;
     public static double PICK_UP_LIFT_AFTER = 200;
@@ -42,7 +42,7 @@ public class InverseKinematicsCameraTest extends OpMode {
     private static final double Y = 0;
     private static final double Z = 127.45;
 
-    public static double SAMPLE_X = -20, SAMPLE_Y = 0;
+    public static double SAMPLE_X = 0, SAMPLE_Y = 0;
     public static double PICK_UP_LIFT_OFFSET = 20;
     public static double HAND_COEFF = 0.01;
 
@@ -120,6 +120,15 @@ public class InverseKinematicsCameraTest extends OpMode {
     public void loop() {
         AnalyzedSample sample = camera.getSamplePose(lift.getPosition(), scorerPerkid.getAngle())
                 .orElse(targetSample);
+        if (sample.y < 300) {
+            OFFSET = 20;
+        } else if (sample.y < 400) {
+            OFFSET = 40;
+        } else if (sample.y < 500) {
+            OFFSET = 100;
+        } else if (sample.y < 600) {
+            OFFSET = 120;
+        }
 
         if (stickyKeys.triangle) {
             state = State.AIMING;
@@ -175,7 +184,7 @@ public class InverseKinematicsCameraTest extends OpMode {
                 linkage.setPositionMillimeters(kinematicsResult.get(0) - OFFSET);
                 perkid.setAngle(Math.toDegrees(kinematicsResult.get(1)));
                 hand.setAngle(Math.toDegrees(kinematicsResult.get(2)));
-                differential.setAngleRotation(-91, targetSample.angle - Math.toDegrees(kinematicsResult.get(2)));
+                differential.setAngleRotation(-70, targetSample.angle - Math.toDegrees(kinematicsResult.get(2)));
             }
         }
 
@@ -231,6 +240,7 @@ public class InverseKinematicsCameraTest extends OpMode {
         });
 
         telemetry.addData("lift", lift.getPosition());
+        telemetry.addData("lift_inches", lift.getPosition() * 21.25 / 811);
         telemetry.addData("lift_reference", lift.getReference());
         telemetry.addData("extend_mm", linkage.getPositionMillimeters());
         telemetry.addData("extend_pos", linkage.getPosition());
@@ -243,6 +253,7 @@ public class InverseKinematicsCameraTest extends OpMode {
         telemetry.addData("sample", sample);
         telemetry.addData("targetSample", targetSample);
         telemetry.addData("loop_time_ns", globalTimer.nanoseconds());
+        telemetry.addData("scorer_angle", scorerPerkid.getAngle());
         globalTimer.reset();
     }
 

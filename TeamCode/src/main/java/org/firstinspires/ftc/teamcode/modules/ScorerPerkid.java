@@ -101,7 +101,7 @@ public class ScorerPerkid {
     public double getAngle() {
         double position = getPosition();
         double US = 1 / ( UP - STRAIGHT );
-        return ( position * US - ( UP - 2 * STRAIGHT ) * US ) * 90;
+        return ( position * US + ( UP - 2 * STRAIGHT ) * US ) * 90;
     }
 
 
@@ -117,6 +117,6 @@ public class ScorerPerkid {
 
         // POSITIONS
         public static double UP = 0.56;
-        public static double STRAIGHT = 0.82;
+        public static double STRAIGHT = 0.8065;
     }
 }
