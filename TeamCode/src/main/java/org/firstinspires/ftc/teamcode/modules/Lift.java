@@ -116,6 +116,10 @@ public class Lift {
         return leftMotor.getCurrentPosition();
     }
 
+    public double getPower() {
+        return leftMotor.getPower();
+    }
+
     public void setReference(double reference) {
         reference = Math.min(reference, MAX_POSITION);
         reference = Math.max(reference, MIN_POSITION);
@@ -202,9 +206,9 @@ public class Lift {
         public static double d = 0.00047;
 
         public static int SPECIMEN_POS = 380;
-        public static int SAMPLE_POS = 830;
+        public static int SAMPLE_POS = 770;
 
-        public static int MAX_POSITION = 830;
+        public static int MAX_POSITION = 770;
         public static int MIN_POSITION = 0;
 
         public static double POWER_DOWN = -0.6;

@@ -364,6 +364,7 @@ public class LimelightCamera {
         limelight.stop();
     }
 
+    /** @noinspection BooleanMethodIsAlwaysInverted*/
     public boolean isRunning() {
         return limelight.isRunning();
     }

@@ -109,7 +109,7 @@ public class ScorerPerkid {
     static class ScorerPerkidConstants {
         // ANGLES
         public static double PICK_SPECIMEN = 324;
-        public static double SCORE_SAMPLE = 205;
+        public static double SCORE_SAMPLE = 195;
         public static double SCORE_SPECIMEN_0 = 270;
         public static double SCORE_SPECIMEN_1 = 105;
         public static double TRANSFER_SAMPLE = 85;

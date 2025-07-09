@@ -868,6 +868,7 @@ public class StateMachine {
         opMode.telemetry.addData("transfer_timer", fromClawToClawTimer);
         opMode.telemetry.addData("lift_left", lift.getPosition());
         opMode.telemetry.addData("lift_right", lift.getPosition());
+        opMode.telemetry.addData("lift_power", lift.getPower());
         opMode.telemetry.addData("lift_ref", lift.getReference());
         opMode.telemetry.addData("extend", linkage.motor.getCurrentPosition());
         opMode.telemetry.addData("extend_reference", linkage.getReference());
