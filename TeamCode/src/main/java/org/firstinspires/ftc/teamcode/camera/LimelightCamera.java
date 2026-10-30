@@ -192,7 +192,6 @@ def runPipeline(image, llrobot):
         )
     )
 
-    # penis rustama
     if len(contours) > 0:
         # Get the largest contour
         largestContour = min(contours, key=lambda contour: contour_center(contour)[0])
